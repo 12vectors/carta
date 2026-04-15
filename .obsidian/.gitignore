@@ -1,1 +1,5 @@
 workspace.json
+workspace-mobile.json
+plugins/*/main.js
+plugins/*/manifest.json
+plugins/*/styles.css
