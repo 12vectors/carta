@@ -56,6 +56,7 @@ carta/
 │   ├── traversal-protocol.md          # The algorithm agents follow
 │   ├── operations.md                  # Traverse, ingest, lint, capture operations
 │   ├── node-schema.md                 # Frontmatter contract
+│   ├── obsidian-setup.md              # Obsidian vault setup guide
 │   ├── adr-template.md
 │   └── glossary.md
 │
@@ -129,16 +130,13 @@ carta/
 │   ├── lint.py                        # Semantic graph health checker
 │   └── build-index.py                 # Generates static INDEX.md for non-Obsidian use
 │
-├── .obsidian/                         # Obsidian vault config (optional)
-│   ├── plugins/
-│   │   └── dataview/
-│   ├── templates/
-│   │   ├── tpl-pattern.md
-│   │   ├── tpl-antipattern.md
-│   │   ├── tpl-standard.md
-│   │   ├── tpl-solution.md
-│   │   └── tpl-adr.md
-│   └── graph.json                     # Graph view colour and filter presets
+├── templates/                         # Obsidian Templater templates (node scaffolding)
+│   ├── tpl-pattern.md
+│   ├── tpl-antipattern.md
+│   ├── tpl-standard.md
+│   ├── tpl-solution.md
+│   ├── tpl-context.md
+│   └── tpl-adr.md
 │
 └── .github/
     └── workflows/
@@ -262,28 +260,11 @@ The organisation overlay has its own `LOG.md` tracking org-specific operations �
 
 ## Viewing Carta in Obsidian
 
-Carta is plain markdown that works in any editor and renders on GitHub. For the richest experience, open it as an Obsidian vault.
-
-**What you get:**
-
-- **Graph view** — the full pattern graph, colour-coded by node type. Orphan nodes (missing links) are immediately visible. Contradiction edges stand out.
-- **Backlinks** — open any pattern and see every node that references it, including contradiction links.
-- **Dataview indexes** — `INDEX.md` uses Dataview queries to generate live, filterable tables of all patterns, grouped by category, maturity, or context.
-- **Canvas** — solutions in `30-solutions/` have optional `.canvas` files that show how patterns compose visually.
-- **Templater** — run "New Pattern", "New ADR", or "New Anti-Pattern" commands to scaffold a valid node with correct frontmatter.
-- **Tag pane** — filter instantly by `#pattern`, `#antipattern`, `#stable`, `#deprecated`, etc.
-
-**Setup:**
-
-```bash
-git clone https://github.com/[org]/carta.git
-# Open the carta/ directory as an Obsidian vault
-# Obsidian will prompt to trust plugins — accept to enable Dataview and Templater
-```
-
-The `.obsidian/` folder ships recommended plugin configs, graph view presets, and templates. Everything works on first open.
+Carta is plain markdown that works in any editor and renders on GitHub. For the richest experience, open it as an Obsidian vault — you get a colour-coded graph view, backlinks across all nodes, Dataview-powered indexes, Templater scaffolding for new nodes, and tag-based filtering.
 
 **Obsidian is optional.** Agents don't need it (they read files directly). Contributors don't need it (any markdown editor works, and CI validates frontmatter). But it is the recommended way to explore the graph, review relationships, and author new nodes.
+
+See `00-meta/obsidian-setup.md` for the full setup guide, including plugin installation, graph view colour presets, and template configuration.
 
 ## Relationship to Spec Kit and similar tools
 
@@ -373,8 +354,8 @@ See `CHARTER.md` for what the core accepts and `CONTRIBUTING.md` for the full pr
 | Validator (`tools/validate.py`) | Planned |
 | Linter (`tools/lint.py`) | Planned |
 | Index builder (`tools/build-index.py`) | Planned |
-| Obsidian vault config (`.obsidian/`) | Planned |
-| Obsidian Templater templates | Planned |
+| Obsidian setup guide (`00-meta/obsidian-setup.md`) | Done |
+| Node templates (`templates/`) | Done |
 | Canvas files for solutions | Planned |
 | Spec Kit integration example | Planned |
 
