@@ -163,7 +163,7 @@ ADRs in `90-decisions/` record non-trivial choices that affect the core. An ADR 
 - A substantive edit changes the recommendations of an existing node.
 - A dispute between contributors is resolved.
 
-ADRs follow the template in `00-meta/adr-template.md`. Once merged, an agent propagates the ADR's effects across the graph — updating `contradicted_by` fields, adjusting maturity statuses, adding notes to affected nodes. These propagation changes are proposed as a separate PR (ingest operation) and reviewed before merge.
+ADRs follow the template in `00-meta/adr-template-guide.md`. Once merged, an agent propagates the ADR's effects across the graph — updating `contradicted_by` fields, adjusting maturity statuses, adding notes to affected nodes. These propagation changes are proposed as a separate PR (ingest operation) and reviewed before merge.
 
 ### Removing a node
 

@@ -5,7 +5,7 @@ Terms used in Carta with specific meaning.
 ---
 
 **ADR (Architecture Decision Record)**
-A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `90-decisions/` (core) or `decisions/` (overlay). See `adr-template.md`.
+A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `90-decisions/` (core) or `decisions/` (overlay). See `adr-template-guide.md`.
 
 **Antipattern**
 A node of type `antipattern` describing a recurring architectural mistake — how to recognise it, why it happens, what goes wrong, and how to fix it. Antipatterns serve as a negative filter during traversal.

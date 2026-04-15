@@ -57,7 +57,7 @@ carta/
 │   ├── operations.md                  # Traverse, ingest, lint, capture operations
 │   ├── node-schema.md                 # Frontmatter contract
 │   ├── obsidian-setup.md              # Obsidian vault setup guide
-│   ├── adr-template.md
+│   ├── adr-template-guide.md
 │   └── glossary.md
 │
 ├── 10-contexts/                       # "What kind of system am I building?"
