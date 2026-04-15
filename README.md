@@ -207,92 +207,20 @@ Links to related nodes, with the reason for each link:
 - [[pattern-graceful-degradation]] — the fallback strategy when the circuit opens
 ```
 
-Link fields (`applies_to`, `prerequisites`, `related`, `conflicts_with`, `contradicted_by`) use `[[wikilinks]]` so Obsidian's graph view and backlinks index pick them up automatically. The traversal skill strips the `[[ ]]` wrappers when resolving IDs programmatically.
-
-The `sources` field grounds every pattern in evidence — books, papers, blog posts, incident reports, codebases. Patterns without sources are flagged during lint. This is what separates Carta from opinion-driven documentation: every claim has provenance.
-
-The `contradicted_by` field and the optional `## Contradictions` section make conflicts navigable rather than hidden. When a new ADR or pattern contradicts an existing node, the contradiction is linked in both directions. Agents check this field during traversal; humans see it in Obsidian's backlinks panel.
-
-The `tags` field enables Obsidian's tag pane for filtering by node type and maturity. The `type` field serves the same purpose for agents and the validator.
-
-The schema is enforced by `tools/validate.py`. Broken frontmatter fails CI.
+The example above shows a `pattern` node. Each node type (pattern, antipattern, standard, solution, context, adr) has its own required fields and body sections. See `00-meta/node-schema.md` for the complete field reference, provenance rules, and validation requirements.
 
 ## Operations
 
-Carta defines four operations that agents and humans perform on the wiki. These are documented in `00-meta/operations.md` and encoded in the traversal skill.
+Carta defines four operations that agents and humans perform on the wiki:
 
-### Traverse
+- **Traverse** — consult the knowledge base to select patterns for a task. This is the primary operation. See `00-meta/traversal-protocol.md` for the full algorithm.
+- **Ingest** — propagate the effects of a new decision across the graph (agent-proposed, human-reviewed).
+- **Lint** — periodic health check for contradictions, orphans, stale nodes, and broken links.
+- **Capture** — record a novel pattern composition discovered during traversal as a new solution node.
 
-The primary operation. An agent with a task consults Carta to select the right patterns, check constraints, and compose a solution. The traversal algorithm:
+Each operation has a defined trigger, procedure, actor, and logging format. See `00-meta/operations.md` for the complete reference.
 
-1. Read the task or goal.
-2. Consult `DECISION_TREE.md` to identify the context (from `10-contexts/`).
-3. From the context, follow `recommended_patterns` links.
-4. For each candidate pattern, check `When to use`, `When NOT to use`, and `conflicts_with`.
-5. Resolve `prerequisites` recursively.
-6. Check `contradicted_by` — if a contradiction exists, read the linked node to understand the conflict and whether it's been resolved by an ADR.
-7. Cross-reference `40-standards/` for non-negotiables.
-8. Cross-reference `50-antipatterns/` as a negative filter.
-9. Prefer composed solutions from `30-solutions/` when available.
-10. Check `90-decisions/` for ADRs that constrain or resolve the choice.
-11. Log the chosen path as a new ADR if the decision is non-trivial.
-
-### Ingest
-
-When a new ADR is committed or an architectural decision is made, the agent propagates changes across the graph. A single decision might touch many nodes — updating `contradicted_by` fields, revising maturity statuses, adjusting solution compositions, adding notes to affected patterns.
-
-The ingest operation is **agent-proposed, human-reviewed**. The agent identifies which nodes are affected, drafts the updates, and opens a PR. A human reviews and merges. This is the maintenance cycle that keeps Carta current without the bookkeeping burden that kills traditional wikis.
-
-Each ingest is logged in `LOG.md` with the triggering event, affected nodes, and outcome.
-
-### Lint
-
-A periodic health check of the graph. The lint operation looks for:
-
-- **Contradictions** — nodes whose claims conflict but aren't linked via `contradicted_by`.
-- **Stale nodes** — patterns whose `sources` have been superseded by newer evidence.
-- **Orphans** — nodes with no inbound links (nothing references them).
-- **Broken prerequisites** — circular or dangling prerequisite chains.
-- **Missing pages** — concepts mentioned in prose but lacking their own node.
-- **Ungrounded patterns** — nodes with an empty `sources` field.
-- **Phantom conflicts** — `conflicts_with` edges that no longer hold after a recent ADR.
-
-Lint can be run manually (`python tools/lint.py`) or triggered by a coding agent as part of regular maintenance. The results are logged in `LOG.md`.
-
-### Capture
-
-When a traversal produces a novel composition — patterns combined in a way not yet recorded in `30-solutions/` — the agent proposes it as a new solution node. This is how explorations compound into the knowledge base rather than disappearing into chat history.
-
-A typical capture: an agent traversing Carta to solve "add observability to our LLM pipeline" composes `pattern-structured-logging` + `pattern-distributed-tracing` + `pattern-llm-observability` with org-specific stack choices. If no matching solution exists, the agent drafts `solution-instrument-llm-pipeline.md` with the composition and its rationale, and proposes it via PR.
-
-Captures are logged in `LOG.md` with the originating task and the composed pattern set.
-
-## The log
-
-`LOG.md` is an append-only chronological record of everything that happens to the wiki — traversals, ingests, lint passes, captures. Each entry starts with a consistent prefix for parseability:
-
-```markdown
-## [2026-04-15] traverse | Add auth to payment service
-Traversed: context-web-application → pattern-oauth2-oidc, pattern-secrets-management
-ADR created: adr-0003-oauth2-for-payments.md
-
-## [2026-04-14] ingest | ADR-0002 committed
-Trigger: adr-0002-fastapi-as-default.md
-Updated: pattern-rest-api.override.md (added FastAPI reference)
-Updated: stack/frameworks.md (added FastAPI as default)
-
-## [2026-04-13] lint | Periodic health check
-Orphans found: pattern-sharding (no inbound links)
-Ungrounded: antipattern-prompt-spaghetti (no sources)
-Missing page: "feature flags" mentioned in 3 nodes but no pattern exists
-
-## [2026-04-12] capture | LLM observability solution
-Origin: task "instrument our RAG pipeline"
-Created: solution-instrument-llm-pipeline.md
-Composed: pattern-structured-logging + pattern-distributed-tracing + pattern-llm-observability
-```
-
-The log gives both humans and agents a timeline of the wiki's evolution. `grep "^## \[" LOG.md | tail -10` shows the last 10 operations. Agents read the log to understand what's been done recently and avoid redundant work.
+Every operation is logged in `LOG.md` — an append-only chronological record of traversals, ingests, lint passes, and captures. The log format is defined in `00-meta/operations.md`.
 
 ## Organisation overlay
 
