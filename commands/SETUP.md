@@ -1,0 +1,65 @@
+# Carta slash command setup
+
+## 1. Set CARTA_PATH
+
+Tell Claude Code where your Carta knowledge base lives. Add the `env` field to your user-level settings:
+
+```bash
+# Edit ~/.claude/settings.json
+```
+
+```json
+{
+  "env": {
+    "CARTA_PATH": "/absolute/path/to/your-org-carta"
+  }
+}
+```
+
+Point CARTA_PATH to your **organisation overlay** root (if you have one) or directly to the **generic core** repo. The command handles both layouts:
+
+```
+# Overlay layout — CARTA_PATH points here
+your-org-carta/
+├── carta/              # generic core (submodule)
+├── overrides/
+├── extensions/
+├── stack/
+└── decisions/
+
+# Core-only layout — CARTA_PATH points here
+carta/
+├── 10-contexts/
+├── 20-patterns/
+└── ...
+```
+
+## 2. Install the slash command
+
+Symlink the command into your user-level Claude Code commands directory:
+
+```bash
+mkdir -p ~/.claude/commands
+ln -sf /absolute/path/to/carta/commands/carta.md ~/.claude/commands/carta.md
+```
+
+Use the same absolute path you cloned the Carta repo to. The symlink means updates to the Carta repo automatically update the command.
+
+## 3. Use it
+
+From any project, in Claude Code:
+
+```
+/carta add authentication to the payment service
+/carta choose a caching strategy for our product catalog API
+/carta should we use event sourcing for order processing
+```
+
+## 4. Optional: mention Carta in your project CLAUDE.md
+
+Add a line to your project's CLAUDE.md so the agent knows Carta is available even without the slash command:
+
+```markdown
+## Architecture
+For non-trivial architectural decisions, use `/carta <task>` to traverse the team's Carta knowledge base before choosing patterns.
+```
