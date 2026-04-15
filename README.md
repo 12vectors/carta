@@ -28,12 +28,12 @@ Existing approaches each miss something:
 - **RAG over documents** re-derives knowledge from scratch on every query. There's no accumulation — ask a subtle question that requires synthesising five sources, and the system has to find and piece together fragments every time.
 - **Spec-driven workflows** (like GitHub's Spec Kit) are excellent for per-feature delivery but presume the architectural knowledge already exists somewhere. Carta is where it lives.
 
-Carta fills the gap: a durable, versioned, machine-traversable record of how your team builds software — and why. Humans author the knowledge. Agents maintain the graph, propagate changes, flag contradictions, and traverse it at decision time. The tedious bookkeeping that kills every other knowledge base is handled by the agent; the thinking stays with the team.
+Carta fills the gap: a durable, versioned, machine-traversable record of how your team builds software — and why. It does it without minimum bloat. Humans (and agents) author and curate the knowledge. Agents maintain the graph, propagate changes, flag contradictions, and traverse it at decision time. The tedious bookkeeping that typicall kills knowledge bases is handled by the agent; the thinking stays with the team.
 
 ## Design principles
 
 1. **Compiled, not retrieved.** Carta is a persistent, compounding artefact. Knowledge is synthesised once and kept current — not re-derived on every query.
-2. **Human-authored, agent-maintained.** People write the patterns and make the decisions. Agents propagate changes across the graph, check consistency, and propose new compositions. Agents don't unilaterally add to the core.
+2. **Human/agent-authored, agent-maintained.** People write the patterns and make the decisions. Agents propagate changes across the graph, check consistency, and propose new compositions. Agents don't unilaterally add to the core.
 3. **Decisions are first-class.** Patterns explain *what*; ADRs explain *why this one, here, now*.
 4. **Grounded in evidence.** Patterns cite their sources — papers, incident reports, codebases, conversations. Assertions without provenance are flagged during lint.
 5. **Contradictions are explicit.** When new decisions conflict with existing patterns, the conflict is flagged and linked — never silently overwritten.
@@ -405,13 +405,7 @@ python tools/lint.py         # Semantic: contradictions, orphans, staleness, mis
 
 ## Governance
 
-Carta's generic core is stewarded by maintainers and shaped by community contribution. See `CHARTER.md` for how changes are proposed, reviewed, and accepted.
-
-Three principles guide what enters the core:
-
-1. **Generality.** A pattern belongs in Carta core only if it applies meaningfully across organisations and stacks. Stack-specific guidance belongs in overlays.
-2. **Decidability.** Every node must give an agent enough information to decide whether it applies. Vague or aspirational content is rejected.
-3. **Provenance.** Every pattern must cite at least one source in its `sources` field. Ungrounded assertions don't enter the core.
+Carta's generic core is stewarded by maintainers and shaped by community contribution. See `CHARTER.md` for the admission criteria, change process, roles (including what agents can and cannot do), and how contradictions are handled.
 
 ## Contributing
 
@@ -419,12 +413,9 @@ Contributions welcome. Before opening a PR:
 
 1. Read `00-meta/node-schema.md` and make sure your frontmatter validates.
 2. Use the Obsidian Templater templates (or copy `00-meta/node-schema.md` manually) to scaffold new nodes.
-3. Include at least one entry in the `sources` field. If a pattern has no citable source, it's not ready for the core.
-4. Declare `conflicts_with` and `contradicted_by` honestly — the graph only works if edges are accurate.
-5. For new patterns, include at least one `When NOT to use` case. If you can't think of one, the pattern isn't ready.
-6. For changes to existing nodes, note the reasoning in the PR description; significant changes require an ADR in `90-decisions/`.
+3. Run `python tools/validate.py` locally to catch structural issues before review.
 
-See `CONTRIBUTING.md` for the full process.
+See `CHARTER.md` for what the core accepts and `CONTRIBUTING.md` for the full process.
 
 ## Status
 
