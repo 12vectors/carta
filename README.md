@@ -333,7 +333,23 @@ python tools/lint.py         # Semantic: contradictions, orphans, staleness, mis
 
 ## Governance
 
-Carta's generic core is stewarded by maintainers and shaped by community contribution. See `CHARTER.md` for the admission criteria, change process, roles (including what agents can and cannot do), and how contradictions are handled.
+The generic core is governed by `CHARTER.md`. Organisation overlays are self-governed.
+
+**Roles.** Maintainers steward the core. Contributors propose changes. Agents maintain the graph under human supervision — they may propose link updates, maturity changes, ingests, and captures, but may not merge their own proposals, author new core patterns, or resolve contradictions. The boundary: agents handle structure; humans handle judgement.
+
+**Admission.** The core is a minimal, high-trust reference. Five criteria determine what enters, split into form (how a node is written) and fit (how it relates to the world and the graph):
+
+1. **Decidability** — an agent can make a defensible yes/no decision from the node, and that decision is non-obvious.
+2. **Provenance** — every claim cites a verifiable source.
+3. **Generality** — the principle applies across stacks and organisations.
+4. **Coherence** — the node strengthens the graph rather than fragmenting it.
+5. **Currency** — the node reflects current understanding.
+
+**Standards.** The core's `40-standards/` contains meta-standards and templates only. Concrete, opinionated standards live in organisation overlays.
+
+**Demotion.** Nodes that no longer meet criteria are demoted, not silently removed. The demotion path depends on which criterion failed.
+
+See `CHARTER.md` for the full admission criteria with tests, the change process, contradiction handling, and the reviewer checklist.
 
 ## Contributing
 
