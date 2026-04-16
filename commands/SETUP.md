@@ -16,7 +16,7 @@ Tell Claude Code where your Carta knowledge base lives. Add the `env` field to y
 }
 ```
 
-Point CARTA_PATH to your **repository root** — the directory containing `foundations/` and your organisation/project layers. The command handles the three-level resolution automatically:
+Point CARTA_PATH to your **repository root** — the directory containing `foundations/` and your organisation/team/project layers. The command handles the four-level resolution automatically:
 
 ```
 my-org-architecture/            # CARTA_PATH points here
@@ -24,10 +24,17 @@ my-org-architecture/            # CARTA_PATH points here
 │   ├── 10-contexts/
 │   ├── 20-patterns/
 │   └── ...
-├── overrides/                  # Org-level overrides
-├── extensions/                 # Org-level extensions
-├── standards/                  # Org-level standards
-├── decisions/                  # Org-level ADRs
+├── org/                        # Organisation-level layer
+│   ├── overrides/
+│   ├── extensions/
+│   ├── standards/
+│   └── decisions/
+├── teams/                      # Team-specific layers
+│   └── platform/
+│       ├── overrides/
+│       ├── extensions/
+│       ├── standards/
+│       └── decisions/
 └── projects/                   # Project-specific layers
     └── payments-api/
         ├── overrides/

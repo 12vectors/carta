@@ -134,7 +134,7 @@ Capture is how Carta compounds. Without it, useful pattern combinations discover
 4. The agent opens a PR with the new solution node.
 5. A human reviews. The solution must meet the same admission criteria as any other node (see `CHARTER.md`).
 
-Not every traversal warrants a capture. Captures are for compositions that are **reusable** — likely to recur across tasks and teams. A one-off combination that's too specific to a single project belongs in an organisation or project layer, not the foundations.
+Not every traversal warrants a capture. Captures are for compositions that are **reusable** — likely to recur across tasks and teams. A one-off combination that's too specific to a single project belongs in an organisation, team, or project layer, not the foundations.
 
 **Output:** a PR proposing a new solution node.
 
@@ -163,4 +163,4 @@ This format is parseable by both agents and simple tools:
 - `grep "traverse" LOG.md` shows all traversals.
 - Agents read the log to understand recent activity and avoid redundant work.
 
-The `LOG.md` tracks all operations across foundations, organisation, and project layers.
+The `LOG.md` tracks all operations across foundations, organisation, team, and project layers.

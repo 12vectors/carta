@@ -9,25 +9,29 @@ The algorithm an agent follows when consulting Carta to make an architectural de
 Before traversing, the agent must know:
 
 1. **The task or goal.** What architectural decision needs to be made. This comes from the user, a spec, or an upstream workflow.
-2. **The Carta root.** Where the knowledge base lives on disk. This is the repository root, which contains `foundations/` and any organisation/project layers.
-3. **The project scope (if any).** Which project directory under `projects/` to include in the traversal. If no project is specified, the traversal uses only foundation and organisation layers.
+2. **The Carta root.** Where the knowledge base lives on disk. This is the repository root, which contains `foundations/`, `org/`, and optionally `teams/` and `projects/`.
+3. **The scope (if any).** Which team and/or project to include in the traversal. If no scope is specified, the traversal uses only foundation and organisation layers.
 
 ---
 
-## Three-level resolution
+## Four-level resolution
 
-Carta resolves nodes across three levels, from most specific to least specific:
+Carta resolves nodes across four levels, from most specific to least specific:
 
-1. **Project** — `projects/<name>/overrides/`, `projects/<name>/extensions/`, `projects/<name>/standards/`, `projects/<name>/decisions/`
-2. **Organisation** — `overrides/`, `extensions/`, `standards/`, `decisions/`
-3. **Foundations** — `foundations/`
+1. **Project** — `projects/<project>/overrides/`, `projects/<project>/extensions/`, `projects/<project>/standards/`, `projects/<project>/decisions/`
+2. **Team** — `teams/<team>/overrides/`, `teams/<team>/extensions/`, `teams/<team>/standards/`, `teams/<team>/decisions/`
+3. **Organisation** — `org/overrides/`, `org/extensions/`, `org/standards/`, `org/decisions/`
+4. **Foundations** — `foundations/`
 
 For **pattern overrides**, the most specific level wins:
-1. Check `projects/<project>/overrides/<node-id>.override.md`
-2. If not found, check `overrides/<node-id>.override.md`
-3. If not found, use `foundations/<node-id>.md`
+1. Check `projects/<project>/overrides/<node-id>.<project>.md`
+2. If not found, check `teams/<team>/overrides/<node-id>.<team>.md`
+3. If not found, check `org/overrides/<node-id>.org.md`
+4. If not found, use `foundations/<node-id>.md`
 
 For **standards, decisions, antipatterns, and extensions**, all levels accumulate. Any level can override or relax guidance from a higher level, provided the reasoning is documented in a decision record at the appropriate level.
+
+Not every level is required. If there is no team or project scope, skip those levels.
 
 ---
 
@@ -44,20 +48,20 @@ Read `DECISION_TREE.md`. Match the task against the signal table to identify one
 
 For each matched context, read its node file in `foundations/10-contexts/`. Collect all entries from its `recommended_patterns` field. The union across all matched contexts is the initial candidate set.
 
-Also scan `extensions/` (org level) and `projects/<project>/extensions/` (project level, if scoped) for additional patterns whose `applies_to` includes the matched contexts. Add these to the candidate set.
+Also scan extensions at all applicable levels — `org/extensions/`, `teams/<team>/extensions/` (if scoped), `projects/<project>/extensions/` (if scoped) — for additional patterns whose `applies_to` includes the matched contexts. Add these to the candidate set.
 
 If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` categories relevant to the task, plus any relevant extensions.
 
 ### Step 3 — Resolve overrides
 
-For each candidate pattern, check whether an override exists at any level:
+For each candidate pattern, check whether an override exists. Walk from most specific to least specific and use the first match:
 
-1. If a project is scoped, check `projects/<project>/overrides/<pattern-id>.override.md`.
-2. Check `overrides/<pattern-id>.override.md` (org level).
-3. If an override is found at any level, use the most specific one instead of the foundation node for all subsequent reads.
-4. If no override exists, use the foundation node.
+1. If a project is scoped, check `projects/<project>/overrides/<pattern-id>.<project>.md`.
+2. If a team is scoped, check `teams/<team>/overrides/<pattern-id>.<team>.md`.
+3. Check `org/overrides/<pattern-id>.org.md`.
+4. If no override exists at any level, use the foundation node.
 
-Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (organisation and project layers extend these via `extensions/`, not overrides).
+Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (other layers extend these via `extensions/`, not overrides).
 
 ### Step 4 — Evaluate each candidate
 
@@ -85,7 +89,7 @@ For each remaining candidate, read its `conflicts_with` field. If two candidates
 
 1. Present both patterns and the nature of the conflict to the user.
 2. Do not silently drop either one. The user decides which to keep.
-3. If an ADR in `decisions/` (org) or `projects/<project>/decisions/` (project) resolves the conflict for this context, follow the ADR's guidance.
+3. If an ADR at any level resolves the conflict for this context, follow the ADR's guidance. More specific ADRs take precedence.
 
 ### Step 7 — Check contradictions
 
@@ -102,17 +106,18 @@ Contradictions are informational, not eliminative. A pattern with an unresolved 
 Collect standards from all applicable levels:
 
 1. Read `foundations/40-standards/` — meta-standards and cross-cutting concerns.
-2. Read `standards/` — org-level standards.
-3. If a project is scoped, read `projects/<project>/standards/` — project-level standards.
+2. Read `org/standards/` — org-level standards.
+3. If a team is scoped, read `teams/<team>/standards/` — team-level standards.
+4. If a project is scoped, read `projects/<project>/standards/` — project-level standards.
 
 For each standard whose `applies_to` includes the matched contexts (or that has no `applies_to`, meaning it's universal):
 
 1. Check whether any candidate pattern violates the standard.
-2. If so, flag the violation. Check whether a decision at the project or org level explicitly relaxes the standard for this context. If a decision exists, note the relaxation and its reasoning. If not, the violation must be resolved.
+2. If so, flag the violation. Check whether a decision at any level explicitly relaxes the standard for this context. If a decision exists, note the relaxation and its reasoning. If not, the violation must be resolved.
 
 ### Step 9 — Cross-reference antipatterns
 
-Read all antipattern nodes in `foundations/50-antipatterns/` whose `applies_to` includes the matched contexts. Also check `extensions/` and `projects/<project>/extensions/` for additional antipatterns.
+Read all antipattern nodes in `foundations/50-antipatterns/` whose `applies_to` includes the matched contexts. Also check extensions at all applicable levels for additional antipatterns.
 
 For each:
 
@@ -132,8 +137,9 @@ Read `foundations/30-solutions/` and check whether any existing solution's `comp
 
 Collect decisions from all applicable levels:
 
-1. Read `decisions/` (org level).
-2. If a project is scoped, read `projects/<project>/decisions/` (project level).
+1. Read `org/decisions/`.
+2. If a team is scoped, read `teams/<team>/decisions/`.
+3. If a project is scoped, read `projects/<project>/decisions/`.
 
 For each ADR whose `affects` list includes any candidate pattern or matched context:
 
@@ -141,14 +147,14 @@ For each ADR whose `affects` list includes any candidate pattern or matched cont
 2. If the ADR is `superseded`, follow the superseding ADR instead.
 3. If the ADR is `proposed`, note it as pending — the decision isn't final.
 
-Project-level decisions take precedence over org-level decisions when they cover the same concern.
+More specific decisions take precedence when they cover the same concern (project > team > org).
 
 ### Step 12 — Report
 
 Present the result:
 
 - **Context(s):** which contexts matched and why.
-- **Recommended patterns:** each selected pattern with a one-line rationale. Note which are foundation, org override, or project override.
+- **Recommended patterns:** each selected pattern with a one-line rationale. Note which level it comes from (foundation, org override, team override, or project override).
 - **Prerequisites:** patterns that must be in place first, in dependency order.
 - **Standards:** applicable constraints, noting which level they come from. Flag any that have been relaxed by a decision, with the reasoning.
 - **Antipatterns to avoid:** relevant risks.

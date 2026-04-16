@@ -8,13 +8,13 @@ This guide walks through setting up Carta as an Obsidian vault. It takes a few m
 
 ## Open the vault
 
-Open your Carta repository root as an Obsidian vault. This is the directory that contains `foundations/`, `overrides/`, `extensions/`, etc. — not the `foundations/` subdirectory itself.
+Open your Carta repository root as an Obsidian vault. This is the directory that contains `foundations/`, `org/`, `teams/`, `projects/`, etc. — not the `foundations/` subdirectory itself.
 
 1. Open Obsidian.
 2. **Open folder as vault** → select the repository root.
 3. When prompted to trust plugins, accept.
 
-Opening the root ensures Obsidian sees all layers — foundations, organisation, and project — in a single graph. Wikilinks resolve across all of them.
+Opening the root ensures Obsidian sees all four levels — foundations, organisation, teams, and projects — in a single graph. Wikilinks resolve across all of them.
 
 ## Install community plugins
 
@@ -88,13 +88,13 @@ In **Settings → Files & Links**:
 
 To create a new node:
 
-1. Create a new file in the appropriate directory (e.g. `foundations/20-patterns/resilience/` for a foundation pattern, or `extensions/` for an org-specific pattern).
+1. Create a new file in the appropriate directory (e.g. `foundations/20-patterns/resilience/` for a foundation pattern, or `org/extensions/` for an org-specific pattern).
 2. Open the command palette (**Ctrl/Cmd + P**) → **Templater: Insert template**.
 3. Select the template for the node type you're creating (e.g. `tpl-pattern`).
 4. Fill in the frontmatter fields and body sections.
 5. Rename the file to match the `id` field (e.g. `pattern-circuit-breaker.md`).
 
-Templates are in `templates/`. They match the schema defined in `foundations/00-meta/node-schema.md`.
+Templates are in `templates/`. They match the schema defined in `00-meta/node-schema.md`.
 
 ## What's in `.obsidian/`
 
@@ -102,10 +102,11 @@ The `.obsidian/` directory is gitignored. It contains Obsidian's local working s
 
 ## All layers in one vault
 
-Always open the repository root as the vault. This gives Obsidian visibility into all three levels:
+Always open the repository root as the vault. This gives Obsidian visibility into all four levels:
 
 - `foundations/` — the shared starter knowledge base
-- `overrides/`, `extensions/`, `standards/`, `decisions/` — organisation-level customisation
-- `projects/<name>/` — project-level customisation
+- `org/` — organisation-level customisation (overrides, extensions, standards, decisions)
+- `teams/<team>/` — team-level customisation
+- `projects/<project>/` — project-level customisation
 
 The graph view will show connections across all layers. Wikilinks resolve across boundaries — a project decision can reference a foundation pattern, and Obsidian will render the link.

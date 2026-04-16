@@ -10,11 +10,12 @@ Carta is a system for managing architecture knowledge — a persistent, interlin
 
 Unlike documentation that's written once and abandoned, or context that's re-derived from scratch on every query, Carta is **compiled once and kept current**. Cross-references are already there. Contradictions have already been flagged. The synthesis already reflects every decision your team has made. It compounds over time.
 
-Carta operates across three levels:
+Carta operates across four levels:
 
 - **Foundations** — a starter knowledge base of reusable patterns and practices that apply across organisations. This is what Carta ships out of the box.
-- **Organisation** — your team's overrides, extensions, concrete standards, and recorded decisions, layered on top of the foundations.
-- **Project** — project-specific customisations within your organisation, for when a particular system needs its own architectural choices.
+- **Organisation** — your org's overrides, extensions, concrete standards, and recorded decisions, layered on top of the foundations.
+- **Team** — team-specific customisations within your organisation, for when different teams have different architectural needs.
+- **Project** — project-specific customisations, for when a particular system needs its own architectural choices.
 
 Coding agents consult Carta before making non-trivial architectural choices. Humans consult it during design reviews, onboarding, and whenever someone asks "how do we do X here?" Open it in Obsidian and the whole thing lights up as a navigable graph.
 
@@ -38,10 +39,10 @@ Carta fills the gap: a durable, versioned, machine-traversable record of how you
 3. **Decisions are first-class.** Patterns explain *what*; ADRs explain *why this one, here, now*.
 4. **Grounded in evidence.** Patterns cite their sources — papers, incident reports, codebases, conversations. Assertions without provenance are flagged during lint.
 5. **Contradictions are explicit.** When new decisions conflict with existing patterns, the conflict is flagged and linked — never silently overwritten.
-6. **Three levels, cleanly separated.** Foundations are shared; organisation and project layers are yours.
+6. **Four levels, cleanly separated.** Foundations are shared; organisation, team, and project layers are yours.
 7. **Transparency over rigidity.** Any level can override any other level — the constraint is that overrides are documented, not that they're forbidden.
 8. **Traversal is deterministic.** Agents follow a documented algorithm, not vibes.
-9. **Open by default.** The foundations are open source; organisation and project layers stay private.
+9. **Open by default.** The foundations are open source; organisation, team, and project layers stay private.
 10. **Tool-agnostic, Obsidian-native.** Plain markdown that works anywhere; wikilinks and frontmatter that make Obsidian's graph view, backlinks, and Dataview queries work out of the box.
 
 ## Structure
@@ -53,23 +54,16 @@ carta/                                 # Repository root = Obsidian vault
 ├── DECISION_TREE.md                   # Top-level routing for agents
 ├── LOG.md                             # Append-only changelog of all operations
 │
+├── 00-meta/                           # How Carta works (system docs)
+│   ├── traversal-protocol.md          # The algorithm agents follow
+│   ├── operations.md                  # Traverse, ingest, lint, capture operations
+│   ├── node-schema.md                 # Frontmatter contract
+│   ├── obsidian-setup.md              # Obsidian vault setup guide
+│   ├── adr-template-guide.md          # How to write ADRs
+│   └── glossary.md
+│
 ├── foundations/                        # Starter knowledge base (shared, generic)
-│   ├── 00-meta/
-│   │   ├── traversal-protocol.md      # The algorithm agents follow
-│   │   ├── operations.md              # Traverse, ingest, lint, capture operations
-│   │   ├── node-schema.md             # Frontmatter contract
-│   │   ├── obsidian-setup.md          # Obsidian vault setup guide
-│   │   ├── adr-template-guide.md      # How to write ADRs
-│   │   └── glossary.md
-│   │
 │   ├── 10-contexts/                   # "What kind of system am I building?"
-│   │   ├── context-web-application.md
-│   │   ├── context-data-pipeline.md
-│   │   ├── context-ml-system.md
-│   │   ├── context-agentic-system.md
-│   │   ├── context-event-driven-system.md
-│   │   └── context-batch-processing.md
-│   │
 │   ├── 20-patterns/                   # Reusable architectural patterns
 │   │   ├── communication/
 │   │   ├── data/
@@ -78,7 +72,6 @@ carta/                                 # Repository root = Obsidian vault
 │   │   ├── security/
 │   │   ├── agentic/
 │   │   └── observability/
-│   │
 │   ├── 30-solutions/                  # Composed patterns for common problems
 │   ├── 40-standards/                  # Meta-standards and templates only
 │   └── 50-antipatterns/               # What not to do, and why
@@ -91,14 +84,22 @@ carta/                                 # Repository root = Obsidian vault
 │   ├── tpl-context.md
 │   └── tpl-adr.md
 │
-├── overrides/                         # Org-level overrides of foundation nodes
-├── extensions/                        # Org-specific patterns, contexts, etc.
-├── standards/                         # Org-level concrete standards
-├── decisions/                         # Org-level ADRs
+├── org/                               # Organisation-wide layer
+│   ├── overrides/                     # e.g. pattern-rest-api.org.md
+│   ├── extensions/                    # e.g. pattern-multi-tenant.org.md
+│   ├── standards/                     # e.g. standard-api-design.org.md
+│   └── decisions/                     # e.g. adr-0001-postgres.org.md
+│
+├── teams/                             # Team-specific layers
+│   └── <team-name>/
+│       ├── overrides/                 # e.g. pattern-rest-api.<team>.md
+│       ├── extensions/
+│       ├── standards/
+│       └── decisions/
 │
 ├── projects/                          # Project-specific layers
 │   └── <project-name>/
-│       ├── overrides/
+│       ├── overrides/                 # e.g. pattern-rest-api.<project>.md
 │       ├── extensions/
 │       ├── standards/
 │       └── decisions/
@@ -112,23 +113,26 @@ carta/                                 # Repository root = Obsidian vault
     └── build-index.py                 # Generates static INDEX.md
 ```
 
-Filenames are globally unique across the vault and prefixed by node type (`pattern-`, `context-`, `solution-`, `standard-`, `antipattern-`, `adr-`). This ensures Obsidian wikilinks resolve unambiguously. Numeric folder prefixes in foundations enforce reading order: contexts before patterns, patterns before solutions.
+Filenames are globally unique across the vault. Foundation files use the node type prefix (`pattern-`, `context-`, etc.). Files outside the foundations add a level suffix for uniqueness: `.org.md`, `.<team-name>.md`, `.<project-name>.md`. This ensures Obsidian wikilinks resolve unambiguously and you can tell at a glance which level a file belongs to.
 
-## Three-level model
+## Four-level model
 
-Carta resolves knowledge across three levels. Each more specific level can override or extend the one above it:
+Carta resolves knowledge across four levels. Each more specific level can override or extend the one above it:
 
 | Level | Location | Contains | Who owns it |
 |-------|----------|----------|-------------|
 | **Foundations** | `foundations/` | Generic patterns, contexts, antipatterns, solutions, meta-standards | Carta maintainers |
-| **Organisation** | Root-level `overrides/`, `extensions/`, `standards/`, `decisions/` | Org-specific overrides, standards, and decisions | Your team |
-| **Project** | `projects/<name>/` | Project-specific overrides, standards, and decisions | Project team |
+| **Organisation** | `org/` | Org-wide overrides, standards, and decisions | Your org |
+| **Team** | `teams/<team>/` | Team-specific overrides, standards, and decisions | The team |
+| **Project** | `projects/<project>/` | Project-specific overrides, standards, and decisions | The project team |
 
-**Override resolution:** for patterns, the most specific level wins (project → org → foundations). For standards, decisions, and extensions, all levels accumulate.
+**Override resolution:** for patterns, the most specific level wins (project → team → org → foundations). For standards, decisions, and extensions, all levels accumulate.
 
 **Any level can override any other level.** The constraint is not hierarchy but transparency — any override must be accompanied by a decision record explaining why. A project that needs to relax an org standard to ship can do so, as long as the reasoning is documented.
 
-Decisions (ADRs) do not live in the foundations. The foundations describe patterns and trade-offs; decisions are choices made by organisations and projects.
+Not every level is required. Many setups will use only foundations + org. Teams and projects are available when needed but add no overhead if unused.
+
+Decisions (ADRs) do not live in the foundations. The foundations describe patterns and trade-offs; decisions are choices made by organisations, teams, and projects.
 
 ## The node schema
 
@@ -190,18 +194,18 @@ Links to related nodes, with the reason for each link:
 - [[pattern-graceful-degradation]] — the fallback strategy when the circuit opens
 ```
 
-Each node type (pattern, antipattern, standard, solution, context, adr) has its own required fields and body sections. See `foundations/00-meta/node-schema.md` for the complete field reference, provenance rules, and validation requirements.
+Each node type (pattern, antipattern, standard, solution, context, adr) has its own required fields and body sections. See `00-meta/node-schema.md` for the complete field reference, provenance rules, and validation requirements.
 
 ## Operations
 
 Carta defines four operations that agents and humans perform on the knowledge base:
 
-- **Traverse** — consult the knowledge base to select patterns for a task. This is the primary operation. See `foundations/00-meta/traversal-protocol.md` for the full algorithm.
+- **Traverse** — consult the knowledge base to select patterns for a task. This is the primary operation. See `00-meta/traversal-protocol.md` for the full algorithm.
 - **Ingest** — propagate the effects of a new decision across the graph (agent-proposed, human-reviewed).
 - **Lint** — periodic health check for contradictions, orphans, stale nodes, and broken links.
 - **Capture** — record a novel pattern composition discovered during traversal as a new solution node.
 
-Each operation has a defined trigger, procedure, actor, and logging format. See `foundations/00-meta/operations.md` for the complete reference.
+Each operation has a defined trigger, procedure, actor, and logging format. See `00-meta/operations.md` for the complete reference.
 
 Every operation is logged in `LOG.md` — an append-only chronological record of traversals, ingests, lint passes, and captures.
 
@@ -211,7 +215,7 @@ Carta is plain markdown that works in any editor and renders on GitHub. For the 
 
 **Obsidian is optional.** Agents don't need it (they read files directly). Contributors don't need it (any markdown editor works, and CI validates frontmatter). But it is the recommended way to explore the graph, review relationships, and author new nodes.
 
-See `foundations/00-meta/obsidian-setup.md` for the full setup guide.
+See `00-meta/obsidian-setup.md` for the full setup guide.
 
 ## Relationship to Spec Kit and similar tools
 
@@ -235,16 +239,18 @@ Carta is also useful outside any structured workflow — during code review, ref
 git clone https://github.com/[org]/carta.git my-org-architecture
 cd my-org-architecture
 
-# The structure is ready — foundations/ contains the starter knowledge base
-# overrides/, extensions/, standards/, decisions/ are yours to fill
-# projects/ is where project-specific layers go
+# The structure is ready:
+# foundations/  — starter knowledge base
+# org/          — your org-wide overrides, standards, decisions
+# teams/        — team-specific layers (create subdirs as needed)
+# projects/     — project-specific layers (create subdirs as needed)
 ```
 
 **Open in Obsidian:**
 
 ```bash
 # Open the repository root as a vault
-# See foundations/00-meta/obsidian-setup.md for detailed setup
+# See 00-meta/obsidian-setup.md for detailed setup
 ```
 
 **Use the slash command:**
@@ -259,7 +265,7 @@ See `commands/SETUP.md` for slash command installation.
 
 ## Governance
 
-The foundations are governed by `CHARTER.md`. Organisation and project layers are self-governed.
+The foundations are governed by `CHARTER.md`. Organisation, team, and project layers are self-governed.
 
 **Roles.** Maintainers steward the foundations. Contributors propose changes. Agents maintain the graph under human supervision — they may propose link updates, maturity changes, ingests, and captures, but may not merge their own proposals, author new foundation patterns, or resolve contradictions. The boundary: agents handle structure; humans handle judgement.
 
@@ -271,9 +277,9 @@ The foundations are governed by `CHARTER.md`. Organisation and project layers ar
 4. **Coherence** — the node strengthens the graph rather than fragmenting it.
 5. **Currency** — the node reflects current understanding.
 
-**Standards.** The foundations' `40-standards/` contains meta-standards and templates only. Concrete, opinionated standards live in organisation and project layers.
+**Standards.** The foundations' `40-standards/` contains meta-standards and templates only. Concrete, opinionated standards live in `org/standards/`, `teams/<team>/standards/`, or `projects/<project>/standards/`.
 
-**Decisions.** ADRs do not live in the foundations. They live in `decisions/` (org) or `projects/<name>/decisions/` (project).
+**Decisions.** ADRs do not live in the foundations. They live in `org/decisions/`, `teams/<team>/decisions/`, or `projects/<project>/decisions/`.
 
 **Demotion.** Nodes that no longer meet criteria are demoted, not silently removed. The demotion path depends on which criterion failed.
 
@@ -283,7 +289,7 @@ See `CHARTER.md` for the full admission criteria with tests, the change process,
 
 Contributions welcome. Before opening a PR:
 
-1. Read `foundations/00-meta/node-schema.md` and make sure your frontmatter validates.
+1. Read `00-meta/node-schema.md` and make sure your frontmatter validates.
 2. Use the templates in `templates/` to scaffold new nodes.
 3. Run `python tools/validate.py` locally to catch structural issues before review.
 
@@ -297,7 +303,7 @@ See `CHARTER.md` for what the foundations accept and `CONTRIBUTING.md` for the f
 | Operations model (traverse, ingest, lint, capture) | Draft |
 | Traversal skill | Draft |
 | Foundations (`10-contexts/`, `20-patterns/`) | In progress |
-| Three-level model (foundations, org, project) | Draft |
+| Four-level model (foundations, org, teams, projects) | Draft |
 | Validator (`tools/validate.py`) | Planned |
 | Linter (`tools/lint.py`) | Planned |
 | Index builder (`tools/build-index.py`) | Planned |
@@ -308,7 +314,7 @@ See `CHARTER.md` for what the foundations accept and `CONTRIBUTING.md` for the f
 
 ## License
 
-The Carta foundations are released under the MIT License. Organisation and project layers are yours; nothing in this license requires you to publish them.
+The Carta foundations are released under the MIT License. Organisation, team, and project layers are yours; nothing in this license requires you to publish them.
 
 ## Credits
 

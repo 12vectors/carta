@@ -4,11 +4,12 @@ Traverse the Carta architectural knowledge base for the task below.
 
 Resolve the CARTA_PATH environment variable (run: echo $CARTA_PATH). This is the root of the Carta knowledge base. If unset, tell the user to configure it and stop.
 
-CARTA_PATH should point to the repository root — the directory containing `foundations/`, and optionally `overrides/`, `extensions/`, `standards/`, `decisions/`, and `projects/`.
+CARTA_PATH should point to the repository root — the directory containing `foundations/`, and optionally `org/`, `teams/`, and `projects/`.
 
 Set working references:
 - FOUNDATIONS = CARTA_PATH/foundations
-- ORG = CARTA_PATH (for overrides/, extensions/, standards/, decisions/)
+- ORG = CARTA_PATH/org
+- TEAM = CARTA_PATH/teams/<team> if a team scope is specified or can be inferred from the current working directory
 - PROJECT = CARTA_PATH/projects/<project> if a project scope is specified or can be inferred from the current working directory
 
 ## Discover available content
@@ -22,11 +23,15 @@ List what exists at each level. Carta may be partially built — work only with 
 | FOUNDATIONS/30-solutions/ | Composed patterns for common problems |
 | FOUNDATIONS/40-standards/ | Meta-standards and templates |
 | FOUNDATIONS/50-antipatterns/ | What not to do and why |
-| ORG/overrides/ | Org-specific pattern overrides (.override.md) |
+| ORG/overrides/ | Org-specific pattern overrides (`.org.md` suffix) |
 | ORG/extensions/ | Org-specific patterns not in foundations |
 | ORG/standards/ | Org-level concrete standards |
 | ORG/decisions/ | Org-level ADRs |
-| PROJECT/overrides/ | Project-specific pattern overrides |
+| TEAM/overrides/ | Team-specific pattern overrides (`.<team>.md` suffix) |
+| TEAM/extensions/ | Team-specific patterns |
+| TEAM/standards/ | Team-level standards |
+| TEAM/decisions/ | Team-level ADRs |
+| PROJECT/overrides/ | Project-specific pattern overrides (`.<project>.md` suffix) |
 | PROJECT/extensions/ | Project-specific patterns |
 | PROJECT/standards/ | Project-level standards |
 | PROJECT/decisions/ | Project-level ADRs |
@@ -40,19 +45,19 @@ Work through these steps, skipping any that reference directories that don't exi
 1. **Context** — find the matching context in FOUNDATIONS/10-contexts/. Read it to get recommended_patterns links. If no context matches, state this and proceed pattern-by-pattern.
 
 2. **Patterns** — for each candidate pattern in FOUNDATIONS/20-patterns/:
-   - Check PROJECT/overrides/ (if scoped) then ORG/overrides/ for a file named `<pattern-id>.override.md`. If it exists, read the override instead of the foundation node. Most specific wins.
-   - Also check ORG/extensions/ and PROJECT/extensions/ for additional patterns relevant to the task.
+   - Check for overrides in most-specific-first order: PROJECT/overrides/ → TEAM/overrides/ → ORG/overrides/. Override files use the level suffix convention: `<pattern-id>.org.md`, `<pattern-id>.<team>.md`, `<pattern-id>.<project>.md`. If an override exists, read it instead of the foundation node. Most specific wins.
+   - Also check ORG/extensions/, TEAM/extensions/, and PROJECT/extensions/ for additional patterns relevant to the task.
    - Read the frontmatter fields: applies_to, prerequisites, conflicts_with, contradicted_by.
    - Read "When to use" and "When NOT to use" to assess fit against the task.
    - Resolve prerequisites recursively — if pattern A requires pattern B, include B.
 
-3. **Standards** — read FOUNDATIONS/40-standards/, ORG/standards/, and PROJECT/standards/ for constraints that apply to this task. Check whether any decision explicitly relaxes a standard — if so, note the relaxation and reasoning.
+3. **Standards** — read FOUNDATIONS/40-standards/, ORG/standards/, TEAM/standards/, and PROJECT/standards/ for constraints that apply to this task. Check whether any decision explicitly relaxes a standard — if so, note the relaxation and reasoning.
 
 4. **Antipatterns** — scan FOUNDATIONS/50-antipatterns/ and extensions for pitfalls relevant to the task. Flag any that the candidate patterns risk triggering.
 
 5. **Solutions** — check FOUNDATIONS/30-solutions/ for an existing composition that fits the task. Prefer a pre-composed solution over assembling patterns from scratch.
 
-6. **Decisions** — check ORG/decisions/ and PROJECT/decisions/ for ADRs that constrain or resolve the choice. Project-level decisions take precedence over org-level decisions when they cover the same concern.
+6. **Decisions** — check ORG/decisions/, TEAM/decisions/, and PROJECT/decisions/ for ADRs that constrain or resolve the choice. More specific levels take precedence: project → team → org when they cover the same concern.
 
 ## Report
 
@@ -60,7 +65,7 @@ Structure your output as:
 
 **Context**: which context(s) matched and why.
 
-**Recommended patterns**: each pattern with a one-line rationale. Note which are foundation, org override, or project override.
+**Recommended patterns**: each pattern with a one-line rationale. Note which are foundation, org override, team override, or project override.
 
 **Prerequisites**: patterns that must be in place first.
 

@@ -5,7 +5,7 @@ Terms used in Carta with specific meaning.
 ---
 
 **ADR (Architecture Decision Record)**
-A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `decisions/` (organisation level) or `projects/<name>/decisions/` (project level). They do not live in the foundations. See `adr-template-guide.md`.
+A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `org/decisions/` (organisation level), `teams/<team>/decisions/` (team level), or `projects/<project>/decisions/` (project level). They do not live in the foundations. See `adr-template-guide.md`.
 
 **Antipattern**
 A node of type `antipattern` describing a recurring architectural mistake — how to recognise it, why it happens, what goes wrong, and how to fix it. Antipatterns serve as a negative filter during traversal.
@@ -38,10 +38,10 @@ An admission criterion requiring that every node gives an agent enough informati
 The process of moving a node out of the foundations when it no longer meets admission criteria. Demotion paths vary by which criterion failed. See `CHARTER.md`.
 
 **Extension**
-A node in an organisation or project layer that doesn't exist in the foundations — org-specific or project-specific patterns, solutions, or standards. Extensions live in `extensions/` (org) or `projects/<name>/extensions/` (project) and are additive.
+A node in an organisation, team, or project layer that doesn't exist in the foundations — org-specific, team-specific, or project-specific patterns, solutions, or standards. Extensions live in `org/extensions/`, `teams/<team>/extensions/`, or `projects/<project>/extensions/` and are additive.
 
 **Foundations**
-The shared starter knowledge base that Carta ships with — patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. Lives in `foundations/`. Distinguished from organisation and project layers.
+The shared starter knowledge base that Carta ships with — patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. Lives in `foundations/`. Distinguished from organisation, team, and project layers. Foundation files have no level suffix.
 
 **Generality**
 An admission criterion requiring that a node's principle applies across organisations and stacks. Stack-specific guidance belongs in organisation or project layers. See `CHARTER.md`.
@@ -53,19 +53,22 @@ An operation that propagates the effects of a new decision or change across the 
 An operation that checks the health of the graph — detecting contradictions, orphans, stale nodes, missing pages, and other structural or semantic issues. See `operations.md`.
 
 **Node**
-Any file in Carta with valid frontmatter following the schema in `node-schema.md`. The six node types are: pattern, antipattern, standard, solution, context, adr.
+Any file in Carta with valid frontmatter following the schema in `00-meta/node-schema.md`. The six node types are: pattern, antipattern, standard, solution, context, adr.
 
 **Organisation layer**
-The organisation-level customisation of Carta, containing overrides, extensions, standards, and decisions that apply across all projects in the org. Lives at the repository root alongside `foundations/`.
+The organisation-level customisation of Carta, containing overrides, extensions, standards, and decisions that apply across all projects and teams in the org. Lives in `org/`.
 
 **Override**
-A file that replaces a foundation or higher-level node for a specific organisation or project. Overrides live in `overrides/` (org) or `projects/<name>/overrides/` (project) with the suffix `.override.md`. During traversal, the most specific override is read instead of the foundation node. Any override must be accompanied by a decision record explaining the reasoning.
+A file that replaces a foundation or higher-level node for a specific organisation, team, or project. Overrides live in `org/overrides/`, `teams/<team>/overrides/`, or `projects/<project>/overrides/`. Files outside foundations use a level suffix for Obsidian uniqueness: `.org.md`, `.<team>.md`, `.<project>.md`. During traversal, the most specific override is read instead of the foundation node. Any override must be accompanied by a decision record explaining the reasoning.
 
 **Pattern**
 A node of type `pattern` describing a reusable architectural approach — when to use it, when not to, what it trades off, and how to implement it.
 
 **Project layer**
-Project-specific customisation within an organisation. Lives in `projects/<name>/` with the same structure as the org layer (overrides, extensions, standards, decisions). The most specific level in the three-level resolution cascade.
+Project-specific customisation within an organisation. Lives in `projects/<project>/` with the same structure as the org and team layers (overrides, extensions, standards, decisions). The most specific level in the four-level resolution cascade.
+
+**Team layer**
+Team-specific customisation within an organisation. Lives in `teams/<team>/` with the same structure as the org layer (overrides, extensions, standards, decisions). Sits between the organisation and project layers in the cascade.
 
 **Promotion**
 The process of moving a node from an organisation or project layer into the foundations when it meets all five admission criteria. See `CHARTER.md`.
@@ -82,8 +85,8 @@ A node of type `solution` describing a pre-composed combination of patterns for 
 **Standard**
 A node of type `standard` describing a practice to follow. In the foundations, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in organisation or project layers.
 
-**Three-level resolution**
-Carta's layering model: foundations → organisation → project. Pattern overrides resolve most-specific-wins. Standards, decisions, and extensions accumulate across all levels. Any level can override any other level, provided the reasoning is documented.
+**Four-level resolution**
+Carta's layering model: foundations → organisation → team → project. Pattern overrides resolve most-specific-wins. Standards, decisions, and extensions accumulate across all levels. Any level can override any higher level, provided the reasoning is documented.
 
 **Traverse**
 The primary Carta operation — consulting the knowledge base to select patterns for a task. See `traversal-protocol.md` and `operations.md`.

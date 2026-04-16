@@ -195,10 +195,11 @@ Contradictions are not errors — they are navigable features of the graph. See 
 ## Filename conventions
 
 - Filenames are globally unique across the vault.
-- Filenames match the node's `id` field with a `.md` extension.
-- Type prefix is part of the filename: `pattern-circuit-breaker.md`, `context-web-application.md`, `adr-0001-postgres-over-mongodb.md`.
-- ADR filenames use a zero-padded sequence number: `adr-NNNN-slug.md`.
-- Override files in organisation or project layers use the suffix `.override.md`: `pattern-rest-api.override.md`. Any override must be accompanied by a decision record at the same level.
+- Foundation files match the node's `id` field with a `.md` extension. Foundation files have no level suffix.
+- Files outside foundations use a level suffix for Obsidian uniqueness: `.org.md` for organisation-level files, `.<team>.md` for team-level files (e.g. `.platform.md`), `.<project>.md` for project-level files (e.g. `.payments-api.md`). This applies to all files outside foundations, not just overrides.
+- Type prefix is part of the filename: `pattern-circuit-breaker.md` (foundation), `pattern-rest-api.org.md` (org override), `pattern-rest-api.platform.md` (team override).
+- ADR filenames use a zero-padded sequence number: `adr-NNNN-slug.md` (foundation-level standards only). At other levels, include the level suffix: `adr-0001-postgres-over-mongodb.org.md`.
+- Any override must be accompanied by a decision record at the same level.
 
 ---
 

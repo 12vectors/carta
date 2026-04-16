@@ -1,8 +1,8 @@
 # ADR Template
 
-Use this template when recording an Architecture Decision Record in `decisions/` (organisation level) or `projects/<name>/decisions/` (project level).
+Use this template when recording an Architecture Decision Record in `org/decisions/` (organisation level), `teams/<team>/decisions/` (team level), or `projects/<project>/decisions/` (project level).
 
-**Filename:** `adr-NNNN-slug.md` where NNNN is the next available zero-padded sequence number and slug is a short kebab-case description of the decision.
+**Filename:** `adr-NNNN-slug.<level>.md` where NNNN is the next available zero-padded sequence number, slug is a short kebab-case description of the decision, and `<level>` is the level suffix (`.org.md`, `.<team>.md`, or `.<project>.md`).
 
 ---
 
