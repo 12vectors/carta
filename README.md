@@ -81,15 +81,15 @@ carta/                                 # Repository root = Obsidian vault
 │   │
 │   ├── 30-solutions/                  # Composed patterns for common problems
 │   ├── 40-standards/                  # Meta-standards and templates only
-│   ├── 50-antipatterns/               # What not to do, and why
-│   │
-│   └── templates/                     # Node scaffolding templates
-│       ├── tpl-pattern.md
-│       ├── tpl-antipattern.md
-│       ├── tpl-standard.md
-│       ├── tpl-solution.md
-│       ├── tpl-context.md
-│       └── tpl-adr.md
+│   └── 50-antipatterns/               # What not to do, and why
+│
+├── templates/                         # Node scaffolding templates (used at all levels)
+│   ├── tpl-pattern.md
+│   ├── tpl-antipattern.md
+│   ├── tpl-standard.md
+│   ├── tpl-solution.md
+│   ├── tpl-context.md
+│   └── tpl-adr.md
 │
 ├── overrides/                         # Org-level overrides of foundation nodes
 ├── extensions/                        # Org-specific patterns, contexts, etc.
@@ -284,7 +284,7 @@ See `CHARTER.md` for the full admission criteria with tests, the change process,
 Contributions welcome. Before opening a PR:
 
 1. Read `foundations/00-meta/node-schema.md` and make sure your frontmatter validates.
-2. Use the templates in `foundations/templates/` to scaffold new nodes.
+2. Use the templates in `templates/` to scaffold new nodes.
 3. Run `python tools/validate.py` locally to catch structural issues before review.
 
 See `CHARTER.md` for what the foundations accept and `CONTRIBUTING.md` for the full process.
@@ -302,7 +302,7 @@ See `CHARTER.md` for what the foundations accept and `CONTRIBUTING.md` for the f
 | Linter (`tools/lint.py`) | Planned |
 | Index builder (`tools/build-index.py`) | Planned |
 | Obsidian setup guide | Done |
-| Node templates (`foundations/templates/`) | Done |
+| Node templates (`templates/`) | Done |
 | Canvas files for solutions | Planned |
 | Spec Kit integration example | Planned |
 

@@ -23,7 +23,7 @@ Go to **Settings → Community plugins → Browse** and install:
 1. **Dataview** — powers the live index queries in `INDEX.md`. After installing, enable it. Default settings work fine.
 2. **Templater** — scaffolds new nodes with valid frontmatter. After installing:
    - Go to **Settings → Templater → Template folder location**.
-   - Set it to `foundations/templates`.
+   - Set it to `templates`.
    - Enable **Trigger Templater on new file creation** if you want templates applied automatically.
 
 ## Configure graph view colours
@@ -94,7 +94,7 @@ To create a new node:
 4. Fill in the frontmatter fields and body sections.
 5. Rename the file to match the `id` field (e.g. `pattern-circuit-breaker.md`).
 
-Templates are in `foundations/templates/`. They match the schema defined in `foundations/00-meta/node-schema.md`.
+Templates are in `templates/`. They match the schema defined in `foundations/00-meta/node-schema.md`.
 
 ## What's in `.obsidian/`
 
