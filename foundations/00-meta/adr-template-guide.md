@@ -1,6 +1,6 @@
 # ADR Template
 
-Use this template when recording an Architecture Decision Record in `90-decisions/` (core) or `decisions/` (overlay).
+Use this template when recording an Architecture Decision Record in `decisions/` (organisation level) or `projects/<name>/decisions/` (project level).
 
 **Filename:** `adr-NNNN-slug.md` where NNNN is the next available zero-padded sequence number and slug is a short kebab-case description of the decision.
 

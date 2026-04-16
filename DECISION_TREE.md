@@ -1,6 +1,6 @@
 # Decision Tree
 
-Top-level routing for agents performing a Carta traversal. This document maps a task to one or more contexts in `10-contexts/`, which in turn link to recommended patterns.
+Top-level routing for agents performing a Carta traversal. This document maps a task to one or more contexts in `foundations/10-contexts/`, which in turn link to recommended patterns.
 
 ---
 
@@ -10,7 +10,7 @@ Top-level routing for agents performing a Carta traversal. This document maps a 
 2. Work through the **signal table** below. For each context, check whether the task exhibits the listed signals. A context applies if **any** of its signals match.
 3. Most tasks match one primary context and zero or more secondary contexts. Identify all that apply — don't stop at the first match.
 4. If no context matches, see **Unmatched tasks** at the bottom.
-5. Proceed to the matched context node(s) in `10-contexts/` and follow their `recommended_patterns` links.
+5. Proceed to the matched context node(s) in `foundations/10-contexts/` and follow their `recommended_patterns` links.
 
 Contexts are not mutually exclusive. A conversational AI product is both `context-agentic-system` and `context-web-application`. A real-time analytics dashboard is both `context-data-pipeline` and `context-web-application`. Apply all relevant contexts; the pattern intersection is where the useful guidance lives.
 
@@ -69,4 +69,4 @@ If no context in the signal table matches the task:
 
 2. **Check whether a context is missing.** If the task describes a system type not covered by any existing context (e.g., embedded systems, desktop applications, infrastructure-as-code), note the gap. This is a signal that a new context node should be authored. Report the gap and proceed with whatever partial matches exist.
 
-3. **Proceed pattern-by-pattern.** If no context matches but the task is clearly architectural, skip the context layer and go directly to `20-patterns/`. Search by category (communication, data, resilience, scaling, security, agentic, observability) rather than by context. This is less guided but still useful.
+3. **Proceed pattern-by-pattern.** If no context matches but the task is clearly architectural, skip the context layer and go directly to `foundations/20-patterns/`. Search by category (communication, data, resilience, scaling, security, agentic, observability) rather than by context. This is less guided but still useful.

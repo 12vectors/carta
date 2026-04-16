@@ -1,18 +1,40 @@
 # Charter
 
-How the Carta generic core is governed. Organisation overlays are self-governed; this document applies only to `carta/` itself.
+How Carta's foundations are governed. Organisation and project layers are self-governed; this document applies only to `foundations/` itself.
 
 ---
 
 ## Scope
 
-This charter governs the **generic core** — the reusable patterns, standards, antipatterns, contexts, and solutions that ship as the shared knowledge base. It does not govern organisation overlays, which are owned by their respective teams and may adopt whatever process they see fit.
+This charter governs the **foundations** — the reusable patterns, standards, antipatterns, contexts, and solutions that ship as the starter knowledge base. It does not govern organisation or project layers, which are owned by their respective teams and may adopt whatever process they see fit.
 
-The generic core is the part of Carta that claims to be true across organisations and stacks. That claim demands a higher bar for admission and a clear process for change.
+The foundations are the part of Carta that claims to be true across organisations and stacks. That claim demands a higher bar for admission and a clear process for change.
+
+## Three-level model
+
+Carta operates across three levels, each more specific than the last:
+
+1. **Foundations** (`foundations/`) — the shared, generic knowledge base. Patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. This is what Carta ships out of the box.
+
+2. **Organisation** (root-level `overrides/`, `extensions/`, `standards/`, `decisions/`) — an organisation's customisations. Overrides to foundation patterns, org-specific patterns, concrete standards, and recorded decisions.
+
+3. **Project** (`projects/<name>/`) — project-specific customisations within an organisation. Same structure as the org layer but scoped to a single project.
+
+Each level can override the one above it. The constraint is not hierarchy but **transparency**: any override must be accompanied by a decision record explaining why. The knowledge base is most useful when you can see not just what was decided, but why — including when a project chose to relax an org standard to ship.
+
+### Override resolution
+
+When looking up a node during traversal:
+
+1. Check `projects/<project>/overrides/<node-id>.override.md`
+2. If not found, check `overrides/<node-id>.override.md` (org level)
+3. If not found, use `foundations/<node-id>` (foundation level)
+
+Most specific wins. Standards, decisions, and antipatterns are additive — all levels accumulate. But any level can relax or override any other level, provided the reasoning is documented in a decision record at the appropriate level.
 
 ## Roles
 
-**Maintainers** steward the core. They review contributions, enforce admission criteria, resolve disputes, and decide what enters or leaves the knowledge base. Maintainers are listed in `MAINTAINERS.md`.
+**Maintainers** steward the foundations. They review contributions, enforce admission criteria, resolve disputes, and decide what enters or leaves the foundations. Maintainers are listed in `MAINTAINERS.md`.
 
 **Contributors** propose changes — new nodes, edits to existing nodes, new ADRs. Anyone can contribute. Contributions are reviewed against the admission criteria below.
 
@@ -27,7 +49,7 @@ The generic core is the part of Carta that claims to be true across organisation
 Agents may **not**:
 
 - Merge their own proposals. Every agent-proposed change requires human review and approval.
-- Add new patterns, standards, or antipatterns to the core. These require human authorship.
+- Add new patterns, standards, or antipatterns to the foundations. These require human authorship.
 - Remove nodes. Deprecation and removal are human decisions.
 - Resolve contradictions. Agents flag contradictions; humans resolve them via ADR.
 
@@ -35,11 +57,11 @@ The boundary is: agents handle structure and bookkeeping; humans handle judgemen
 
 ## Admission criteria
 
-The Carta core is a **minimal, high-trust reference**. Few patterns enter; those that do are durable, well-grounded, and reusable across organisations. Most working knowledge lives in organisation overlays — that's by design. The core's value is its quality, not its size.
+The Carta foundations are a **minimal, high-trust reference**. Few patterns enter; those that do are durable, well-grounded, and reusable across organisations. Most working knowledge lives in organisation and project layers — that's by design. The foundations' value is its quality, not its size.
 
 Five criteria determine what enters. They divide into two groups: **form** criteria, about how a node is written, and **fit** criteria, about how a node relates to the world and to the existing graph. Every node must satisfy all five.
 
-A separate section below addresses standards, which sit in the core only as templates and meta-guidance, not as opinionated content.
+A separate section below addresses standards, which sit in the foundations only as templates and meta-guidance, not as opinionated content.
 
 ### Form criteria
 
@@ -59,7 +81,7 @@ Every pattern must cite at least one source in its `sources` field. Sources must
 
 The source doesn't need to be academic; it needs to be checkable by someone outside the contributor's immediate context. Provenance protects against opinion masquerading as established practice.
 
-**Test:** if someone asked "says who?", could you point them somewhere a stranger could verify? If not, the node isn't ready for the core. It may still be valid — capture it in an overlay and promote it when evidence accumulates.
+**Test:** if someone asked "says who?", could you point them somewhere a stranger could verify? If not, the node isn't ready for the foundations. It may still be valid — capture it in an organisation or project layer and promote it when evidence accumulates.
 
 ### Fit criteria
 
@@ -67,13 +89,13 @@ These criteria assess the node in relation to its context — the broader landsc
 
 #### 3. Generality
 
-A node belongs in the core only if it generalises across organisations and technology stacks. Stack-specific guidance (a particular cloud provider, language, framework, or vendor) belongs in overlays.
+A node belongs in the foundations only if it generalises across organisations and technology stacks. Stack-specific guidance (a particular cloud provider, language, framework, or vendor) belongs in organisation or project layers.
 
-The relevant test is whether the **principle** generalises, not whether every instantiation is universal. "Use a secrets manager rather than environment variables" generalises across stacks even though every implementation will be AWS Secrets Manager, HashiCorp Vault, or similar. The pattern is stack-general; the implementation is stack-specific. The pattern belongs in the core; implementation guidance belongs in overlays.
+The relevant test is whether the **principle** generalises, not whether every instantiation is universal. "Use a secrets manager rather than environment variables" generalises across stacks even though every implementation will be AWS Secrets Manager, HashiCorp Vault, or similar. The pattern is stack-general; the implementation is stack-specific. The pattern belongs in the foundations; implementation guidance belongs in organisation layers.
 
-Patterns may be domain-specific without being stack-specific. Event sourcing applies to a subset of systems but generalises across stacks within that subset; it belongs in the core, scoped to the relevant `applies_to` contexts.
+Patterns may be domain-specific without being stack-specific. Event sourcing applies to a subset of systems but generalises across stacks within that subset; it belongs in the foundations, scoped to the relevant `applies_to` contexts.
 
-**Test:** could a reasonable team building any system in this category (web application, data pipeline, agentic system) apply this pattern, regardless of their stack choices? If applicability requires committing to a specific vendor, framework, or language, it belongs in an overlay.
+**Test:** could a reasonable team building any system in this category (web application, data pipeline, agentic system) apply this pattern, regardless of their stack choices? If applicability requires committing to a specific vendor, framework, or language, it belongs in an organisation or project layer.
 
 #### 4. Coherence
 
@@ -96,30 +118,39 @@ Currency is reassessed periodically by the lint operation. Nodes that fall out o
 
 **Test:** does this pattern reflect what a thoughtful practitioner would recommend today? If newer sources contradict the cited evidence, or if the pattern's underlying assumptions no longer hold, the node needs revision before admission.
 
-### Standards in the core
+### Standards in the foundations
 
-The `40-standards/` folder in the core contains **meta-standards and templates only** — guidance on how teams should write standards, with templates and examples. It does not contain opinionated standards that prescribe specific practices.
+The `foundations/40-standards/` folder contains **meta-standards and templates only** — guidance on how teams should write standards, with templates and examples. It does not contain opinionated standards that prescribe specific practices.
 
-This is because most concrete standards (API design conventions, naming rules, testing requirements) are organisational choices rather than universal truths. They fail Generality almost by definition. A standard like "all APIs use OpenAPI specs" is a defensible org choice but not a universal architectural truth, and its presence in the core would impose preferences inappropriately.
+This is because most concrete standards (API design conventions, naming rules, testing requirements) are organisational choices rather than universal truths. They fail Generality almost by definition. A standard like "all APIs use OpenAPI specs" is a defensible org choice but not a universal architectural truth, and its presence in the foundations would impose preferences inappropriately.
 
-What the core's `40-standards/` does contain:
+What the foundations' `40-standards/` does contain:
 
 - **Templates** — the structural form a standard should take (frontmatter schema, required sections, levels of enforceability).
 - **Meta-standards** — guidance on how to write standards well (e.g. "every standard must specify what failure to comply looks like and what the remediation is").
-- **Cross-cutting concerns** — practices so universally agreed that they meet all five admission criteria, e.g. "secrets must not be committed to version control." These are rare. When in doubt, the standard belongs in an overlay.
+- **Cross-cutting concerns** — practices so universally agreed that they meet all five admission criteria, e.g. "secrets must not be committed to version control." These are rare. When in doubt, the standard belongs in an organisation layer.
 
-Concrete, opinionated standards live in organisation overlays under `standards/`. The traversal skill reads both core meta-standards (for how to interpret a standard) and overlay standards (for what to actually do).
+Concrete, opinionated standards live in `standards/` at the organisation level or `projects/<name>/standards/` at the project level. The traversal reads foundation meta-standards (for how to interpret a standard) and org/project standards (for what to actually do).
+
+### Decisions
+
+Decision records (ADRs) do not live in the foundations. ADRs record choices made in a specific context — they are inherently organisational or project-specific. The foundations haven't made any choices; they describe patterns and trade-offs for others to choose from.
+
+ADRs live in:
+
+- `decisions/` — organisation-wide decisions
+- `projects/<name>/decisions/` — project-specific decisions
 
 ### Promotion and demotion
 
-The core is not static. Nodes move in and out as evidence accumulates and understanding shifts.
+The foundations are not static. Nodes move in and out as evidence accumulates and understanding shifts.
 
-**Promotion.** A node in an organisation overlay may be promoted to the core when it meets all five admission criteria. Promotion happens by PR to the core repository. Evidence of use across multiple organisations strengthens the case but is not strictly required — a single overlay's experience is enough if the pattern itself generalises.
+**Promotion.** A node in an organisation or project layer may be promoted to the foundations when it meets all five admission criteria. Promotion happens by PR to the foundations. Evidence of use across multiple organisations strengthens the case but is not strictly required — a single organisation's experience is enough if the pattern itself generalises.
 
-**Demotion.** A node in the core that no longer meets admission criteria is demoted, not silently removed. Demotion paths:
+**Demotion.** A node in the foundations that no longer meets admission criteria is demoted, not silently removed. Demotion paths:
 
-- **Failing Currency** — the node is marked `maturity: deprecated` and remains in the core for one minor version, with a note pointing to the superseding pattern (if any). It is then moved to an `archive/` folder, retained for historical reference but excluded from traversal.
-- **Failing Generality** (a pattern previously thought general turns out to be stack-specific) — the node is moved to a reference overlay maintained alongside the core, so existing organisation overlays that depend on it continue to resolve.
+- **Failing Currency** — the node is marked `maturity: deprecated` and remains in the foundations for one minor version, with a note pointing to the superseding pattern (if any). It is then moved to an `archive/` folder, retained for historical reference but excluded from traversal.
+- **Failing Generality** (a pattern previously thought general turns out to be stack-specific) — the node is moved to an `archive/` folder alongside the foundations, so existing organisation setups that reference it continue to resolve.
 - **Failing Coherence** (a node duplicates or fragments existing guidance) — the node is merged into the more authoritative existing node, with a redirect from the old ID.
 - **Failing Provenance or Decidability** (rare for admitted nodes; usually surfaces during lint) — the node is held for revision; if it cannot be repaired within a release cycle, it is demoted as if failing Currency.
 
@@ -135,35 +166,41 @@ For PR reviewers, the criteria reduce to seven questions. A "no" to any of them 
 4. Does the principle generalise across stacks within its applicable contexts? *(Generality)*
 5. Does the node strengthen the graph rather than fragment it? *(Coherence)*
 6. Does it reflect current understanding, with sources younger than five years (or older sources explicitly justified)? *(Currency)*
-7. If this is a standard, does it belong in the core or an overlay? *(Standards clause)*
+7. If this is a standard, does it belong in the foundations or an organisation layer? *(Standards clause)*
 
-A node that passes all seven enters the core. A node that fails one or two can usually be revised. A node that fails three or more probably belongs in an overlay.
+A node that passes all seven enters the foundations. A node that fails one or two can usually be revised. A node that fails three or more probably belongs in an organisation or project layer.
 
 ## Change process
 
 ### Adding a new node
 
-1. **Author the node** using the schema in `00-meta/node-schema.md` and the relevant template. Ensure all three admission criteria are met.
-2. **Open a PR** with the new node. The PR description must state why this node belongs in the generic core (generality), what decision it enables (decidability), and what evidence supports it (provenance).
+1. **Author the node** using the schema in `foundations/00-meta/node-schema.md` and the relevant template. Ensure all five admission criteria are met.
+2. **Open a PR** with the new node. The PR description must state why this node belongs in the foundations (generality), what decision it enables (decidability), and what evidence supports it (provenance).
 3. **Review**. A maintainer reviews against the admission criteria. Common reasons for rejection: too stack-specific, "When NOT to use" section is missing or empty, no sources cited.
-4. **Merge**. On approval, the node enters the core. An agent may then propose follow-up PRs to update related nodes' frontmatter links (ingest operation).
+4. **Merge**. On approval, the node enters the foundations. An agent may then propose follow-up PRs to update related nodes' frontmatter links (ingest operation).
 
 ### Editing an existing node
 
 - **Minor edits** (typos, link fixes, clarifications that don't change meaning) can be merged by any maintainer without ceremony.
-- **Substantive edits** (changing when-to-use guidance, adding or removing trade-offs, revising the solution sketch) require a PR with rationale. If the edit changes the node's recommendations, it should be accompanied by an ADR in `90-decisions/` explaining why.
+- **Substantive edits** (changing when-to-use guidance, adding or removing trade-offs, revising the solution sketch) require a PR with rationale. If the edit changes the node's recommendations, it should be accompanied by an ADR in `decisions/` explaining why.
 - **Maturity changes** (experimental → stable, stable → deprecated) require a PR with evidence. Promotion to stable requires demonstrated use across multiple contexts. Deprecation requires an explanation of what supersedes the pattern and why.
 
 ### Recording a decision (ADR)
 
-ADRs in `90-decisions/` record non-trivial choices that affect the core. An ADR is required when:
+ADRs record non-trivial choices that affect the knowledge base. An ADR is required when:
 
 - A new node contradicts or constrains an existing one.
 - A pattern is deprecated in favour of an alternative.
 - A substantive edit changes the recommendations of an existing node.
 - A dispute between contributors is resolved.
+- A project or organisation overrides a higher-level node.
 
-ADRs follow the template in `00-meta/adr-template-guide.md`. Once merged, an agent propagates the ADR's effects across the graph — updating `contradicted_by` fields, adjusting maturity statuses, adding notes to affected nodes. These propagation changes are proposed as a separate PR (ingest operation) and reviewed before merge.
+ADRs follow the template in `foundations/00-meta/adr-template-guide.md`. Once merged, an agent propagates the ADR's effects across the graph — updating `contradicted_by` fields, adjusting maturity statuses, adding notes to affected nodes. These propagation changes are proposed as a separate PR (ingest operation) and reviewed before merge.
+
+ADRs live at the level where the decision was made:
+
+- `decisions/` for organisation-wide decisions
+- `projects/<name>/decisions/` for project-specific decisions
 
 ### Removing a node
 
@@ -183,23 +220,30 @@ Unresolved contradictions are valid — some trade-offs are genuinely context-de
 
 Agents flag potential contradictions during lint. Humans write the ADR.
 
-## Overlays and the core
+## Layers and the foundations
 
-The boundary between core and overlay is enforced by the generality criterion. When in doubt:
+The boundary between foundations and organisation/project layers is enforced by the generality criterion. When in doubt:
 
-- If the guidance names a specific technology, it belongs in an overlay.
-- If the guidance describes a pattern that could be implemented in multiple stacks, it belongs in the core.
+- If the guidance names a specific technology, it belongs in an organisation or project layer.
+- If the guidance describes a pattern that could be implemented in multiple stacks, it belongs in the foundations.
 
-Overlay nodes may be promoted to the core — see **Admission criteria > Promotion and demotion**.
+Nodes may be promoted from any layer to the foundations — see **Admission criteria > Promotion and demotion**.
 
-Overlays may:
+Organisation layers may:
 
-- Override any core node via `overrides/<node-id>.override.md`.
-- Extend the core with org-specific nodes in `extensions/`.
+- Override any foundation node via `overrides/<node-id>.override.md`.
+- Extend the foundations with org-specific nodes in `extensions/`.
 - Record org-specific ADRs in `decisions/`.
-- Adopt stricter standards than the core in `standards/`.
+- Define concrete standards in `standards/`.
 
-Overlays may not weaken core standards. An overlay can say "we also require X on top of the core standard"; it cannot say "we ignore core standard Y." If a core standard doesn't fit, the right response is an ADR proposing to narrow the core standard's scope, not a silent override.
+Project layers may:
+
+- Override any foundation or org node via `projects/<name>/overrides/<node-id>.override.md`.
+- Extend with project-specific nodes in `projects/<name>/extensions/`.
+- Record project-specific ADRs in `projects/<name>/decisions/`.
+- Define project-specific standards in `projects/<name>/standards/`.
+
+Any layer can override any other layer. The constraint is documentation: overrides must be accompanied by a decision record explaining the reasoning. This applies whether the override tightens or relaxes the higher-level guidance. The goal is transparency, not rigidity — a project that needs to relax a standard to ship can do so, as long as the reasoning is visible.
 
 ## Versioning
 

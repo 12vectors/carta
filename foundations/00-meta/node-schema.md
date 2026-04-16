@@ -28,7 +28,7 @@ These fields apply to every node type.
 
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
-| `category` | yes | string | The subdirectory under `20-patterns/`: `communication`, `data`, `resilience`, `scaling`, `security`, `agentic`, `observability`. |
+| `category` | yes | string | The subdirectory under `foundations/20-patterns/`: `communication`, `data`, `resilience`, `scaling`, `security`, `agentic`, `observability`. |
 | `applies_to` | yes | list[wikilink] | Contexts where this pattern is relevant. At least one required. |
 | `prerequisites` | no | list[wikilink] | Patterns that must be in place before this one can be applied. |
 | `conflicts_with` | no | list[wikilink] | Patterns that cannot coexist with this one in the same system. |
@@ -198,7 +198,7 @@ Contradictions are not errors — they are navigable features of the graph. See 
 - Filenames match the node's `id` field with a `.md` extension.
 - Type prefix is part of the filename: `pattern-circuit-breaker.md`, `context-web-application.md`, `adr-0001-postgres-over-mongodb.md`.
 - ADR filenames use a zero-padded sequence number: `adr-NNNN-slug.md`.
-- Override files in organisation overlays use the suffix `.override.md`: `pattern-rest-api.override.md`.
+- Override files in organisation or project layers use the suffix `.override.md`: `pattern-rest-api.override.md`. Any override must be accompanied by a decision record at the same level.
 
 ---
 

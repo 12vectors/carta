@@ -5,7 +5,7 @@ Terms used in Carta with specific meaning.
 ---
 
 **ADR (Architecture Decision Record)**
-A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `90-decisions/` (core) or `decisions/` (overlay). See `adr-template-guide.md`.
+A node of type `adr` that records a non-trivial architectural decision — what was decided, why, what alternatives were considered, and what the consequences are. ADRs live in `decisions/` (organisation level) or `projects/<name>/decisions/` (project level). They do not live in the foundations. See `adr-template-guide.md`.
 
 **Antipattern**
 A node of type `antipattern` describing a recurring architectural mistake — how to recognise it, why it happens, what goes wrong, and how to fix it. Antipatterns serve as a negative filter during traversal.
@@ -25,9 +25,6 @@ A node of type `context` describing a category of system (e.g. web application, 
 **Contradiction**
 A relationship between two nodes whose claims conflict. Contradictions are explicit and bidirectional — both nodes link to each other via `contradicted_by`. Contradictions are not errors; they are navigable features of the graph.
 
-**Core**
-The generic, shared Carta knowledge base containing patterns, standards, antipatterns, contexts, and solutions that apply across organisations and stacks. Distinguished from organisation overlays.
-
 **Currency**
 An admission criterion requiring that nodes reflect current understanding. Sources older than five years require explicit justification. See `CHARTER.md`.
 
@@ -38,13 +35,16 @@ An admission criterion requiring that every node gives an agent enough informati
 `DECISION_TREE.md` — the top-level routing document that maps tasks to contexts via a signal table.
 
 **Demotion**
-The process of moving a node out of the core when it no longer meets admission criteria. Demotion paths vary by which criterion failed. See `CHARTER.md`.
+The process of moving a node out of the foundations when it no longer meets admission criteria. Demotion paths vary by which criterion failed. See `CHARTER.md`.
 
 **Extension**
-A node in an organisation overlay that doesn't exist in the core — org-specific patterns, solutions, or standards. Extensions live in `extensions/` and are additive.
+A node in an organisation or project layer that doesn't exist in the foundations — org-specific or project-specific patterns, solutions, or standards. Extensions live in `extensions/` (org) or `projects/<name>/extensions/` (project) and are additive.
+
+**Foundations**
+The shared starter knowledge base that Carta ships with — patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. Lives in `foundations/`. Distinguished from organisation and project layers.
 
 **Generality**
-An admission criterion requiring that a node's principle applies across organisations and stacks. Stack-specific guidance belongs in overlays. See `CHARTER.md`.
+An admission criterion requiring that a node's principle applies across organisations and stacks. Stack-specific guidance belongs in organisation or project layers. See `CHARTER.md`.
 
 **Ingest**
 An operation that propagates the effects of a new decision or change across the graph — updating frontmatter links, maturity statuses, and affected nodes. See `operations.md`.
@@ -55,17 +55,20 @@ An operation that checks the health of the graph — detecting contradictions, o
 **Node**
 Any file in Carta with valid frontmatter following the schema in `node-schema.md`. The six node types are: pattern, antipattern, standard, solution, context, adr.
 
-**Overlay**
-An organisation-specific extension of Carta containing overrides, extensions, stack choices, standards, and ADRs. Overlays include the generic core as a Git submodule and add org-specific knowledge on top.
+**Organisation layer**
+The organisation-level customisation of Carta, containing overrides, extensions, standards, and decisions that apply across all projects in the org. Lives at the repository root alongside `foundations/`.
 
 **Override**
-A file in an organisation overlay that replaces a core node for that organisation. Overrides live in `overrides/` with the suffix `.override.md`. During traversal, the override is read instead of the core node.
+A file that replaces a foundation or higher-level node for a specific organisation or project. Overrides live in `overrides/` (org) or `projects/<name>/overrides/` (project) with the suffix `.override.md`. During traversal, the most specific override is read instead of the foundation node. Any override must be accompanied by a decision record explaining the reasoning.
 
 **Pattern**
 A node of type `pattern` describing a reusable architectural approach — when to use it, when not to, what it trades off, and how to implement it.
 
+**Project layer**
+Project-specific customisation within an organisation. Lives in `projects/<name>/` with the same structure as the org layer (overrides, extensions, standards, decisions). The most specific level in the three-level resolution cascade.
+
 **Promotion**
-The process of moving a node from an overlay into the core when it meets all five admission criteria. See `CHARTER.md`.
+The process of moving a node from an organisation or project layer into the foundations when it meets all five admission criteria. See `CHARTER.md`.
 
 **Provenance**
 An admission criterion requiring that every pattern cite at least one verifiable source. See `CHARTER.md`.
@@ -77,7 +80,10 @@ An observable property of a task or system used to match it to a context. Signal
 A node of type `solution` describing a pre-composed combination of patterns for a common problem. Solutions include integration guidance that individual pattern nodes don't.
 
 **Standard**
-A node of type `standard` describing a non-negotiable practice. In the core, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in overlays.
+A node of type `standard` describing a practice to follow. In the foundations, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in organisation or project layers.
+
+**Three-level resolution**
+Carta's layering model: foundations → organisation → project. Pattern overrides resolve most-specific-wins. Standards, decisions, and extensions accumulate across all levels. Any level can override any other level, provided the reasoning is documented.
 
 **Traverse**
 The primary Carta operation — consulting the knowledge base to select patterns for a task. See `traversal-protocol.md` and `operations.md`.

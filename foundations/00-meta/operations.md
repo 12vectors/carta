@@ -20,7 +20,7 @@ The primary operation. An agent with a task consults Carta to select patterns, c
 2. From the context, follow `recommended_patterns` links to build a candidate set.
 3. For each candidate, check fit (`When to use`, `When NOT to use`), prerequisites, conflicts, and contradictions.
 4. Cross-reference standards and antipatterns.
-5. Prefer pre-composed solutions from `30-solutions/` when available.
+5. Prefer pre-composed solutions from `foundations/30-solutions/` when available.
 6. Check ADRs for constraints.
 7. Report the recommended patterns with rationale.
 
@@ -115,18 +115,18 @@ Warnings: <count> (<summary>)
 
 ## Capture
 
-When a traversal produces a novel composition — patterns combined in a way not yet recorded in `30-solutions/` — the composition is captured as a new solution node.
+When a traversal produces a novel composition — patterns combined in a way not yet recorded in `foundations/30-solutions/` — the composition is captured as a new solution node.
 
 Capture is how Carta compounds. Without it, useful pattern combinations discovered during real work disappear into chat history.
 
-**Trigger:** a traversal that combines patterns in a way not covered by any existing solution in `30-solutions/`.
+**Trigger:** a traversal that combines patterns in a way not covered by any existing solution in `foundations/30-solutions/`.
 
 **Actor:** agent (drafts the solution node), human (reviews and merges).
 
 **Procedure:**
 
 1. During or after a traversal, the agent identifies that the recommended pattern set constitutes a novel composition.
-2. The agent checks `30-solutions/` to confirm no existing solution covers this combination.
+2. The agent checks `foundations/30-solutions/` to confirm no existing solution covers this combination.
 3. The agent drafts a new solution node following the schema in `node-schema.md`:
    - `composes` lists the patterns in implementation order.
    - `applies_to` lists the relevant contexts.
@@ -134,7 +134,7 @@ Capture is how Carta compounds. Without it, useful pattern combinations discover
 4. The agent opens a PR with the new solution node.
 5. A human reviews. The solution must meet the same admission criteria as any other node (see `CHARTER.md`).
 
-Not every traversal warrants a capture. Captures are for compositions that are **reusable** — likely to recur across tasks and teams. A one-off combination that's too specific to a single project belongs in an organisation overlay, not the core.
+Not every traversal warrants a capture. Captures are for compositions that are **reusable** — likely to recur across tasks and teams. A one-off combination that's too specific to a single project belongs in an organisation or project layer, not the foundations.
 
 **Output:** a PR proposing a new solution node.
 
@@ -150,7 +150,7 @@ Composed: <pattern> + <pattern> + ...
 
 ## Logging
 
-Every operation is logged in `LOG.md` at the root of the knowledge base (core or overlay). Entries are append-only and chronologically ordered, newest first.
+Every operation is logged in `LOG.md` at the repository root. Entries are append-only and chronologically ordered, newest first.
 
 Each entry starts with a consistent prefix:
 
@@ -163,4 +163,4 @@ This format is parseable by both agents and simple tools:
 - `grep "traverse" LOG.md` shows all traversals.
 - Agents read the log to understand recent activity and avoid redundant work.
 
-Organisation overlays maintain their own `LOG.md` tracking org-specific operations. The core's `LOG.md` tracks operations on the generic core only.
+The `LOG.md` tracks all operations across foundations, organisation, and project layers.

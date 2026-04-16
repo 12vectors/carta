@@ -11,27 +11,29 @@ Tell Claude Code where your Carta knowledge base lives. Add the `env` field to y
 ```json
 {
   "env": {
-    "CARTA_PATH": "/absolute/path/to/your-org-carta"
+    "CARTA_PATH": "/absolute/path/to/my-org-architecture"
   }
 }
 ```
 
-Point CARTA_PATH to your **organisation overlay** root (if you have one) or directly to the **generic core** repo. The command handles both layouts:
+Point CARTA_PATH to your **repository root** — the directory containing `foundations/` and your organisation/project layers. The command handles the three-level resolution automatically:
 
 ```
-# Overlay layout — CARTA_PATH points here
-your-org-carta/
-├── carta/              # generic core (submodule)
-├── overrides/
-├── extensions/
-├── stack/
-└── decisions/
-
-# Core-only layout — CARTA_PATH points here
-carta/
-├── 10-contexts/
-├── 20-patterns/
-└── ...
+my-org-architecture/            # CARTA_PATH points here
+├── foundations/                 # Starter knowledge base
+│   ├── 10-contexts/
+│   ├── 20-patterns/
+│   └── ...
+├── overrides/                  # Org-level overrides
+├── extensions/                 # Org-level extensions
+├── standards/                  # Org-level standards
+├── decisions/                  # Org-level ADRs
+└── projects/                   # Project-specific layers
+    └── payments-api/
+        ├── overrides/
+        ├── extensions/
+        ├── standards/
+        └── decisions/
 ```
 
 ## 2. Install the slash command

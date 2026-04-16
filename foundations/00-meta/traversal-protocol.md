@@ -9,8 +9,25 @@ The algorithm an agent follows when consulting Carta to make an architectural de
 Before traversing, the agent must know:
 
 1. **The task or goal.** What architectural decision needs to be made. This comes from the user, a spec, or an upstream workflow.
-2. **The Carta root.** Where the knowledge base lives on disk. In organisation overlays, this includes both the core (`carta/` subdirectory) and the overlay root.
-3. **Whether an overlay is present.** If so, override resolution applies (see step 3 below).
+2. **The Carta root.** Where the knowledge base lives on disk. This is the repository root, which contains `foundations/` and any organisation/project layers.
+3. **The project scope (if any).** Which project directory under `projects/` to include in the traversal. If no project is specified, the traversal uses only foundation and organisation layers.
+
+---
+
+## Three-level resolution
+
+Carta resolves nodes across three levels, from most specific to least specific:
+
+1. **Project** — `projects/<name>/overrides/`, `projects/<name>/extensions/`, `projects/<name>/standards/`, `projects/<name>/decisions/`
+2. **Organisation** — `overrides/`, `extensions/`, `standards/`, `decisions/`
+3. **Foundations** — `foundations/`
+
+For **pattern overrides**, the most specific level wins:
+1. Check `projects/<project>/overrides/<node-id>.override.md`
+2. If not found, check `overrides/<node-id>.override.md`
+3. If not found, use `foundations/<node-id>.md`
+
+For **standards, decisions, antipatterns, and extensions**, all levels accumulate. Any level can override or relax guidance from a higher level, provided the reasoning is documented in a decision record at the appropriate level.
 
 ---
 
@@ -18,26 +35,29 @@ Before traversing, the agent must know:
 
 ### Step 1 — Identify contexts
 
-Read `DECISION_TREE.md`. Match the task against the signal table to identify one or more relevant contexts from `10-contexts/`.
+Read `DECISION_TREE.md`. Match the task against the signal table to identify one or more relevant contexts from `foundations/10-contexts/`.
 
 - Multiple contexts may apply. Include all that match.
 - If no context matches, follow the fallback procedure in `DECISION_TREE.md` (check if the task is architectural, note missing contexts, or proceed pattern-by-pattern).
 
 ### Step 2 — Build the candidate set
 
-For each matched context, read its node file in `10-contexts/`. Collect all entries from its `recommended_patterns` field. The union across all matched contexts is the initial candidate set.
+For each matched context, read its node file in `foundations/10-contexts/`. Collect all entries from its `recommended_patterns` field. The union across all matched contexts is the initial candidate set.
 
-If proceeding without a context (fallback), build the candidate set by scanning `20-patterns/` categories relevant to the task.
+Also scan `extensions/` (org level) and `projects/<project>/extensions/` (project level, if scoped) for additional patterns whose `applies_to` includes the matched contexts. Add these to the candidate set.
+
+If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` categories relevant to the task, plus any relevant extensions.
 
 ### Step 3 — Resolve overrides
 
-If an organisation overlay is present, check for each candidate pattern whether an override exists:
+For each candidate pattern, check whether an override exists at any level:
 
-- Look for `overrides/<pattern-id>.override.md` in the overlay root.
-- If found, use the override instead of the core node for all subsequent reads.
-- If not found, use the core node.
+1. If a project is scoped, check `projects/<project>/overrides/<pattern-id>.override.md`.
+2. Check `overrides/<pattern-id>.override.md` (org level).
+3. If an override is found at any level, use the most specific one instead of the foundation node for all subsequent reads.
+4. If no override exists, use the foundation node.
 
-Override resolution applies only to patterns. Contexts, standards, and antipatterns in the core are read directly (overlays extend these via `extensions/` and `standards/`, not overrides).
+Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (organisation and project layers extend these via `extensions/`, not overrides).
 
 ### Step 4 — Evaluate each candidate
 
@@ -65,7 +85,7 @@ For each remaining candidate, read its `conflicts_with` field. If two candidates
 
 1. Present both patterns and the nature of the conflict to the user.
 2. Do not silently drop either one. The user decides which to keep.
-3. If an ADR in `90-decisions/` (or overlay `decisions/`) resolves the conflict for this context, follow the ADR's guidance.
+3. If an ADR in `decisions/` (org) or `projects/<project>/decisions/` (project) resolves the conflict for this context, follow the ADR's guidance.
 
 ### Step 7 — Check contradictions
 
@@ -79,14 +99,22 @@ Contradictions are informational, not eliminative. A pattern with an unresolved 
 
 ### Step 8 — Cross-reference standards
 
-Read all nodes in `40-standards/` (core) and `standards/` (overlay, if present). For each standard whose `applies_to` includes the matched contexts (or that has no `applies_to`, meaning it's universal):
+Collect standards from all applicable levels:
+
+1. Read `foundations/40-standards/` — meta-standards and cross-cutting concerns.
+2. Read `standards/` — org-level standards.
+3. If a project is scoped, read `projects/<project>/standards/` — project-level standards.
+
+For each standard whose `applies_to` includes the matched contexts (or that has no `applies_to`, meaning it's universal):
 
 1. Check whether any candidate pattern violates the standard.
-2. If so, flag the violation. Standards are non-negotiable — the pattern must be adapted, replaced, or the standard must be formally overridden via ADR.
+2. If so, flag the violation. Check whether a decision at the project or org level explicitly relaxes the standard for this context. If a decision exists, note the relaxation and its reasoning. If not, the violation must be resolved.
 
 ### Step 9 — Cross-reference antipatterns
 
-Read all nodes in `50-antipatterns/` whose `applies_to` includes the matched contexts. For each:
+Read all antipattern nodes in `foundations/50-antipatterns/` whose `applies_to` includes the matched contexts. Also check `extensions/` and `projects/<project>/extensions/` for additional antipatterns.
+
+For each:
 
 1. Check whether the candidate set risks triggering the antipattern.
 2. If so, flag it with the antipattern's `How to recognise` signals and `How to fix` guidance.
@@ -95,34 +123,41 @@ This is a negative filter. Antipatterns don't add to the candidate set; they fla
 
 ### Step 10 — Check for existing solutions
 
-Read `30-solutions/` and check whether any existing solution's `composes` list is a subset or match of the current candidate set.
+Read `foundations/30-solutions/` and check whether any existing solution's `composes` list is a subset or match of the current candidate set.
 
 - If an exact or near-exact match exists, prefer the pre-composed solution. It includes integration guidance (how the patterns fit together) that the individual pattern nodes don't.
 - If a partial match exists, note it — the existing solution may cover part of the task.
 
 ### Step 11 — Check ADRs
 
-Read `90-decisions/` (core) and `decisions/` (overlay). For each ADR whose `affects` list includes any candidate pattern or matched context:
+Collect decisions from all applicable levels:
+
+1. Read `decisions/` (org level).
+2. If a project is scoped, read `projects/<project>/decisions/` (project level).
+
+For each ADR whose `affects` list includes any candidate pattern or matched context:
 
 1. If the ADR is `accepted`, its constraints apply. Adjust the candidate set accordingly.
 2. If the ADR is `superseded`, follow the superseding ADR instead.
 3. If the ADR is `proposed`, note it as pending — the decision isn't final.
+
+Project-level decisions take precedence over org-level decisions when they cover the same concern.
 
 ### Step 12 — Report
 
 Present the result:
 
 - **Context(s):** which contexts matched and why.
-- **Recommended patterns:** each selected pattern with a one-line rationale. Note which are core vs override.
+- **Recommended patterns:** each selected pattern with a one-line rationale. Note which are foundation, org override, or project override.
 - **Prerequisites:** patterns that must be in place first, in dependency order.
-- **Standards:** applicable constraints.
+- **Standards:** applicable constraints, noting which level they come from. Flag any that have been relaxed by a decision, with the reasoning.
 - **Antipatterns to avoid:** relevant risks.
 - **Conflicts and contradictions:** any unresolved issues, with both sides presented.
-- **Existing solutions:** any matching or partial-match solutions from `30-solutions/`.
+- **Existing solutions:** any matching or partial-match solutions from `foundations/30-solutions/`.
 - **Gaps:** content that would have been useful but doesn't exist in Carta yet.
 - **Open questions:** decision inputs from step 4 that couldn't be answered.
 
-If the decision is non-trivial, recommend recording it as an ADR.
+If the decision is non-trivial, recommend recording it as an ADR at the appropriate level.
 
 If the pattern combination is novel (not covered by any existing solution), consider proposing a capture (see `operations.md`).
 

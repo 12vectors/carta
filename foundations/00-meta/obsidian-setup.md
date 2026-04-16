@@ -8,11 +8,13 @@ This guide walks through setting up Carta as an Obsidian vault. It takes a few m
 
 ## Open the vault
 
-Open the Carta directory (or your organisation overlay root) as an Obsidian vault:
+Open your Carta repository root as an Obsidian vault. This is the directory that contains `foundations/`, `overrides/`, `extensions/`, etc. — not the `foundations/` subdirectory itself.
 
 1. Open Obsidian.
-2. **Open folder as vault** → select the Carta root directory.
+2. **Open folder as vault** → select the repository root.
 3. When prompted to trust plugins, accept.
+
+Opening the root ensures Obsidian sees all layers — foundations, organisation, and project — in a single graph. Wikilinks resolve across all of them.
 
 ## Install community plugins
 
@@ -21,7 +23,7 @@ Go to **Settings → Community plugins → Browse** and install:
 1. **Dataview** — powers the live index queries in `INDEX.md`. After installing, enable it. Default settings work fine.
 2. **Templater** — scaffolds new nodes with valid frontmatter. After installing:
    - Go to **Settings → Templater → Template folder location**.
-   - Set it to `templates`.
+   - Set it to `foundations/templates`.
    - Enable **Trigger Templater on new file creation** if you want templates applied automatically.
 
 ## Configure graph view colours
@@ -86,18 +88,24 @@ In **Settings → Files & Links**:
 
 To create a new node:
 
-1. Create a new file in the appropriate directory (e.g. `20-patterns/resilience/`).
+1. Create a new file in the appropriate directory (e.g. `foundations/20-patterns/resilience/` for a foundation pattern, or `extensions/` for an org-specific pattern).
 2. Open the command palette (**Ctrl/Cmd + P**) → **Templater: Insert template**.
 3. Select the template for the node type you're creating (e.g. `tpl-pattern`).
 4. Fill in the frontmatter fields and body sections.
 5. Rename the file to match the `id` field (e.g. `pattern-circuit-breaker.md`).
 
-Templates are in the `templates/` directory at the repo root. They match the schema defined in `00-meta/node-schema.md`.
+Templates are in `foundations/templates/`. They match the schema defined in `foundations/00-meta/node-schema.md`.
 
 ## What's in `.obsidian/`
 
 The `.obsidian/` directory is gitignored. It contains Obsidian's local working state — your workspace layout, plugin installs, and settings. It's created automatically when you open the vault and belongs to your local environment, not the repo.
 
-## Organisation overlays
+## All layers in one vault
 
-If your overlay includes the Carta core as a submodule (`carta/`), open the **overlay root** as the vault, not the `carta/` subdirectory. This way Obsidian sees both core and overlay nodes in the same graph, and wikilinks resolve across both.
+Always open the repository root as the vault. This gives Obsidian visibility into all three levels:
+
+- `foundations/` — the shared starter knowledge base
+- `overrides/`, `extensions/`, `standards/`, `decisions/` — organisation-level customisation
+- `projects/<name>/` — project-level customisation
+
+The graph view will show connections across all layers. Wikilinks resolve across boundaries — a project decision can reference a foundation pattern, and Obsidian will render the link.
