@@ -38,13 +38,16 @@ An admission criterion requiring that every node gives an agent enough informati
 The process of moving a node out of the foundations when it no longer meets admission criteria. Demotion paths vary by which criterion failed. See `CHARTER.md`.
 
 **Extension**
-A node in an organisation, team, or project layer that doesn't exist in the foundations — org-specific, team-specific, or project-specific patterns, solutions, or standards. Extensions live in `org/extensions/`, `teams/<team>/extensions/`, or `projects/<project>/extensions/` and are additive.
+A node at the organisation, team, or project level that doesn't exist in the foundations — a new pattern, solution, or standard specific to that level. Extensions live in `org/extensions/`, `teams/<team>/extensions/`, or `projects/<project>/extensions/` and are additive.
 
 **Foundations**
-The shared starter knowledge base that Carta ships with — patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. Lives in `foundations/`. Distinguished from organisation, team, and project layers. Foundation files have no level suffix.
+The shared starter knowledge base that Carta ships with — patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. Lives in `foundations/`. Distinguished from organisation, team, and project levels. Foundation files have no level suffix.
+
+**Four-level model**
+Carta's resolution structure: foundations → organisation → team → project. Pattern overrides resolve most-specific-wins. Standards, decisions, and extensions accumulate across all levels. Any level can override any higher level, provided the reasoning is documented in a decision record.
 
 **Generality**
-An admission criterion requiring that a node's principle applies across organisations and stacks. Stack-specific guidance belongs in organisation or project layers. See `CHARTER.md`.
+An admission criterion requiring that a node's principle applies across organisations and stacks. Stack-specific guidance belongs in organisation, team, or project levels. See `CHARTER.md`.
 
 **Ingest**
 An operation that propagates the effects of a new decision or change across the graph — updating frontmatter links, maturity statuses, and affected nodes. See `operations.md`.
@@ -55,8 +58,8 @@ An operation that checks the health of the graph — detecting contradictions, o
 **Node**
 Any file in Carta with valid frontmatter following the schema in `00-meta/node-schema.md`. The six node types are: pattern, antipattern, standard, solution, context, adr.
 
-**Organisation layer**
-The organisation-level customisation of Carta, containing overrides, extensions, standards, and decisions that apply across all projects and teams in the org. Lives in `org/`.
+**Organisation level**
+The organisation-level overrides, extensions, standards, and decisions that apply across all projects and teams in the org. Lives in `org/`.
 
 **Override**
 A file that replaces a foundation or higher-level node for a specific organisation, team, or project. Overrides live in `org/overrides/`, `teams/<team>/overrides/`, or `projects/<project>/overrides/`. Files outside foundations use a level suffix for Obsidian uniqueness: `.org.md`, `.<team>.md`, `.<project>.md`. During traversal, the most specific override is read instead of the foundation node. Any override must be accompanied by a decision record explaining the reasoning.
@@ -64,14 +67,14 @@ A file that replaces a foundation or higher-level node for a specific organisati
 **Pattern**
 A node of type `pattern` describing a reusable architectural approach — when to use it, when not to, what it trades off, and how to implement it.
 
-**Project layer**
-Project-specific customisation within an organisation. Lives in `projects/<project>/` with the same structure as the org and team layers (overrides, extensions, standards, decisions). The most specific level in the four-level resolution cascade.
+**Project level**
+Project-specific overrides, extensions, standards, and decisions within an organisation. Lives in `projects/<project>/` with the same internal structure as the org and team levels. The most specific level in the four-level model.
 
-**Team layer**
-Team-specific customisation within an organisation. Lives in `teams/<team>/` with the same structure as the org layer (overrides, extensions, standards, decisions). Sits between the organisation and project layers in the cascade.
+**Team level**
+Team-specific overrides, extensions, standards, and decisions within an organisation. Lives in `teams/<team>/` with the same internal structure as the org level. Sits between the organisation and project levels.
 
 **Promotion**
-The process of moving a node from an organisation or project layer into the foundations when it meets all five admission criteria. See `CHARTER.md`.
+The process of moving a node from an organisation, team, or project level into the foundations when it meets all five admission criteria. See `CHARTER.md`.
 
 **Provenance**
 An admission criterion requiring that every pattern cite at least one verifiable source. See `CHARTER.md`.
@@ -83,10 +86,7 @@ An observable property of a task or system used to match it to a context. Signal
 A node of type `solution` describing a pre-composed combination of patterns for a common problem. Solutions include integration guidance that individual pattern nodes don't.
 
 **Standard**
-A node of type `standard` describing a practice to follow. In the foundations, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in organisation or project layers.
-
-**Four-level resolution**
-Carta's layering model: foundations → organisation → team → project. Pattern overrides resolve most-specific-wins. Standards, decisions, and extensions accumulate across all levels. Any level can override any higher level, provided the reasoning is documented.
+A node of type `standard` describing a practice to follow. In the foundations, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in organisation, team, or project levels.
 
 **Traverse**
 The primary Carta operation — consulting the knowledge base to select patterns for a task. See `traversal-protocol.md` and `operations.md`.

@@ -100,13 +100,13 @@ Templates are in `templates/`. They match the schema defined in `00-meta/node-sc
 
 The `.obsidian/` directory is gitignored. It contains Obsidian's local working state — your workspace layout, plugin installs, and settings. It's created automatically when you open the vault and belongs to your local environment, not the repo.
 
-## All layers in one vault
+## All levels in one vault
 
 Always open the repository root as the vault. This gives Obsidian visibility into all four levels:
 
 - `foundations/` — the shared starter knowledge base
-- `org/` — organisation-level customisation (overrides, extensions, standards, decisions)
-- `teams/<team>/` — team-level customisation
-- `projects/<project>/` — project-level customisation
+- `org/` — organisation-level overrides, extensions, standards, and decisions
+- `teams/<team>/` — team-level overrides, extensions, standards, and decisions
+- `projects/<project>/` — project-level overrides, extensions, standards, and decisions
 
-The graph view will show connections across all layers. Wikilinks resolve across boundaries — a project decision can reference a foundation pattern, and Obsidian will render the link.
+The graph view will show connections across all levels. Wikilinks resolve across boundaries — a project decision can reference a foundation pattern, and Obsidian will render the link.

@@ -1,12 +1,26 @@
 # Charter
 
-How Carta's foundations are governed. Organisation, team, and project layers are self-governed; this document applies only to `foundations/` itself.
+How Carta's foundations are governed. Organisation, team, and project levels are self-governed; this document applies only to `foundations/` itself.
 
 ---
 
+## On this charter
+
+This is a **governance document**, not a knowledge node. It prescribes rules for the foundations; it does not itself claim to meet the admission criteria it describes. The Provenance rule below applies to content nodes in the foundations, not to the charter.
+
+That said, the charter's rules are not invented from scratch. The lineage:
+
+- **ADR format.** Follows Michael Nygard's 2011 post, [Documenting Architecture Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) — context, decision, consequences.
+- **Admission criteria.** Echo the review norms of IETF RFCs (specificity, decidability, clear rejection reasons) and the provenance standards of academic publishing (verifiable sources, named evidence).
+- **Contradictions as first-class.** Draws on the "make implicit disagreements explicit" practice from design-by-argument traditions (Rittel, 1973; Kunz & Rittel's IBIS).
+- **Five-year currency threshold.** A convention, not a derived number. Five years is long enough that field practice can shift meaningfully; short enough that cited sources are still verifiable. Adjust as needed.
+- **Seven-question reviewer checklist.** An editorial compression of the five admission criteria, not an independent claim.
+
+The charter is itself amendable via ADR (see **Amending this charter** at the end).
+
 ## Scope
 
-This charter governs the **foundations** — the reusable patterns, standards, antipatterns, contexts, and solutions that ship as the starter knowledge base. It does not govern organisation, team, or project layers, which are owned by their respective groups and may adopt whatever process they see fit.
+This charter governs the **foundations** — the reusable patterns, standards, antipatterns, contexts, and solutions that ship as the starter knowledge base. It does not govern organisation, team, or project levels, which are owned by their respective groups and may adopt whatever process they see fit.
 
 The foundations are the part of Carta that claims to be true across organisations and stacks. That claim demands a higher bar for admission and a clear process for change.
 
@@ -16,11 +30,11 @@ Carta operates across four levels, each more specific than the last:
 
 1. **Foundations** (`foundations/`) — the shared, generic knowledge base. Patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. This is what Carta ships out of the box.
 
-2. **Organisation** (`org/`) — an organisation's customisations. Overrides to foundation patterns, org-specific patterns, concrete standards, and recorded decisions.
+2. **Organisation** (`org/`) — an organisation's overrides, extensions, standards, and decisions.
 
-3. **Team** (`teams/<team-name>/`) — team-specific customisations within an organisation. A platform team and a product team may have different architectural needs.
+3. **Team** (`teams/<team-name>/`) — team-specific overrides, extensions, standards, and decisions. A platform team and a product team may have different architectural needs.
 
-4. **Project** (`projects/<project-name>/`) — project-specific customisations. The most specific level, scoped to a single system or service.
+4. **Project** (`projects/<project-name>/`) — project-specific overrides, extensions, standards, and decisions. The most specific level, scoped to a single system or service.
 
 Each level can override the one above it. The constraint is not hierarchy but **transparency**: any override must be accompanied by a decision record explaining why. The knowledge base is most useful when you can see not just what was decided, but why — including when a project chose to relax an org standard to ship.
 
@@ -72,7 +86,7 @@ The boundary is: agents handle structure and bookkeeping; humans handle judgemen
 
 ## Admission criteria
 
-The Carta foundations are a **minimal, high-trust reference**. Few patterns enter; those that do are durable, well-grounded, and reusable across organisations. Most working knowledge lives in organisation, team, and project layers — that's by design. The foundations' value is its quality, not its size.
+The Carta foundations are a **minimal, high-trust reference**. Few patterns enter; those that do are durable, well-grounded, and reusable across organisations. Most working knowledge lives in organisation, team, and project levels — that's by design. The foundations' value is its quality, not its size.
 
 Five criteria determine what enters. They divide into two groups: **form** criteria, about how a node is written, and **fit** criteria, about how a node relates to the world and to the existing graph. Every node must satisfy all five.
 
@@ -96,7 +110,7 @@ Every pattern must cite at least one source in its `sources` field. Sources must
 
 The source doesn't need to be academic; it needs to be checkable by someone outside the contributor's immediate context. Provenance protects against opinion masquerading as established practice.
 
-**Test:** if someone asked "says who?", could you point them somewhere a stranger could verify? If not, the node isn't ready for the foundations. It may still be valid — capture it in an organisation, team, or project layer and promote it when evidence accumulates.
+**Test:** if someone asked "says who?", could you point them somewhere a stranger could verify? If not, the node isn't ready for the foundations. It may still be valid — capture it in an organisation, team, or project level and promote it when evidence accumulates.
 
 ### Fit criteria
 
@@ -104,13 +118,13 @@ These criteria assess the node in relation to its context — the broader landsc
 
 #### 3. Generality
 
-A node belongs in the foundations only if it generalises across organisations and technology stacks. Stack-specific guidance (a particular cloud provider, language, framework, or vendor) belongs in organisation, team, or project layers.
+A node belongs in the foundations only if it generalises across organisations and technology stacks. Stack-specific guidance (a particular cloud provider, language, framework, or vendor) belongs in organisation, team, or project levels.
 
-The relevant test is whether the **principle** generalises, not whether every instantiation is universal. "Use a secrets manager rather than environment variables" generalises across stacks even though every implementation will be AWS Secrets Manager, HashiCorp Vault, or similar. The pattern is stack-general; the implementation is stack-specific. The pattern belongs in the foundations; implementation guidance belongs in organisation layers.
+The relevant test is whether the **principle** generalises, not whether every instantiation is universal. "Use a secrets manager rather than environment variables" generalises across stacks even though every implementation will be AWS Secrets Manager, HashiCorp Vault, or similar. The pattern is stack-general; the implementation is stack-specific. The pattern belongs in the foundations; implementation guidance belongs in organisation levels.
 
 Patterns may be domain-specific without being stack-specific. Event sourcing applies to a subset of systems but generalises across stacks within that subset; it belongs in the foundations, scoped to the relevant `applies_to` contexts.
 
-**Test:** could a reasonable team building any system in this category (web application, data pipeline, agentic system) apply this pattern, regardless of their stack choices? If applicability requires committing to a specific vendor, framework, or language, it belongs in an organisation, team, or project layer.
+**Test:** could a reasonable team building any system in this category (web application, data pipeline, agentic system) apply this pattern, regardless of their stack choices? If applicability requires committing to a specific vendor, framework, or language, it belongs in an organisation, team, or project level.
 
 #### 4. Coherence
 
@@ -143,7 +157,7 @@ What the foundations' `40-standards/` does contain:
 
 - **Templates** — the structural form a standard should take (frontmatter schema, required sections, levels of enforceability).
 - **Meta-standards** — guidance on how to write standards well (e.g. "every standard must specify what failure to comply looks like and what the remediation is").
-- **Cross-cutting concerns** — practices so universally agreed that they meet all five admission criteria, e.g. "secrets must not be committed to version control." These are rare. When in doubt, the standard belongs in an organisation layer.
+- **Cross-cutting concerns** — practices so universally agreed that they meet all five admission criteria, e.g. "secrets must not be committed to version control." These are rare. When in doubt, the standard belongs in an organisation level.
 
 Concrete, opinionated standards live in `org/standards/`, `teams/<team>/standards/`, or `projects/<project>/standards/`. The traversal reads foundation meta-standards (for how to interpret a standard) and org/team/project standards (for what to actually do).
 
@@ -161,7 +175,7 @@ ADRs live in:
 
 The foundations are not static. Nodes move in and out as evidence accumulates and understanding shifts.
 
-**Promotion.** A node in any layer may be promoted to the foundations when it meets all five admission criteria. Promotion happens by PR to the foundations. Evidence of use across multiple organisations strengthens the case but is not strictly required — a single organisation's experience is enough if the pattern itself generalises.
+**Promotion.** A node at any level may be promoted to the foundations when it meets all five admission criteria. Promotion happens by PR to the foundations. Evidence of use across multiple organisations strengthens the case but is not strictly required — a single organisation's experience is enough if the pattern itself generalises.
 
 **Demotion.** A node in the foundations that no longer meets admission criteria is demoted, not silently removed. Demotion paths:
 
@@ -182,9 +196,9 @@ For PR reviewers, the criteria reduce to seven questions. A "no" to any of them 
 4. Does the principle generalise across stacks within its applicable contexts? *(Generality)*
 5. Does the node strengthen the graph rather than fragment it? *(Coherence)*
 6. Does it reflect current understanding, with sources younger than five years (or older sources explicitly justified)? *(Currency)*
-7. If this is a standard, does it belong in the foundations or an organisation layer? *(Standards clause)*
+7. If this is a standard, does it belong in the foundations or an organisation level? *(Standards clause)*
 
-A node that passes all seven enters the foundations. A node that fails one or two can usually be revised. A node that fails three or more probably belongs in an organisation, team, or project layer.
+A node that passes all seven enters the foundations. A node that fails one or two can usually be revised. A node that fails three or more probably belongs in an organisation, team, or project level.
 
 ## Change process
 
@@ -239,21 +253,21 @@ Agents flag potential contradictions during lint. Humans write the ADR.
 
 ## Layers and the foundations
 
-The boundary between foundations and other layers is enforced by the generality criterion. When in doubt:
+The boundary between foundations and other levels is enforced by the generality criterion. When in doubt:
 
-- If the guidance names a specific technology, it belongs in an organisation, team, or project layer.
+- If the guidance names a specific technology, it belongs in an organisation, team, or project level.
 - If the guidance describes a pattern that could be implemented in multiple stacks, it belongs in the foundations.
 
-Nodes may be promoted from any layer to the foundations — see **Admission criteria > Promotion and demotion**.
+Nodes may be promoted from any level to the foundations — see **Admission criteria > Promotion and demotion**.
 
-Each layer (org, team, project) has the same internal structure:
+Each level (org, team, project) has the same internal structure:
 
 - `overrides/` — override foundation or higher-level nodes. Files use the level suffix for uniqueness.
 - `extensions/` — new nodes that don't exist in the foundations. Files use the level suffix.
 - `standards/` — concrete standards. Files use the level suffix.
 - `decisions/` — ADRs recording choices at this level. Files use the level suffix.
 
-Any layer can override any other layer. The constraint is documentation: overrides must be accompanied by a decision record explaining the reasoning. This applies whether the override tightens or relaxes the higher-level guidance. The goal is transparency, not rigidity — a project that needs to relax a standard to ship can do so, as long as the reasoning is visible.
+Any level can override any other level. The constraint is documentation: overrides must be accompanied by a decision record explaining the reasoning. This applies whether the override tightens or relaxes the higher-level guidance. The goal is transparency, not rigidity — a project that needs to relax a standard to ship can do so, as long as the reasoning is visible.
 
 ## Versioning
 

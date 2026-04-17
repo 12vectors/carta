@@ -10,7 +10,7 @@ Before traversing, the agent must know:
 
 1. **The task or goal.** What architectural decision needs to be made. This comes from the user, a spec, or an upstream workflow.
 2. **The Carta root.** Where the knowledge base lives on disk. This is the repository root, which contains `foundations/`, `org/`, and optionally `teams/` and `projects/`.
-3. **The scope (if any).** Which team and/or project to include in the traversal. If no scope is specified, the traversal uses only foundation and organisation layers.
+3. **The scope (if any).** Which team and/or project to include in the traversal. If no scope is specified, the traversal uses only foundation and organisation levels.
 
 ---
 
@@ -61,7 +61,7 @@ For each candidate pattern, check whether an override exists. Walk from most spe
 3. Check `org/overrides/<pattern-id>.org.md`.
 4. If no override exists at any level, use the foundation node.
 
-Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (other layers extend these via `extensions/`, not overrides).
+Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (other levels extend these via `extensions/`, not overrides).
 
 ### Step 4 — Evaluate each candidate
 
