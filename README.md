@@ -66,14 +66,13 @@ cd my-org-architecture
 /carta choose a caching strategy for our product catalog API
 ```
 
-If the traversal surfaces gaps in Carta — a pattern your team uses but hasn't written down, a standard you've agreed but haven't captured — that's your cue to author. Ask an agent:
+If the traversal surfaces gaps in Carta — a pattern your team uses but hasn't written down, a standard you've agreed but haven't captured — that's your cue to author. Use the `/carta-add` command:
 
 ```
-Draft a pattern node for <X> following the schema in 00-meta/node-schema.md.
-Place it in <the appropriate directory>. Cite verifiable sources.
+/carta-add pattern for idempotency keys on payment endpoints
 ```
 
-Review, edit, commit. That's the loop.
+`/carta-add` loads the writing rules and the matching template, then drafts a terse, directive node and runs the validator and linter. Review, edit, commit. That's the loop.
 
 The fuller walkthrough, including a worked example of adding your first org-level override, is in [`00-meta/quickstart.md`](00-meta/quickstart.md).
 
@@ -99,6 +98,7 @@ Pre-1.0. APIs, schemas, and directory conventions may change. The foundations ar
 - [`CHARTER.md`](CHARTER.md) — governance of the foundations: admission criteria, contradictions, promotion.
 - [`00-meta/glossary.md`](00-meta/glossary.md) — canonical terminology. Use this when authoring.
 - [`00-meta/node-schema.md`](00-meta/node-schema.md) — the normative frontmatter contract.
+- [`00-meta/writing-rules.md`](00-meta/writing-rules.md) — voice, length, and bullet rules. Soft-enforced by `tools/lint.py`.
 
 ## License
 

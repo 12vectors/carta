@@ -25,27 +25,23 @@ sources:
 
 ## Description
 
-A system that serves HTTP requests — whether to human users via a browser, to mobile clients via an API, or to other services. Web applications are the most common system archetype and span everything from single-page apps backed by a REST API to complex multi-service platforms.
-
-The defining characteristic is the request-response cycle: a client sends a request, the system processes it, and returns a response. This shapes everything from error handling (what does the caller see?) to scaling (how many concurrent requests?) to security (who is the caller?).
+A system that serves HTTP requests — to humans via a browser, to mobile clients via an API, or to other services. The defining shape is the request-response cycle, which drives decisions on error handling, scaling, and security.
 
 ## Key concerns
 
-- **Latency.** Users and downstream services expect responses within hundreds of milliseconds. Architectural choices that add latency compound across the call chain.
-- **Availability.** Downtime is directly visible to users. Resilience patterns (circuit breakers, graceful degradation) matter more here than in batch systems.
-- **Security.** Web applications are internet-facing by default. Authentication, authorisation, input validation, and secrets management are non-negotiable.
-- **Scalability.** Traffic is often unpredictable. The architecture must handle load spikes without manual intervention.
-- **Observability.** When something goes wrong in production, structured logging and distributed tracing are how you find out what happened.
+- **Latency.** P99 budgets in hundreds of milliseconds; architectural overhead compounds across calls.
+- **Availability.** Downtime is user-visible; resilience patterns are non-optional.
+- **Security.** Internet-facing by default; authN, authZ, and input validation are baseline.
+- **Scalability.** Traffic is spiky; automatic horizontal scaling is expected.
+- **Observability.** Structured logs and tracing are how incidents get diagnosed.
 
 ## Typical architecture
 
-Most web applications follow one of these shapes:
-
-- **Monolith** — a single deployable unit handling all concerns. Simple to start, hard to scale independently. Appropriate for small teams and early-stage products.
-- **API + SPA** — a frontend single-page application backed by a REST or GraphQL API. Clean separation of concerns but introduces CORS, authentication token management, and two deployment pipelines.
-- **Microservices** — multiple independently deployable services communicating over HTTP or messaging. Enables independent scaling and team autonomy but introduces distributed systems complexity (consistency, network failures, observability).
-- **Backend for Frontend (BFF)** — a thin API layer per client type (web, mobile, internal) that aggregates calls to backend services. Reduces client complexity at the cost of an additional layer.
+- **Monolith** — single deployable; simple start, hard to scale independently.
+- **API + SPA** — frontend SPA over REST/GraphQL; clean separation, two pipelines.
+- **Microservices** — independent services; team autonomy at the cost of distributed-systems complexity.
+- **BFF** — thin per-client API; reduces client complexity, adds a layer.
 
 ## See also
 
-- [[context-event-driven-system]] — web applications with asynchronous internals often combine both contexts
+- [[context-event-driven-system]] — web apps with async internals straddle both contexts.

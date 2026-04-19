@@ -61,6 +61,52 @@ WIKILINK_RE = re.compile(r"\[\[([^\]]+)\]\]")
 
 
 # ---------------------------------------------------------------------------
+# Writing rule thresholds (see 00-meta/writing-rules.md)
+# ---------------------------------------------------------------------------
+
+# Section word caps (total words in section body, excluding heading)
+SECTION_WORD_CAPS: dict[str, int] = {
+    "## Solution sketch": 150,
+    "## Description": 150,
+    "## Key concerns": 150,
+    "## Problem": 120,
+    "## Rationale": 120,
+    "## Context": 150,
+    "## Decision": 150,
+    "## Consequences": 150,
+}
+
+# Sections where bullets are expected and capped
+BULLET_SECTION_CAPS: dict[str, dict[str, int]] = {
+    "## When to use":          {"max_bullets": 6, "max_words_per_bullet": 25},
+    "## When NOT to use":      {"max_bullets": 6, "max_words_per_bullet": 25},
+    "## Decision inputs":      {"max_bullets": 6, "max_words_per_bullet": 30},
+    "## How to recognise":     {"max_bullets": 6, "max_words_per_bullet": 25},
+    "## Why it happens":       {"max_bullets": 6, "max_words_per_bullet": 25},
+    "## Consequences":         {"max_bullets": 6, "max_words_per_bullet": 25},
+    "## How to fix":           {"max_bullets": 6, "max_words_per_bullet": 30},
+    "## Implementation checklist": {"max_bullets": 10, "max_words_per_bullet": 30},
+    "## Signals":              {"max_bullets": 8, "max_words_per_bullet": 20},
+}
+
+# Trade-offs table row cap
+TRADEOFFS_MAX_ROWS = 5
+
+# Phrases that typically indicate explanatory/tutorial prose
+EXPLANATORY_PHRASES = [
+    "in other words",
+    "this means that",
+    "for example, imagine",
+    "it's important to note",
+    "it is important to note",
+    "historically",
+    "as we can see",
+    "as mentioned earlier",
+    "to put it simply",
+]
+
+
+# ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
 
@@ -719,4 +765,189 @@ def run_graph_checks(nodes: list[Node]) -> list[Diagnostic]:
     diags.extend(check_broken_prerequisites(nodes))
     diags.extend(check_override_has_adr(nodes))
     diags.extend(check_adr_supersedes_consistency(nodes))
+    return diags
+
+
+# ---------------------------------------------------------------------------
+# Writing rule checks (soft — warnings only)
+# ---------------------------------------------------------------------------
+
+def split_body_into_sections(body: str) -> dict[str, str]:
+    """Split a node body into a dict of {heading: content} for H2 sections.
+
+    Heading keys are kept in their original form (e.g. "## When to use").
+    """
+    sections: dict[str, str] = {}
+    current_heading: Optional[str] = None
+    current_lines: list[str] = []
+
+    for line in body.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("## ") and not stripped.startswith("### "):
+            # Flush previous section
+            if current_heading is not None:
+                sections[current_heading] = "\n".join(current_lines).strip()
+            current_heading = stripped
+            current_lines = []
+        else:
+            if current_heading is not None:
+                current_lines.append(line)
+
+    if current_heading is not None:
+        sections[current_heading] = "\n".join(current_lines).strip()
+    return sections
+
+
+def _strip_code_blocks(text: str) -> str:
+    """Remove fenced code blocks from text so word counts exclude code."""
+    out: list[str] = []
+    in_fence = False
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if not in_fence:
+            out.append(line)
+    return "\n".join(out)
+
+
+def _count_words(text: str) -> int:
+    return len(_strip_code_blocks(text).split())
+
+
+def _extract_top_level_bullets(text: str) -> list[str]:
+    """Return top-level bullet items from a section (ignoring nested bullets)."""
+    bullets: list[str] = []
+    current: Optional[list[str]] = None
+    in_fence = False
+
+    for line in _strip_code_blocks(text).splitlines():
+        # A top-level bullet starts with '-' or '*' with no leading whitespace
+        # (allow up to 1 leading space for formatting tolerance).
+        raw = line.rstrip()
+        if raw.startswith("- ") or raw.startswith("* "):
+            if current is not None:
+                bullets.append(" ".join(current).strip())
+            current = [raw[2:].strip()]
+        elif raw.startswith("  ") and current is not None:
+            # Continuation of the current bullet (wrapped line or nested content).
+            current.append(raw.strip())
+        elif raw == "":
+            # Blank line — preserve current; continuation stops only on new content.
+            continue
+        else:
+            # Non-bullet content ends the current bullet.
+            if current is not None:
+                bullets.append(" ".join(current).strip())
+                current = None
+    if current is not None:
+        bullets.append(" ".join(current).strip())
+    return [b for b in bullets if b]
+
+
+def _count_tradeoffs_rows(text: str) -> int:
+    """Count data rows in the Trade-offs markdown table.
+
+    The table format is:
+        | Gain | Cost |
+        |------|------|
+        | ...  | ...  |
+    """
+    rows = 0
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            continue
+        # Skip the header row and separator row
+        if set(stripped.replace("|", "").strip()) <= set("-: "):
+            continue  # separator
+        # Heuristic: the header row contains "Gain" and "Cost"
+        lower = stripped.lower()
+        if "gain" in lower and "cost" in lower and rows == 0:
+            continue
+        rows += 1
+    return rows
+
+
+def check_writing_rules(node: Node) -> list[Diagnostic]:
+    """Soft warnings for verbosity and tutorial-style prose.
+
+    Backed by 00-meta/writing-rules.md. Warnings only — never blocking.
+    """
+    diags: list[Diagnostic] = []
+    node_type = node.frontmatter.get("type")
+    if node_type not in {"pattern", "antipattern", "standard", "solution", "context", "adr"}:
+        return diags
+
+    sections = split_body_into_sections(node.body)
+
+    # Section word caps (prose sections)
+    for heading, cap in SECTION_WORD_CAPS.items():
+        content = sections.get(heading)
+        if content is None:
+            continue
+        words = _count_words(content)
+        if words > cap:
+            diags.append(Diagnostic(
+                node.rel_path, "warning", "Writing rule: section length",
+                f"{heading} is {words} words (soft cap: {cap}). "
+                f"Consider trimming or linking to a source for depth."
+            ))
+
+    # Bullet-shaped sections
+    for heading, caps in BULLET_SECTION_CAPS.items():
+        content = sections.get(heading)
+        if content is None:
+            continue
+        bullets = _extract_top_level_bullets(content)
+        if not bullets:
+            # Section exists but has no bullets — likely prose where bullets were expected.
+            # Only warn if the section has substantive content.
+            if _count_words(content) > 40:
+                diags.append(Diagnostic(
+                    node.rel_path, "warning", "Writing rule: bullets preferred",
+                    f"{heading} appears to be prose. Prefer bullets (see writing-rules.md)."
+                ))
+            continue
+        if len(bullets) > caps["max_bullets"]:
+            diags.append(Diagnostic(
+                node.rel_path, "warning", "Writing rule: too many bullets",
+                f"{heading} has {len(bullets)} bullets (soft cap: {caps['max_bullets']}). "
+                f"Consider consolidating."
+            ))
+        over_long = [
+            (i + 1, _count_words(b))
+            for i, b in enumerate(bullets)
+            if _count_words(b) > caps["max_words_per_bullet"]
+        ]
+        if over_long:
+            example = ", ".join(f"#{i}={w}w" for i, w in over_long[:3])
+            diags.append(Diagnostic(
+                node.rel_path, "warning", "Writing rule: long bullets",
+                f"{heading} has {len(over_long)} bullet(s) over "
+                f"{caps['max_words_per_bullet']} words ({example}). "
+                f"Bullets should be directive, not prose."
+            ))
+
+    # Trade-offs row cap
+    tradeoffs = sections.get("## Trade-offs")
+    if tradeoffs:
+        rows = _count_tradeoffs_rows(tradeoffs)
+        if rows > TRADEOFFS_MAX_ROWS:
+            diags.append(Diagnostic(
+                node.rel_path, "warning", "Writing rule: trade-offs table",
+                f"## Trade-offs has {rows} rows (soft cap: {TRADEOFFS_MAX_ROWS}). "
+                f"Keep the top trade-offs; cut the rest."
+            ))
+
+    # Explanatory phrases anywhere in the body
+    body_lower = node.body.lower()
+    hits = [p for p in EXPLANATORY_PHRASES if p in body_lower]
+    if hits:
+        diags.append(Diagnostic(
+            node.rel_path, "warning", "Writing rule: explanatory phrasing",
+            f"Body contains explanatory phrase(s): {', '.join(repr(h) for h in hits)}. "
+            f"These often signal deletable content — see writing-rules.md."
+        ))
+
     return diags

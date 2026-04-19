@@ -4,6 +4,8 @@ The frontmatter contract for every node in Carta. The frontmatter **is the graph
 
 This document is normative. `tools/validate.py` enforces the rules below. Broken frontmatter fails CI.
 
+**Before authoring**, read [`writing-rules.md`](writing-rules.md) for voice, length, and bullet-structure rules. The schema here defines *what* a node contains; the writing rules define *how much* and *in what voice*.
+
 ---
 
 ## Frontmatter fields

@@ -18,6 +18,7 @@ from pathlib import Path
 from carta_checks import (
     Diagnostic,
     check_bidirectional_contradictions,
+    check_writing_rules,
     discover_content_files,
     parse_node,
     run_graph_checks,
@@ -54,6 +55,7 @@ def main() -> int:
             continue
         nodes.append(node)
         all_diags.extend(run_structural_checks(node))
+        all_diags.extend(check_writing_rules(node))
 
     # Cross-node structural checks
     all_diags.extend(check_bidirectional_contradictions(nodes))
