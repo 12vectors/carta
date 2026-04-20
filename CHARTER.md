@@ -139,7 +139,11 @@ A node must fit cleanly into the existing graph. This means:
 
 #### 5. Currency
 
-A node must reflect current understanding. Patterns that the field has moved on from are not admitted, even if they were once standard practice. Sources older than five years require an explicit note in the node confirming the pattern still holds — either evidence of continued relevance or a statement of why the older source remains authoritative.
+A node must reflect current understanding. Patterns that the field has moved on from are not admitted, even if they were once standard practice.
+
+Sources older than five years are accepted **without a justification note** when both hold: (a) the author is canonical in the domain (e.g. Fowler, Hohpe, Nygard, Evans, Kleppmann, Cockburn), and (b) the pattern is stack-agnostic and shape-level. Canonical authors writing generic patterns age well; *PoEAA* (2002) and *Enterprise Integration Patterns* (2003) still describe the field accurately. Otherwise, older sources require a brief note in the node confirming the pattern still holds — either evidence of continued relevance or a statement of why the older source remains authoritative.
+
+Patterns touching fast-moving territory (specific cloud or framework idioms, LLM agents, modern data infra) should carry a Currency note regardless of author.
 
 This criterion exists because Provenance alone is insufficient. A pattern can cite a real, verifiable 2009 source and be substantively wrong by current standards. Currency closes that gap.
 

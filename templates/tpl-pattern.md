@@ -5,8 +5,9 @@
 id: pattern-
 title: 
 type: pattern
-category:                        # communication | data | resilience | scaling | security | agentic | observability
+category:                        # style | communication | data | resilience | scaling | security | observability | agentic | refactoring | deployment | integration
 maturity: experimental
+pillars: []                      # reliability | security | cost | operational-excellence | performance
 tags: [pattern, experimental]
 applies_to:
   - "[[]]"

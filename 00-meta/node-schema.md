@@ -16,12 +16,13 @@ These fields apply to every node type.
 
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
-| `id` | yes | string | Globally unique identifier. Must match the filename without `.md`. Prefixed by node type: `pattern-`, `context-`, `solution-`, `standard-`, `antipattern-`, `adr-`. |
+| `id` | yes | string | Globally unique identifier. Must match the filename without `.md`. Prefixed by node type: `pattern-`, `context-`, `solution-`, `standard-`, `antipattern-`, `adr-`, `pillar-`, `principle-`, `dtree-`. |
 | `title` | yes | string | Human-readable name. |
-| `type` | yes | enum | One of: `pattern`, `antipattern`, `standard`, `solution`, `context`, `adr`. |
+| `type` | yes | enum | One of: `pattern`, `antipattern`, `standard`, `solution`, `context`, `adr`, `pillar`, `principle`, `decision-tree`. |
 | `maturity` | yes | enum | One of: `experimental`, `stable`, `deprecated`. |
 | `tags` | yes | list[string] | Must include the `type` value and the `maturity` value. Additional tags are encouraged for filtering. |
 | `related` | no | list[wikilink] | Links to nodes that are relevant but not prerequisite or conflicting. |
+| `pillars` | no | list[wikilink] | Well-Architected–style quality lenses this node serves. Wikilinks to `pillar` nodes in `foundations/05-pillars/` (e.g. `[[pillar-reliability]]`). Applies to `pattern`, `antipattern`, `solution`. |
 | `sources` | see below | list[string] | Evidence grounding this node. Required for `pattern`, `antipattern`, `solution`. See **Provenance rules**. |
 
 ### Type-specific fields
@@ -30,7 +31,7 @@ These fields apply to every node type.
 
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
-| `category` | yes | string | The subdirectory under `foundations/20-patterns/`: `communication`, `data`, `resilience`, `scaling`, `security`, `agentic`, `observability`. |
+| `category` | yes | string | Maps to the pattern's location under `foundations/20-patterns/`. Values: `style` (for `styles/<file>`), a tactic concern (for `tactics/<concern>/<file>`: `communication`, `data`, `resilience`, `scaling`, `security`, `agentic`, `observability`, `refactoring`, `deployment`), or `integration` (for `integration/<file>`). |
 | `applies_to` | yes | list[wikilink] | Contexts where this pattern is relevant. At least one required. |
 | `prerequisites` | no | list[wikilink] | Patterns that must be in place before this one can be applied. |
 | `conflicts_with` | no | list[wikilink] | Patterns that cannot coexist with this one in the same system. |
@@ -78,6 +79,35 @@ These fields apply to every node type.
 | `supersedes` | no | wikilink | The ADR this one replaces, if any. |
 | `superseded_by` | no | wikilink | The ADR that replaced this one, if any. |
 | `affects` | yes | list[wikilink] | Nodes whose frontmatter or guidance changed as a result of this decision. |
+
+#### pillar
+
+Pillars live in `foundations/05-pillars/`. They encode the quality lenses (Reliability, Security, Cost, Operational Excellence, Performance) every system is evaluated against.
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `realised_by` | no | list[wikilink] | Principles that realise this pillar. |
+| `tradeoffs_with` | no | list[wikilink] | Pillars that typically pull in the opposite direction. |
+
+#### principle
+
+Principles live in `foundations/15-principles/`. They are cross-cutting design heuristics — pre-pattern guidance that shapes decisions.
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `pillar` | yes | wikilink | The pillar this principle primarily realises. |
+| `related_patterns` | no | list[wikilink] | Patterns that embody this principle. |
+| `related_antipatterns` | no | list[wikilink] | Antipatterns that violate this principle. |
+
+#### decision-tree
+
+Decision trees live in `foundations/25-decision-trees/`. They are selection guides that help an agent or engineer choose between options along defined criteria.
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `decides_between` | yes | list[wikilink] | The options being selected among — typically pattern nodes. |
+| `criteria` | yes | list[string] | The axes against which the options are compared. |
+| `related_patterns` | no | list[wikilink] | Upstream patterns that this decision tree elaborates. |
 
 ---
 
@@ -160,6 +190,33 @@ The body (everything after the frontmatter) follows a type-specific structure. S
 | `## Decision` | yes | What was decided. |
 | `## Consequences` | yes | What follows from the decision — both positive and negative. |
 | `## Alternatives considered` | no | Other options and why they were rejected. |
+
+### pillar
+
+| Section | Required | Purpose |
+|---------|----------|---------|
+| `## Description` | yes | What this quality lens optimises for. |
+| `## When this dominates` | no | Conditions under which this pillar outweighs the others. |
+| `## Trade-offs` | yes | What gets sacrificed to maximise this pillar — usually references to other pillars. |
+| `## Realised by` | no | Bulleted links to principles and patterns that serve this pillar. |
+
+### principle
+
+| Section | Required | Purpose |
+|---------|----------|---------|
+| `## Statement` | yes | A short, directive sentence capturing the principle. |
+| `## Rationale` | yes | Why this principle matters and which pillar it realises. |
+| `## How to apply` | yes | What applying this principle looks like in practice. |
+| `## Related patterns` | no | Patterns that embody the principle. |
+
+### decision-tree
+
+| Section | Required | Purpose |
+|---------|----------|---------|
+| `## Problem` | yes | The choice this tree helps make. |
+| `## Criteria` | yes | Axes along which the options are compared. |
+| `## Recommendation` | yes | A table, list, or flowchart mapping criteria outcomes to options. |
+| `## Fallback` | no | What to do when criteria are ambiguous. |
 
 ---
 

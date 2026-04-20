@@ -115,4 +115,4 @@ Repeat. The knowledge base compounds. Every traversal makes it better.
 
 **"The foundations are too thin."** They are, intentionally — the foundations ship minimal by design and grow through promotion from organisation, team, and project levels. Expanding them is ongoing work; contributions welcome.
 
-**"Agent drafts are generic."** Give the agent more context. Point it at existing nodes as style references (`Use foundations/20-patterns/resilience/pattern-circuit-breaker.md as a template`). Tell it your stack.
+**"Agent drafts are generic."** Give the agent more context. Point it at existing nodes as style references (`Use foundations/20-patterns/tactics/resilience/pattern-circuit-breaker.md as a template`). Tell it your stack.

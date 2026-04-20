@@ -14,14 +14,27 @@ import yaml
 # Constants
 # ---------------------------------------------------------------------------
 
-VALID_TYPES = {"pattern", "antipattern", "standard", "solution", "context", "adr"}
+VALID_TYPES = {
+    "pattern", "antipattern", "standard", "solution", "context", "adr",
+    "pillar", "principle", "decision-tree",
+}
 VALID_MATURITIES = {"experimental", "stable", "deprecated"}
 VALID_PATTERN_CATEGORIES = {
+    # styles — system-shape patterns
+    "style",
+    # tactics — concern-scoped patterns
     "communication", "data", "resilience", "scaling",
     "security", "agentic", "observability",
+    "refactoring", "deployment",
+    # integration — messaging, routing, transformation
+    "integration",
 }
 VALID_ENFORCEABILITIES = {"automated", "review", "advisory"}
 VALID_ADR_STATUSES = {"proposed", "accepted", "superseded", "rejected"}
+VALID_PILLARS = {
+    "reliability", "security", "cost",
+    "operational-excellence", "performance",
+}
 
 CONTENT_DIRS = ["foundations", "org", "teams", "projects"]
 
@@ -31,6 +44,12 @@ WIKILINK_FIELDS = {
     "contradicted_by", "composes", "mitigated_by", "recommended_patterns",
     "recommended_standards", "common_antipatterns", "affects",
     "supersedes", "superseded_by",
+    "pillars",               # patterns/antipatterns/solutions -> pillar nodes
+    "pillar",                # principle -> its pillar
+    "realised_by",           # pillar -> principles that realise it
+    "related_patterns",      # principle / decision-tree -> pattern nodes
+    "decides_between",       # decision-tree -> the options being chosen between
+    "tradeoffs_with",        # pillar -> conflicting pillars
 }
 
 # Required body sections per type
@@ -41,6 +60,9 @@ REQUIRED_SECTIONS = {
     "solution": ["## Problem", "## Composition", "## Decision inputs", "## Trade-offs", "## Implementation sequence"],
     "context": ["## Description", "## Key concerns"],
     "adr": ["## Context", "## Decision", "## Consequences"],
+    "pillar": ["## Description", "## Trade-offs"],
+    "principle": ["## Statement", "## Rationale", "## How to apply"],
+    "decision-tree": ["## Problem", "## Criteria", "## Recommendation"],
 }
 
 # Required type-specific frontmatter fields
@@ -51,6 +73,9 @@ REQUIRED_TYPE_FIELDS = {
     "solution": ["composes", "applies_to"],
     "context": ["signals", "recommended_patterns"],
     "adr": ["status", "date", "affects"],
+    "pillar": [],
+    "principle": ["pillar"],
+    "decision-tree": ["decides_between", "criteria"],
 }
 
 # Types that require non-empty sources
@@ -386,8 +411,8 @@ def check_type_specific_fields(node: Node) -> list[Diagnostic]:
                 f"{node_type} requires field '{field_name}'"
             ))
         elif isinstance(value, list) and len(value) == 0:
-            # applies_to, composes, signals, recommended_patterns, affects must be non-empty
-            if field_name in ("applies_to", "composes", "signals", "recommended_patterns", "affects"):
+            # Required list fields must be non-empty
+            if field_name in ("applies_to", "composes", "signals", "recommended_patterns", "affects", "decides_between", "criteria"):
                 diags.append(Diagnostic(
                     node.rel_path, "error", "Type-specific field",
                     f"{node_type} requires non-empty '{field_name}'"
@@ -488,21 +513,73 @@ def check_required_body_sections(node: Node) -> list[Diagnostic]:
 
 
 def check_category_directory_match(node: Node) -> list[Diagnostic]:
-    """For foundation patterns, category should match the subdirectory."""
+    """For foundation patterns, category should match the subdirectory layout.
+
+    Expected tree:
+        foundations/20-patterns/styles/<file>              -> category: style
+        foundations/20-patterns/tactics/<concern>/<file>   -> category: <concern>
+        foundations/20-patterns/integration/<file>         -> category: integration
+    """
     if node.level != "foundation" or node.frontmatter.get("type") != "pattern":
         return []
     category = node.frontmatter.get("category")
     if not category:
         return []
-    # Path should be foundations/20-patterns/<category>/...
     parts = Path(node.rel_path).parts
-    if len(parts) >= 3 and parts[1] == "20-patterns":
-        dir_category = parts[2]
-        if dir_category != category:
+    if len(parts) < 3 or parts[1] != "20-patterns":
+        return []
+
+    top = parts[2]
+    if top == "styles":
+        expected = "style"
+        if category != expected:
             return [Diagnostic(
                 node.rel_path, "error", "Category-directory match",
-                f"category '{category}' does not match directory '{dir_category}'"
+                f"files in styles/ must have category '{expected}', got '{category}'"
             )]
+    elif top == "integration":
+        expected = "integration"
+        if category != expected:
+            return [Diagnostic(
+                node.rel_path, "error", "Category-directory match",
+                f"files in integration/ must have category '{expected}', got '{category}'"
+            )]
+    elif top == "tactics":
+        if len(parts) < 4:
+            return [Diagnostic(
+                node.rel_path, "error", "Category-directory match",
+                "tactics/ patterns must be nested one level deeper (tactics/<concern>/)"
+            )]
+        dir_concern = parts[3]
+        if dir_concern != category:
+            return [Diagnostic(
+                node.rel_path, "error", "Category-directory match",
+                f"category '{category}' does not match directory 'tactics/{dir_concern}/'"
+            )]
+    else:
+        return [Diagnostic(
+            node.rel_path, "error", "Category-directory match",
+            f"pattern must live under styles/, tactics/<concern>/, or integration/, got '{top}/'"
+        )]
+    return []
+
+
+def check_pillars(node: Node) -> list[Diagnostic]:
+    """Validate the `pillars` field (list of wikilinks to pillar nodes).
+
+    Format is checked by the generic wikilink check; this only enforces that
+    the value, when present, is a list (not a bare string).
+    """
+    if node.frontmatter.get("type") not in {"pattern", "antipattern", "solution"}:
+        return []
+    pillars = node.frontmatter.get("pillars")
+    if pillars is None:
+        return []
+    if not isinstance(pillars, list):
+        return [Diagnostic(
+            node.rel_path, "error", "Pillars format",
+            "pillars must be a list of wikilinks to pillar nodes"
+        )]
     return []
 
 
@@ -553,6 +630,7 @@ def run_structural_checks(node: Node) -> list[Diagnostic]:
     diags.extend(check_sources_required(node))
     diags.extend(check_required_body_sections(node))
     diags.extend(check_category_directory_match(node))
+    diags.extend(check_pillars(node))
     return diags
 
 

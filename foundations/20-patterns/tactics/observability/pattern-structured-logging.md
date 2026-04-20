@@ -4,6 +4,9 @@ title: Structured Logging
 type: pattern
 category: observability
 maturity: stable
+pillars:
+  - "[[pillar-operational-excellence]]"
+  - "[[pillar-reliability]]"
 tags: [pattern, stable, observability, logging]
 applies_to:
   - "[[context-web-application]]"

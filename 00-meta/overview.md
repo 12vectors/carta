@@ -26,8 +26,11 @@ carta/                                  # Repository root = Obsidian vault
 │   └── glossary.md                     # Canonical terminology
 │
 ├── foundations/                        # Starter knowledge base
+│   ├── 05-pillars/                     # Well-Architected quality lenses (reliability, security, cost, op-ex, performance)
 │   ├── 10-contexts/                    # System archetypes
-│   ├── 20-patterns/                    # Reusable patterns by category
+│   ├── 15-principles/                  # Cross-cutting design heuristics above patterns
+│   ├── 20-patterns/                    # Reusable patterns — styles/, tactics/<concern>/, integration/
+│   ├── 25-decision-trees/              # Selection guides between alternative patterns
 │   ├── 30-solutions/                   # Composed patterns
 │   ├── 40-standards/                   # Meta-standards and templates only
 │   └── 50-antipatterns/                # What not to do
@@ -91,8 +94,9 @@ Every node follows a single schema. The frontmatter **is the graph** — agents 
 id: pattern-circuit-breaker
 title: Circuit Breaker
 type: pattern                 # pattern | antipattern | standard | solution | context | adr
-category: resilience
+category: resilience          # style | <concern> | integration
 maturity: stable              # experimental | stable | deprecated
+pillars: [reliability]        # reliability | security | cost | operational-excellence | performance
 tags: [pattern, resilience, stable]
 applies_to:
   - "[[context-web-application]]"

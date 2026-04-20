@@ -46,7 +46,7 @@ Apply every rule in `writing-rules.md`. The ones most often violated:
 
 Follow the filename conventions in `node-schema.md`:
 
-- Foundation: `<id>.md` in the correct subdirectory (e.g. `foundations/20-patterns/<category>/`).
+- Foundation: `<id>.md` in the correct subdirectory. For patterns that is `foundations/20-patterns/styles/`, `foundations/20-patterns/tactics/<concern>/`, or `foundations/20-patterns/integration/` depending on the `category` value.
 - Org: `<id>.org.md` under `org/{overrides,extensions,standards,decisions}/`.
 - Team: `<id>.<team>.md` under `teams/<team>/...`.
 - Project: `<id>.<project>.md` under `projects/<project>/...`.

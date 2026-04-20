@@ -4,6 +4,9 @@ title: Input Validation
 type: pattern
 category: security
 maturity: stable
+pillars:
+  - "[[pillar-security]]"
+  - "[[pillar-reliability]]"
 tags: [pattern, stable, security, validation, injection-prevention]
 applies_to:
   - "[[context-web-application]]"

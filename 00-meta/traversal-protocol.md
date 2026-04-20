@@ -50,7 +50,7 @@ For each matched context, read its node file in `foundations/10-contexts/`. Coll
 
 Also scan extensions at all applicable levels — `org/extensions/`, `teams/<team>/extensions/` (if scoped), `projects/<project>/extensions/` (if scoped) — for additional patterns whose `applies_to` includes the matched contexts. Add these to the candidate set.
 
-If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` categories relevant to the task, plus any relevant extensions.
+If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` relevant to the task — either an architecture style (`styles/`), concern-scoped tactics (`tactics/<concern>/`), or messaging (`integration/`) — plus any relevant extensions.
 
 ### Step 3 — Resolve overrides
 

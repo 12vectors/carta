@@ -88,7 +88,7 @@ In **Settings → Files & Links**:
 
 To create a new node:
 
-1. Create a new file in the appropriate directory (e.g. `foundations/20-patterns/resilience/` for a foundation pattern, or `org/extensions/` for an org-specific pattern).
+1. Create a new file in the appropriate directory (e.g. `foundations/20-patterns/tactics/resilience/` for a foundation resilience pattern, or `org/extensions/` for an org-specific pattern).
 2. Open the command palette (**Ctrl/Cmd + P**) → **Templater: Insert template**.
 3. Select the template for the node type you're creating (e.g. `tpl-pattern`).
 4. Fill in the frontmatter fields and body sections.

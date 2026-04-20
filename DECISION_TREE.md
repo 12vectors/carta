@@ -69,4 +69,9 @@ If no context in the signal table matches the task:
 
 2. **Check whether a context is missing.** If the task describes a system type not covered by any existing context (e.g., embedded systems, desktop applications, infrastructure-as-code), note the gap. This is a signal that a new context node should be authored. Report the gap and proceed with whatever partial matches exist.
 
-3. **Proceed pattern-by-pattern.** If no context matches but the task is clearly architectural, skip the context layer and go directly to `foundations/20-patterns/`. Search by category (communication, data, resilience, scaling, security, agentic, observability) rather than by context. This is less guided but still useful.
+3. **Proceed pattern-by-pattern.** If no context matches but the task is clearly architectural, skip the context layer and go directly to `foundations/20-patterns/`. Patterns are grouped as:
+   - `styles/` — system-shape choices (layered, microservices, event-driven, hexagonal, etc.).
+   - `tactics/<concern>/` — concern-scoped patterns (`communication`, `data`, `resilience`, `scaling`, `security`, `observability`, `agentic`, `refactoring`, `deployment`).
+   - `integration/` — messaging, routing, and transformation patterns.
+
+   This is less guided but still useful.

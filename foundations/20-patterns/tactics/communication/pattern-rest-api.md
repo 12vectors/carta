@@ -4,6 +4,9 @@ title: REST API Design
 type: pattern
 category: communication
 maturity: stable
+pillars:
+  - "[[pillar-operational-excellence]]"
+  - "[[pillar-performance]]"
 tags: [pattern, stable, api, http, rest]
 applies_to:
   - "[[context-web-application]]"
