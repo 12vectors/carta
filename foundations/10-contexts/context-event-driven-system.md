@@ -48,3 +48,5 @@ A system whose components communicate primarily via asynchronous events or messa
 ## See also
 
 - [[context-web-application]] — many modern web applications have async internals and straddle both contexts.
+- [[dtree-choose-messaging-style]] — pick between sync RPC, async queue, pub-sub, and event streaming.
+- [[dtree-choose-event-style]] — pick between event notification, event-carried state transfer, and event sourcing.

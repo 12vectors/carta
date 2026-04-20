@@ -4,6 +4,20 @@ Top-level routing for agents performing a Carta traversal. This document maps a 
 
 ---
 
+## The foundation layers
+
+The foundations are layered. A traversal usually moves top-down through them:
+
+1. **Pillars** (`foundations/05-pillars/`) — quality lenses: reliability, security, cost, operational-excellence, performance. Use these to frame what the task is optimising for; most architectural choices are trade-offs between two or three pillars.
+2. **Contexts** (`foundations/10-contexts/`) — system archetypes. Matched from the signal table below.
+3. **Principles** (`foundations/15-principles/`) — cross-cutting design heuristics (e.g. design-for-failure, minimize-coordination, scale-out-not-up). Each principle serves a pillar and links to the patterns that embody it. Consult when deciding *how* to approach a problem, before picking *which* pattern.
+4. **Patterns** (`foundations/20-patterns/`) — the building blocks, split into `styles/`, `tactics/<concern>/`, and `integration/`.
+5. **Decision trees** (`foundations/25-decision-trees/`) — selection guides for choosing between alternative patterns (API style, messaging style, service boundary, event style, data-access strategy). Consult when the context or principles narrow you to a small set of competing patterns and you need a tie-breaker.
+
+Pillars and principles are advisory upstream nodes; patterns and decision trees are the operative guidance. If time is short, jump to step 2 (context matching) and follow the pattern links — the upstream layers are there when you need richer framing.
+
+---
+
 ## How to use
 
 1. Read the task description.
@@ -11,6 +25,7 @@ Top-level routing for agents performing a Carta traversal. This document maps a 
 3. Most tasks match one primary context and zero or more secondary contexts. Identify all that apply — don't stop at the first match.
 4. If no context matches, see **Unmatched tasks** at the bottom.
 5. Proceed to the matched context node(s) in `foundations/10-contexts/` and follow their `recommended_patterns` links.
+6. When the candidate pattern set includes known alternatives (REST vs GraphQL vs gRPC, saga vs 2PC, monolith vs microservices), consult the matching decision tree in `foundations/25-decision-trees/` before committing.
 
 Contexts are not mutually exclusive. A conversational AI product is both `context-agentic-system` and `context-web-application`. A real-time analytics dashboard is both `context-data-pipeline` and `context-web-application`. Apply all relevant contexts; the pattern intersection is where the useful guidance lives.
 

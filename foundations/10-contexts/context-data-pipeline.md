@@ -47,3 +47,4 @@ A system that ingests, transforms, and lands data — either in bounded batches 
 ## See also
 
 - [[context-event-driven-system]] — streaming pipelines are the data-flavour specialisation of event-driven.
+- [[dtree-choose-data-access]] — pick between cache-aside, read replica, materialized view, and CQRS for read-heavy paths.

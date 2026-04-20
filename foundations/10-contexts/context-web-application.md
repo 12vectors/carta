@@ -10,14 +10,25 @@ signals:
   - "Users interact with it through a browser or mobile client"
 recommended_patterns:
   - "[[pattern-rest-api]]"
+  - "[[pattern-api-gateway]]"
   - "[[pattern-input-validation]]"
+  - "[[pattern-oauth2-authorization]]"
+  - "[[pattern-rate-limiting]]"
   - "[[pattern-circuit-breaker]]"
+  - "[[pattern-retry-with-backoff]]"
+  - "[[pattern-timeout]]"
+  - "[[pattern-health-check-endpoint]]"
+  - "[[pattern-cache-aside]]"
+  - "[[pattern-load-balancing]]"
   - "[[pattern-structured-logging]]"
+  - "[[pattern-distributed-tracing]]"
+  - "[[pattern-correlation-id]]"
 recommended_standards: []
 common_antipatterns:
   - "[[antipattern-god-service]]"
 related:
   - "[[context-event-driven-system]]"
+  - "[[context-agentic-system]]"
 sources:
   - "Building Microservices (Newman, 2021) ch. 1-3"
   - "Designing Data-Intensive Applications (Kleppmann, 2017) ch. 1"
@@ -45,3 +56,5 @@ A system that serves HTTP requests — to humans via a browser, to mobile client
 ## See also
 
 - [[context-event-driven-system]] — web apps with async internals straddle both contexts.
+- [[dtree-choose-api-style]] — pick between REST, GraphQL, and gRPC for the service's external API.
+- [[dtree-choose-service-boundary]] — decide between monolith, modular monolith, service-based, and microservices shapes.
