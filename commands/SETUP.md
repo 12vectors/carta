@@ -21,9 +21,15 @@ Point CARTA_PATH to your **repository root** — the directory containing `found
 ```
 my-org-architecture/            # CARTA_PATH points here
 ├── foundations/                 # Starter knowledge base
-│   ├── 10-contexts/
-│   ├── 20-patterns/
-│   └── ...
+│   ├── 05-pillars/              # Quality lenses (reliability, security, cost, op-ex, performance)
+│   ├── 10-contexts/             # System archetypes
+│   ├── 12-stages/               # Operational ambition (prototype, mvp, production, critical)
+│   ├── 15-principles/           # Cross-cutting design heuristics
+│   ├── 20-patterns/             # styles/, tactics/<concern>/, integration/
+│   ├── 25-decision-trees/       # Selection guides between alternative patterns
+│   ├── 30-solutions/            # Composed patterns
+│   ├── 40-standards/            # Meta-standards and templates
+│   └── 50-antipatterns/
 ├── org/                        # Organisation level
 │   ├── overrides/
 │   ├── extensions/

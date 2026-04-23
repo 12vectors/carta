@@ -7,7 +7,8 @@ title:
 type: pattern
 category:                        # style | communication | data | resilience | scaling | security | observability | agentic | refactoring | deployment | integration
 maturity: experimental
-pillars: []                      # reliability | security | cost | operational-excellence | performance
+stage_floor:                     # optional — prototype | mvp | production | critical. Omit to apply at every stage.
+pillars: []                      # [[pillar-...]] wikilinks
 tags: [pattern, experimental]
 applies_to:
   - "[[]]"
@@ -44,6 +45,9 @@ sources:
 ## Implementation checklist
 
 - [ ] 
+
+<!-- Optional: only add ## Stage-specific notes when guidance genuinely
+     varies across stages. See writing-rules.md rule 11. -->
 
 ## See also
 

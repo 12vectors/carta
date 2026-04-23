@@ -19,6 +19,10 @@ CARTA_PATH should point to the repository root — the directory containing `fou
    - solution → `tpl-solution.md`
    - context → `tpl-context.md`
    - adr → `tpl-adr.md`
+   - pillar → `tpl-pillar.md`
+   - principle → `tpl-principle.md`
+   - decision-tree → `tpl-decision-tree.md`
+   - stage → `tpl-stage.md`
 
 Do not skip this step. The writing rules exist precisely because agents left to their own devices write too much.
 
@@ -26,7 +30,7 @@ Do not skip this step. The writing rules exist precisely because agents left to 
 
 Ask the user (if not already specified):
 
-- **Node type.** pattern, antipattern, standard, solution, context, or adr.
+- **Node type.** pattern, antipattern, standard, solution, context, adr, pillar, principle, decision-tree, or stage.
 - **Level.** foundation, org, team (which?), or project (which?).
 - **Scope summary.** One sentence: what does this node assert?
 - **Sources.** At least one verifiable source for `pattern`, `antipattern`, `solution`. Book + chapter, paper with DOI/URL, blog post with URL, public incident report, or named open-source project. No "team discussion" or "industry practice".
