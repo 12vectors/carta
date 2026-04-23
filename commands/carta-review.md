@@ -174,19 +174,49 @@ Structure the output exactly:
   valuable to the user than confidently filling the gap with guesses.
 - If the 4-iteration cap trips, say so and name which candidates the
   last pass added. The scope may be too big for a single review.
+
+--- Output format (IMPORTANT) ---
+
+Your final message back to the parent agent IS the report. The parent
+will relay your entire output to the user. Do not truncate, summarise,
+or replace any section with a placeholder. Do not say 'see tool result
+above' or 'full report omitted'.
+
+Wrap your report between these exact marker lines so the parent can
+identify the block to relay:
+
+---BEGIN CARTA REVIEW REPORT---
+
+(full structured report here — every section from Pass 6, every
+ pattern-scorecard row, every file:line citation, every Carta gap)
+
+---END CARTA REVIEW REPORT---
+
+Anything outside the markers (e.g. a brief meta-note to the parent
+about the iteration-cap result) is fine but will not be relayed to
+the user verbatim. Put everything the user needs to see between the
+markers.
 ```
 
 ## Present the subagent's report
 
-When the subagent completes:
+**The report is the product of this command. Your job is to relay it verbatim — not to summarise it.** The subagent will emit its report between marker lines (`---BEGIN CARTA REVIEW REPORT---` and `---END CARTA REVIEW REPORT---`). The content between those markers must reach the user in full.
 
-1. Show the full report to the user.
-2. Lead with a two-sentence summary: the overall stance (fit/gaps), and the three most-important current-stage findings.
-3. Surface the **Gaps in Carta itself** section separately if it exists — that's the compounding-knowledge output.
-4. If the subagent reported an iteration-cap stop (4 passes without stabilising), flag it. Recommend scoping the review smaller (single service, single context, or specific concern) for the next pass.
-5. Offer the user a followup: trim the report to a top-5 action list, or dive deeper on one specific finding.
+Format your response to the user exactly in this order:
 
-Do not edit or commit anything in the target codebase. This command is read-only.
+1. **A two-sentence lead** (≤60 words total). The overall stance (fit / gaps) and the three most-important current-stage findings. Put the lead before the report so a skim-reader gets the headline first.
+
+2. **The full report, rendered verbatim.** Paste everything the subagent produced between its markers, unchanged. Do not paraphrase. Do not abbreviate tables. Do not replace bullet lists with "…and more". If the report is long, it's long — that's precisely why `/carta-review` spawns a subagent with its own context budget. A truncated relay defeats the workflow.
+
+3. **One-sentence iteration note** if the subagent reported a 4-pass cap without convergence. Suggest scoping the next run smaller (single service, single context, single concern).
+
+4. **Restate the "Gaps in Carta itself" section** at the bottom if the report contains one, as a separate call-out distinct from application-level findings. This is Carta's compounding knowledge output; it's important enough to surface twice rather than lose to scroll.
+
+5. **Offer a follow-up**: (a) trim to a top-5 concrete action list for the target codebase, (b) dive deeper on one specific finding with more file reads, or (c) draft the Carta gap fixes as edits against `$CARTA_PATH`.
+
+Never summarise the report in place of relaying it. A summary without the full report forces the user to ask you to play it back — which wastes a turn and defeats the subagent's multi-pass work. The subagent runs *so that* the user can read the structured output.
+
+Do not edit or commit anything in the target codebase. This command is read-only against the target.
 
 ## Task
 
