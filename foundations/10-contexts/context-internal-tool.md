@@ -59,3 +59,4 @@ A system whose users are internal to the organisation — employees, contractors
 - [[context-agentic-system]] — many internal tools are LLM-backed eval harnesses or workflow builders; both contexts apply.
 - [[dtree-choose-service-boundary]] — internal tools usually belong as modular monoliths; resist premature splits.
 - [[dtree-choose-background-work]] — inline background tasks are acceptable here more often than in customer-facing contexts, but the dtree still helps state that choice rather than default into it.
+- [[solution-llm-eval-harness]] — the shape most LLM-adjacent internal tools (eval workbenches, persona testers, agent debuggers) end up wanting.

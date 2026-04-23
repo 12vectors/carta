@@ -67,3 +67,4 @@ A system where a language model participates in control flow — deciding what t
 - [[context-event-driven-system]] — long-running agent runs often use async events for tool invocation and status.
 - [[context-ml-system]] — systems where the model lifecycle (training, fine-tuning, drift) is itself in scope.
 - [[dtree-choose-service-boundary]] — decide whether agent orchestration lives in one service or many.
+- [[solution-llm-eval-harness]] — composition for building an eval workbench on top of an agentic system.
