@@ -117,6 +117,7 @@ BULLET_SECTION_CAPS: dict[str, dict[str, int]] = {
     "## How to fix":           {"max_bullets": 6, "max_words_per_bullet": 30},
     "## Implementation checklist": {"max_bullets": 10, "max_words_per_bullet": 30},
     "## Signals":              {"max_bullets": 8, "max_words_per_bullet": 20},
+    "## Stage-specific notes": {"max_bullets": 4, "max_words_per_bullet": 30},
 }
 
 # Trade-offs table row cap

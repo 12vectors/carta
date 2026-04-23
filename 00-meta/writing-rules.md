@@ -93,6 +93,19 @@ An org/team/project override exists to change a foundation node's guidance. Stat
 
 The primary reader is a coding agent resolving whether to apply this pattern in a given task. A human skimming the file should still get value, but clarity for the agent drives the voice: short, declarative, decision-oriented.
 
+### 11. Use `## Stage-specific notes` sparingly
+
+Most patterns apply uniformly across stages. Add a `## Stage-specific notes` section only when the pattern's guidance genuinely differs across `prototype` / `mvp` / `production` / `critical` — for example, a production-level floor that can be legitimately compromised at prototype, or a rule that tightens at critical stage.
+
+When you do add it:
+
+- One short bullet per stage where the guidance differs. Don't restate the pattern — just the *delta* from the body's default guidance.
+- Wikilink to the relevant `[[stage-<name>]]` node on each bullet.
+- Skip stages where nothing changes. The section is sparse by design.
+- Cap: ≤4 bullets (one per stage), ≤30 words each.
+
+The test: if the notes look like a summary of what's already in the body, delete them. The section earns its place only when it changes the answer a reader arrives at.
+
 ---
 
 ## Anti-examples in the current foundations

@@ -149,6 +149,7 @@ The body (everything after the frontmatter) follows a type-specific structure. S
 | `## Solution sketch` | yes | Minimal description of the approach. May include a reference implementation pointer. |
 | `## Trade-offs` | yes | Gain/cost table. |
 | `## Implementation checklist` | no | Concrete, verifiable steps. |
+| `## Stage-specific notes` | no | Per-stage relaxations, warnings, or floors. Use only when guidance genuinely differs across `prototype` / `mvp` / `production` / `critical`. One bullet per stage where the delta matters; don't restate the pattern. Most patterns don't need this section. See **Writing rules** for usage guidance. |
 | `## Contradictions` | no | Only present when `contradicted_by` is non-empty. Uses `> [!contradiction]` callout. |
 | `## See also` | no | Links to related nodes with a reason for each link. |
 
@@ -160,6 +161,7 @@ The body (everything after the frontmatter) follows a type-specific structure. S
 | `## Why it happens` | yes | Root causes and conditions that lead to this antipattern. |
 | `## Consequences` | yes | What goes wrong if left unaddressed. |
 | `## How to fix` | yes | Remediation steps, linking to patterns that address the problem. |
+| `## Stage-specific notes` | no | Per-stage relaxations, when they exist. Most antipatterns apply uniformly; use sparingly. |
 | `## See also` | no | Related nodes. |
 
 ### standard
@@ -180,7 +182,8 @@ The body (everything after the frontmatter) follows a type-specific structure. S
 | `## Composition` | yes | How the constituent patterns fit together. Order, data flow, integration points. |
 | `## Decision inputs` | yes | Questions to answer before applying this solution. |
 | `## Trade-offs` | yes | Gain/cost table for the composition as a whole. |
-| `## Implementation sequence` | yes | Ordered steps referencing the composed patterns. |
+| `## Implementation sequence` | yes | Ordered steps referencing the composed patterns. The sequence is often stage-aware — prototype minimum first, then MVP and production additions. |
+| `## Stage-specific notes` | no | Per-stage relaxations for the whole composition. Use when the solution's behaviour or constraints change meaningfully by stage, beyond what the implementation sequence already expresses. |
 | `## See also` | no | Related nodes. |
 
 ### context

@@ -71,6 +71,13 @@ For each candidate output, prompt a judge model with the task, the output (or tw
 - [ ] Keep eval suites large enough to detect judge noise.
 - [ ] Never ship a product metric backed only by self-judgment.
 
+## Stage-specific notes
+
+- **At [[stage-prototype]]**: same-family judge (Claude judging Claude) is acceptable if the self-bias risk is documented in the README. Cross-family judge is MVP work, not a prototype gate.
+- **At [[stage-mvp]]**: introduce a small human-labelled calibration set (20–50 exchanges per dimension) and measure judge–human agreement. Drifting agreement means the rubric prompt needs revision before the scores do.
+- **At [[stage-production]]**: cross-family judge becomes the floor, not the aspiration. Report agreement metrics on every run; regressions in agreement page the owner the same way latency regressions do.
+- **At [[stage-critical]]**: multi-judge ensemble or human spot-check sampling on a fixed percentage of every run. Judge-model regressions become an explicit error-budget line item.
+
 ## See also
 
 - [[pattern-reflexion]] — inner-loop use of a judge to drive retries.
