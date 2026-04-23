@@ -26,6 +26,7 @@ recommended_patterns:
 recommended_standards: []
 common_antipatterns:
   - "[[antipattern-silent-failure]]"
+  - "[[antipattern-self-judging-llm]]"
 related:
   - "[[context-data-pipeline]]"
   - "[[context-agentic-system]]"

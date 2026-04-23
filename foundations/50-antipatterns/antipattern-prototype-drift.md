@@ -17,6 +17,7 @@ mitigated_by:
   - "[[pattern-structured-logging]]"
   - "[[pattern-health-check-endpoint]]"
   - "[[pattern-retry-with-backoff]]"
+  - "[[pattern-llm-budget-enforcement]]"
   - "[[pattern-strangler-fig]]"
 sources:
   - "The Pragmatic Programmer, 20th Anniversary Edition (Hunt & Thomas, Addison-Wesley, 2019) — 'Broken Windows'"

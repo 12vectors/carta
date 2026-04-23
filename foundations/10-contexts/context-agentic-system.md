@@ -31,6 +31,7 @@ recommended_patterns:
 recommended_standards: []
 common_antipatterns:
   - "[[antipattern-silent-failure]]"
+  - "[[antipattern-self-judging-llm]]"
 related:
   - "[[context-web-application]]"
   - "[[context-event-driven-system]]"

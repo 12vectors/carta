@@ -84,3 +84,4 @@ For each candidate output, prompt a judge model with the task, the output (or tw
 
 - [[pattern-reflexion]] — inner-loop use of a judge to drive retries.
 - [[pattern-structured-logging]] — persist verdicts and rationales.
+- [[antipattern-self-judging-llm]] — the same-family-judging failure mode this pattern warns against when left undocumented.

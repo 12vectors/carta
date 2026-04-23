@@ -27,6 +27,7 @@ recommended_standards: []
 common_antipatterns:
   - "[[antipattern-silent-failure]]"
   - "[[antipattern-prototype-drift]]"
+  - "[[antipattern-self-judging-llm]]"
 related:
   - "[[context-web-application]]"
   - "[[context-agentic-system]]"

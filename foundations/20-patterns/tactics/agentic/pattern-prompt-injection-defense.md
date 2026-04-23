@@ -89,6 +89,13 @@ Complete prevention is not currently achievable; the goal is bounded blast radiu
 - [ ] Run a red-team pass against known injection patterns before shipping.
 - [ ] Re-evaluate quarterly — attack patterns evolve faster than model defences.
 
+## Stage-specific notes
+
+- **At [[stage-prototype]]**: concatenating operator-supplied persona, scenario, or config text into the system prompt is acceptable — the operator is the trust boundary. Third-party content in any prompt (retrieved docs, tool outputs, bot transcripts fed to a judge) is untrusted at every stage; tag it structurally, never splice it into the system prompt.
+- **At [[stage-mvp]]**: audit every prompt site for external-content concatenation. Add explicit "untrusted content follows" markers around retrieved text, tool outputs, and transcripts. Log suspected-injection inputs by correlation ID.
+- **At [[stage-production]]**: layer defences — input classifier, prompt structure, tool-arg validation, output-side checks. Cross-family judge removes the transcript-injection attack on self-scoring pipelines.
+- **At [[stage-critical]]**: scheduled red-team pass against known injection patterns; output filter alerts on suspected secret leakage.
+
 ## See also
 
 - [[pattern-input-validation]] — prerequisite; prompt-injection defence sits on top.

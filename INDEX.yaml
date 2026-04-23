@@ -1,6 +1,6 @@
 version: 1
-generated_from: 7747a1e6e3ebb9a9
-node_count: 127
+generated_from: 2cc8427b957ea58f
+node_count: 128
 entries:
   adr-0001-fastapi-as-default.org:
     id: adr-0001-fastapi-as-default
@@ -68,7 +68,21 @@ entries:
     - pattern-structured-logging
     - pattern-health-check-endpoint
     - pattern-retry-with-backoff
+    - pattern-llm-budget-enforcement
     - pattern-strangler-fig
+  antipattern-self-judging-llm:
+    id: antipattern-self-judging-llm
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-self-judging-llm.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-ml-system
+    - context-internal-tool
+    mitigated_by:
+    - pattern-llm-as-judge-eval
   antipattern-silent-failure:
     id: antipattern-silent-failure
     type: antipattern
@@ -117,6 +131,7 @@ entries:
     - pattern-feature-flag
     common_antipatterns:
     - antipattern-silent-failure
+    - antipattern-self-judging-llm
   context-batch-processing:
     id: context-batch-processing
     type: context
@@ -218,6 +233,7 @@ entries:
     common_antipatterns:
     - antipattern-silent-failure
     - antipattern-prototype-drift
+    - antipattern-self-judging-llm
   context-ml-system:
     id: context-ml-system
     type: context
@@ -243,6 +259,7 @@ entries:
     - pattern-feature-flag
     common_antipatterns:
     - antipattern-silent-failure
+    - antipattern-self-judging-llm
   context-web-application:
     id: context-web-application
     type: context
@@ -2004,6 +2021,8 @@ by_id:
   - antipattern-god-service
   antipattern-prototype-drift:
   - antipattern-prototype-drift
+  antipattern-self-judging-llm:
+  - antipattern-self-judging-llm
   antipattern-silent-failure:
   - antipattern-silent-failure
   context-agentic-system:
@@ -2403,6 +2422,7 @@ context_to_patterns:
 context_to_antipatterns:
   context-agentic-system:
   - antipattern-prototype-drift
+  - antipattern-self-judging-llm
   - antipattern-silent-failure
   context-batch-processing:
   - antipattern-silent-failure
@@ -2413,9 +2433,11 @@ context_to_antipatterns:
   - antipattern-silent-failure
   context-internal-tool:
   - antipattern-prototype-drift
+  - antipattern-self-judging-llm
   - antipattern-silent-failure
   context-ml-system:
   - antipattern-prototype-drift
+  - antipattern-self-judging-llm
   context-web-application:
   - antipattern-god-service
   - antipattern-prototype-drift
