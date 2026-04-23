@@ -100,7 +100,7 @@ Pre-1.0. APIs, schemas, and directory conventions may change.
 |---|---|
 | Node schema and four-level model | Working |
 | Operations model (traverse, ingest, lint, capture) | Working |
-| Traversal and authoring slash commands (`/carta`, `/carta-add`) | Working |
+| Slash commands — `/carta` (traverse), `/carta-add` (author), `/carta-review` (deep codebase audit via subagent) | Working |
 | Validator (`tools/validate.py`) and linter (`tools/lint.py`) | Working |
 | Foundations — pillars (5), contexts (7), stages (4), principles (14), patterns (~75), decision-trees (6), solutions (1), antipatterns (2) | Seeded — ~115 nodes |
 | Obsidian setup guide and templates (10 node types) | Done |

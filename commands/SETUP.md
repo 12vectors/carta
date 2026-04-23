@@ -57,6 +57,7 @@ Symlink the commands into your user-level Claude Code commands directory:
 mkdir -p ~/.claude/commands
 ln -sf /absolute/path/to/carta/commands/carta.md ~/.claude/commands/carta.md
 ln -sf /absolute/path/to/carta/commands/carta-add.md ~/.claude/commands/carta-add.md
+ln -sf /absolute/path/to/carta/commands/carta-review.md ~/.claude/commands/carta-review.md
 ```
 
 Use the same absolute path you cloned the Carta repo to. The symlinks mean updates to the Carta repo automatically update the commands.
@@ -66,17 +67,22 @@ Use the same absolute path you cloned the Carta repo to. The symlinks mean updat
 From any project, in Claude Code:
 
 ```
-# Traverse existing content to answer an architectural question
+# Light traversal — single-response, no codebase audit required
 /carta add authentication to the payment service
 /carta choose a caching strategy for our product catalog API
 /carta should we use event sourcing for order processing
+
+# Deep review — multi-pass audit of an existing codebase (spawns a subagent)
+/carta-review ./backend
+/carta-review /path/to/my-service
+/carta-review                      # defaults to current working directory
 
 # Draft a new node (loads the writing rules first, then validates)
 /carta-add pattern for idempotency keys on payment endpoints
 /carta-add antipattern for sharing Postgres tables across services
 ```
 
-`/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries.
+`/carta` is for conversational architectural questions — one response, no file crawling of the target codebase. `/carta-review` is for auditing an existing application: it spawns a subagent that iterates (up to four passes) through the candidate set, reads code files to back every finding with `file:line` evidence, and terminates when the set is stable. Use `/carta-review` when you want every recommended pattern backed by code citations. `/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries.
 
 ## 4. Optional: mention Carta in your project CLAUDE.md
 
