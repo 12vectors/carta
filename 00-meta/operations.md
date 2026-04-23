@@ -14,19 +14,14 @@ The primary operation. An agent with a task consults Carta to select patterns, c
 
 **Actor:** agent or human. No review required — traversal is read-only.
 
-**Procedure:** see `traversal-protocol.md` for the full normative algorithm. Summary:
+**Procedure:** `traversal-protocol.md` is the normative algorithm; `commands/carta.md` is the runtime script. At the level of this doc, the traversal is four phases:
 
-1. Confirm the operational **stage** (`prototype` / `mvp` / `production` / `critical`). If not provided and not declared at project level, ask the user — do not infer from repo signals.
-2. Consult `DECISION_TREE.md` to identify the relevant context(s), and identify the 1–3 **pillars** the task is optimising for.
-3. From each matched context, follow `recommended_patterns` to build a candidate set. Pull in extensions from applicable levels.
-4. Resolve overrides most-specific-first (project → team → org → foundation).
-5. For each candidate: check fit (`When to use`, `When NOT to use`, `Decision inputs`), note the **principles** it realises, and — for review-shaped traversals — cite specific file:line evidence from the target codebase.
-6. Apply **stage floor**: patterns whose `stage_floor` exceeds the task stage are demoted to "defer to stage X", not dropped.
-7. Resolve prerequisites recursively. Flag conflicts. When candidates overlap alternative patterns a **decision tree** picks between, apply the dtree. Read contradictions.
-8. Cross-reference standards and antipatterns.
-9. Prefer pre-composed solutions from `foundations/30-solutions/` when their `composes` list matches the candidate set.
-10. Check ADRs at org/team/project levels for constraints.
-11. Report with stage, pillars, principles applied, dtrees consulted, current-stage patterns separated from deferred, code citations for review-shaped traversals.
+1. **Frame** — confirm stage (ask if unknown); match contexts and pillars.
+2. **Resolve** — build the candidate set from contexts and extensions; apply overrides most-specific-first; filter by stage floor (demoted, not dropped).
+3. **Evaluate** — fit, principles, prerequisites, conflicts, dtree selection between alternatives, contradictions, standards, antipatterns, solutions, ADRs. For review-shaped traversals, pair every finding with file:line evidence.
+4. **Report** — stage, pillars, principles applied, dtrees consulted, recommended patterns (current stage) separated from deferred, prerequisites, standards, antipatterns, conflicts, solutions, gaps.
+
+Both downstream docs expand these phases in full.
 
 **Output:** a recommendation — which patterns to apply, which to avoid, what prerequisites to satisfy, and what conflicts exist. If the decision is non-trivial, the traversal may also produce a new ADR (see **Recording a decision** in `CHARTER.md`).
 
