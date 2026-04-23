@@ -74,21 +74,46 @@ cd my-org-architecture
 #    Obsidian → Open folder as vault → select my-org-architecture/
 #    (See 00-meta/obsidian-setup.md for plugin configuration)
 
-# 3. Install the /carta slash command for Claude Code
-#    Set CARTA_PATH and symlink the command — see commands/SETUP.md
+# 3. Point Claude Code at Carta and install the slash commands
+#    - Set CARTA_PATH in ~/.claude/settings.json → env
+#    - Symlink the three commands into ~/.claude/commands/
+#    Full instructions: commands/SETUP.md
+```
 
-# 4. Try a traversal against a real architectural question
-#    In Claude Code, from any project:
+### The three Claude Code slash commands
+
+| Command | When to use | What it does |
+|---|---|---|
+| `/carta <question>` | Quick architectural question, no codebase read required | Single-response traversal: matches contexts, pillars, stage; returns recommended patterns with rationale and citations. |
+| `/carta-review <path>` | Auditing an existing codebase against Carta | Spawns a Claude Code subagent that iterates through the 13-step protocol in passes (up to four), reads code files to back every finding with `file:line` evidence, returns a structured scorecard. Read-only. |
+| `/carta-add <node description>` | Authoring a new node | Loads writing rules and the matching template, drafts a terse node, runs validator and linter. Review, edit, commit. |
+
+### First traversal
+
+```
+# In Claude Code, from any project:
 /carta choose a caching strategy for our product catalog API
 ```
 
-If the traversal surfaces gaps in Carta — a pattern your team uses but hasn't written down, a standard you've agreed but haven't captured — that's your cue to author. Use the `/carta-add` command:
+On the first run the agent will ask for the system's operational **stage** — `prototype`, `mvp`, `production`, or `critical`. Answer honestly; severity in the report is relative to that stage.
+
+### First review
+
+```
+/carta-review ./backend
+```
+
+`/carta-review` is the deeper counterpart. It spawns a general-purpose subagent — with its own context budget — to multi-pass through your codebase, pairing every pattern-level finding with a `file:line` citation from the actual code. Use this when `/carta`'s single response isn't enough to audit a real application.
+
+### First authored node
+
+If the traversal surfaces a gap — a pattern your team uses but hasn't written down, a standard you've agreed but haven't captured — use `/carta-add` to author:
 
 ```
 /carta-add pattern for idempotency keys on payment endpoints
 ```
 
-`/carta-add` loads the writing rules and the matching template, then drafts a terse, directive node and runs the validator and linter. Review, edit, commit. That's the loop.
+`/carta-add` loads the writing rules and the matching template (one for each of the ten node types: pattern, antipattern, standard, solution, context, adr, pillar, principle, decision-tree, stage), drafts a terse, directive node, and runs the validator and linter before handing off for review. Edit, commit. That's the loop.
 
 The fuller walkthrough, including a worked example of adding your first org-level override, is in [`00-meta/quickstart.md`](00-meta/quickstart.md).
 
