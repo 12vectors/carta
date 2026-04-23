@@ -4,6 +4,7 @@ title: Circuit Breaker
 type: pattern
 category: resilience
 maturity: stable
+stage_floor: production
 pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, stable, resilience, fault-tolerance, cascading-failure]

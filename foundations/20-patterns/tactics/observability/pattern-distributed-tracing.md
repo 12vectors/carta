@@ -4,6 +4,7 @@ title: Distributed Tracing
 type: pattern
 category: observability
 maturity: stable
+stage_floor: production
 pillars:
   - "[[pillar-operational-excellence]]"
   - "[[pillar-reliability]]"

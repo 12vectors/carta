@@ -4,6 +4,7 @@ title: Structured Logging
 type: pattern
 category: observability
 maturity: stable
+stage_floor: mvp
 pillars:
   - "[[pillar-operational-excellence]]"
   - "[[pillar-reliability]]"

@@ -4,6 +4,7 @@ title: Secrets Management
 type: pattern
 category: security
 maturity: stable
+stage_floor: mvp
 pillars:
   - "[[pillar-security]]"
 tags: [pattern, stable, security, secrets, credentials]

@@ -4,6 +4,7 @@ title: Retry with Exponential Backoff
 type: pattern
 category: resilience
 maturity: stable
+stage_floor: mvp
 pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, stable, resilience, fault-tolerance]

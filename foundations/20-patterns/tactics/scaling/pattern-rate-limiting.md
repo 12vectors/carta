@@ -4,6 +4,7 @@ title: Rate Limiting
 type: pattern
 category: scaling
 maturity: stable
+stage_floor: production
 pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, stable, scaling, rate-limiting, abuse-prevention]

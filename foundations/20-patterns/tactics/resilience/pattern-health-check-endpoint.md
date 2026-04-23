@@ -4,6 +4,7 @@ title: Health Check Endpoint
 type: pattern
 category: resilience
 maturity: stable
+stage_floor: mvp
 pillars:
   - "[[pillar-reliability]]"
   - "[[pillar-operational-excellence]]"

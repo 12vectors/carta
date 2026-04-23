@@ -16,9 +16,9 @@ These fields apply to every node type.
 
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
-| `id` | yes | string | Globally unique identifier. Must match the filename without `.md`. Prefixed by node type: `pattern-`, `context-`, `solution-`, `standard-`, `antipattern-`, `adr-`, `pillar-`, `principle-`, `dtree-`. |
+| `id` | yes | string | Globally unique identifier. Must match the filename without `.md`. Prefixed by node type: `pattern-`, `context-`, `solution-`, `standard-`, `antipattern-`, `adr-`, `pillar-`, `principle-`, `dtree-`, `stage-`. |
 | `title` | yes | string | Human-readable name. |
-| `type` | yes | enum | One of: `pattern`, `antipattern`, `standard`, `solution`, `context`, `adr`, `pillar`, `principle`, `decision-tree`. |
+| `type` | yes | enum | One of: `pattern`, `antipattern`, `standard`, `solution`, `context`, `adr`, `pillar`, `principle`, `decision-tree`, `stage`. |
 | `maturity` | yes | enum | One of: `experimental`, `stable`, `deprecated`. |
 | `tags` | yes | list[string] | Must include the `type` value and the `maturity` value. Additional tags are encouraged for filtering. |
 | `related` | no | list[wikilink] | Links to nodes that are relevant but not prerequisite or conflicting. |
@@ -32,6 +32,7 @@ These fields apply to every node type.
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
 | `category` | yes | string | Maps to the pattern's location under `foundations/20-patterns/`. Values: `style` (for `styles/<file>`), a tactic concern (for `tactics/<concern>/<file>`: `communication`, `data`, `resilience`, `scaling`, `security`, `agentic`, `observability`, `refactoring`, `deployment`), or `integration` (for `integration/<file>`). |
+| `stage_floor` | no | enum | Minimum operational stage at which this pattern becomes recommended. One of `prototype`, `mvp`, `production`, `critical`. If absent, the pattern applies at every stage (defaults to `prototype`). Patterns whose `stage_floor` exceeds the task's declared stage are demoted to "defer to stage X" in the traversal report — they stay in view as "plan for later", not as current blockers. |
 | `applies_to` | yes | list[wikilink] | Contexts where this pattern is relevant. At least one required. |
 | `prerequisites` | no | list[wikilink] | Patterns that must be in place before this one can be applied. |
 | `conflicts_with` | no | list[wikilink] | Patterns that cannot coexist with this one in the same system. |
@@ -108,6 +109,15 @@ Decision trees live in `foundations/25-decision-trees/`. They are selection guid
 | `decides_between` | yes | list[wikilink] | The options being selected among — typically pattern nodes. |
 | `criteria` | yes | list[string] | The axes against which the options are compared. |
 | `related_patterns` | no | list[wikilink] | Upstream patterns that this decision tree elaborates. |
+
+#### stage
+
+Stages live in `foundations/12-stages/`. They encode operational ambition — what the system is aiming to be *right now*. The four stages (`prototype`, `mvp`, `production`, `critical`) combine with a context during traversal to determine which patterns are currently required vs. deferred.
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `next_stage` | no | wikilink | The stage that comes after this one in the usual progression. `stage-critical` has none. |
+| `typical_antipatterns` | no | list[wikilink] | Failure modes specific to operating at this stage (e.g. "production at MVP cost"). |
 
 ---
 
@@ -217,6 +227,16 @@ The body (everything after the frontmatter) follows a type-specific structure. S
 | `## Criteria` | yes | Axes along which the options are compared. |
 | `## Recommendation` | yes | A table, list, or flowchart mapping criteria outcomes to options. |
 | `## Fallback` | no | What to do when criteria are ambiguous. |
+
+### stage
+
+| Section | Required | Purpose |
+|---------|----------|---------|
+| `## Description` | yes | What this operational stage is — who's using the system, what failure modes are acceptable. |
+| `## What relaxes` | yes | Concerns that can legitimately drop at this stage (auth? monitoring? HA?). |
+| `## What stays baseline` | yes | Things that cannot be relaxed even here — the floor below which the system is not fit for purpose. |
+| `## Graduating` | no | What must tighten to reach the next stage. Omit on `stage-critical` (no next stage). |
+| `## Typical antipatterns` | no | Failure modes specific to operating at this stage (e.g. "prototype drift" — code never leaves prototype, never hardens). |
 
 ---
 

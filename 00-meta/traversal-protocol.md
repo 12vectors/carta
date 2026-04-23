@@ -12,6 +12,7 @@ Before traversing, the agent must know:
 2. **The Carta root.** Where the knowledge base lives on disk. This is the repository root, which contains `foundations/`, `org/`, and optionally `teams/` and `projects/`.
 3. **The scope (if any).** Which team and/or project to include in the traversal. If no scope is specified, the traversal uses only foundation and organisation levels.
 4. **The target codebase (for review-shaped traversals).** When the traversal is auditing an existing application, the agent must have read access to the code. Pattern-level findings must be grounded in specific file:line evidence; an assertion like "no structured logging" is only useful if it can be defended with named files that do or do not import a logging module. Traversals that skip code-level reading produce aspirational advice; traversals that pair pattern checks with code reads produce defensible findings.
+5. **The stage.** Which operational stage the system is aiming at: `prototype`, `mvp`, `production`, or `critical` (see `foundations/12-stages/`). If the caller did not provide it, the agent **must ask** before proceeding. Do not infer stage from repo signals (the presence of a Dockerfile or CI config is not a reliable indicator, and guessing silently produces wrong severities). Pose the question directly: *"Is this system at the prototype, MVP, production, or mission-critical stage?"* Once answered, record the stage in the report so the user can correct it if they disagree. A project that has declared its stage in `projects/<project>/stage.<project>.md` or an equivalent convention can be read without asking again.
 
 ---
 
@@ -51,7 +52,7 @@ These layers are not optional flavour. If the final report does not cite the pil
 
 ## Algorithm
 
-### Step 1 — Identify contexts and pillars
+### Step 1 — Identify contexts, pillars, and stage
 
 Read `DECISION_TREE.md`. Match the task against the signal table to identify one or more relevant contexts from `foundations/10-contexts/`.
 
@@ -59,6 +60,8 @@ Read `DECISION_TREE.md`. Match the task against the signal table to identify one
 - If no context matches, follow the fallback procedure in `DECISION_TREE.md` (check if the task is architectural, note missing contexts, or proceed pattern-by-pattern).
 
 Also identify the **pillars** (`foundations/05-pillars/`) the task is optimising for. Most tasks foreground one to three of: `reliability`, `security`, `cost`, `operational-excellence`, `performance`. The pillars frame the rest of the traversal — they determine which principles to check in step 4 and which trade-offs to highlight in the report. A "refactor our background jobs for restart-safety" task foregrounds reliability and operational-excellence; a "cap LLM spend per tenant" task foregrounds cost and security.
+
+Confirm the **stage** from the prerequisites (`prototype`, `mvp`, `production`, `critical`). Read the corresponding node in `foundations/12-stages/` to understand what relaxes at this stage and what stays baseline. The stage determines the severity band for every subsequent finding: the same missing auth is a blocker at production and acceptable at prototype.
 
 ### Step 2 — Build the candidate set
 
@@ -88,6 +91,10 @@ For each pattern in the candidate set, read the node and assess fit:
 3. **Decision inputs** — can the questions be answered? If critical inputs are unknown, flag them for the user rather than guessing.
 4. **Principles** — look up the principles in `foundations/15-principles/` whose `pillar` matches the task's foregrounded pillars (from step 1), and whose `related_patterns` include this candidate. Note the principle alongside the pattern: this gives the finding durable backing ("we recommend a circuit breaker *because* design-for-failure"). If a candidate serves a principle that isn't listed on it, the edge may be missing — flag it as a Carta gap.
 5. **Code evidence (review-shaped traversals).** Read the relevant files in the target codebase. For each pattern, cite specific files and line ranges that implement it, partially implement it, or fail to implement it. A finding like "no rate limiting" is stronger as "no rate-limiting middleware in `backend/app/main.py:1-40`; no `slowapi` / `starlette-rate-limit` imports across the repo." Pattern status values (`Present`, `Partial`, `Missing`, `Violated`) must be backed by code evidence, not inferred from absence of imports alone.
+6. **Stage floor.** Compare the pattern's `stage_floor` (if set) against the task's declared stage from step 1. Stages rank `prototype` < `mvp` < `production` < `critical`.
+   - If `stage_floor` ≤ task stage, the pattern is evaluated normally; any gap is a current finding.
+   - If `stage_floor` > task stage, the pattern is **demoted**: it stays visible in the report as "defer to stage `<floor>`", not as a current blocker. The user sees what will tighten when they graduate, without being blamed for not having it now.
+   - If `stage_floor` is absent, treat it as `prototype` (the pattern applies at every stage).
 
 A pattern that fails "When NOT to use" is removed from the candidate set. A pattern whose "When to use" doesn't match is also removed, unless it was pulled in as a prerequisite (step 5).
 
@@ -183,10 +190,11 @@ More specific decisions take precedence when they cover the same concern (projec
 Present the result:
 
 - **Context(s):** which contexts matched and why.
+- **Stage:** the declared operational stage (prototype / mvp / production / critical). Every severity in the report is relative to this stage. State how the stage was determined (asked, project declaration, caller-provided) so the user can correct it.
 - **Pillars foregrounded:** the 1–3 quality lenses the task is optimising for. Use these to order any ranked findings (e.g. "top gaps by risk") — a reliability-foregrounded task should rank reliability findings first.
 - **Principles applied:** the principles from `foundations/15-principles/` each recommended pattern realises. Cite by ID. A finding without a principle citation is weaker than a finding with one.
 - **Decision trees consulted:** which dtrees were used to pick between alternatives, and which options were kept vs. rejected.
-- **Recommended patterns:** each selected pattern with a one-line rationale and, for review-shaped traversals, a code citation (`file:line` or a named file range) backing the status. Note which level the pattern comes from (foundation, org override, team override, or project override).
+- **Recommended patterns:** each selected pattern with a one-line rationale and, for review-shaped traversals, a code citation (`file:line` or a named file range) backing the status. Note which level the pattern comes from (foundation, org override, team override, or project override). Separate **current** patterns (stage floor met) from **deferred** patterns (stage floor above current stage) — deferred items are listed under a "When you graduate to stage X" sub-heading, not mixed in with current findings.
 - **Prerequisites:** patterns that must be in place first, in dependency order.
 - **Standards:** applicable constraints, noting which level they come from. Flag any that have been relaxed by a decision, with the reasoning.
 - **Antipatterns to avoid:** relevant risks.

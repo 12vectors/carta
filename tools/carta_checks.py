@@ -16,8 +16,9 @@ import yaml
 
 VALID_TYPES = {
     "pattern", "antipattern", "standard", "solution", "context", "adr",
-    "pillar", "principle", "decision-tree",
+    "pillar", "principle", "decision-tree", "stage",
 }
+VALID_STAGES = {"prototype", "mvp", "production", "critical"}
 VALID_MATURITIES = {"experimental", "stable", "deprecated"}
 VALID_PATTERN_CATEGORIES = {
     # styles — system-shape patterns
@@ -50,6 +51,8 @@ WIKILINK_FIELDS = {
     "related_patterns",      # principle / decision-tree -> pattern nodes
     "decides_between",       # decision-tree -> the options being chosen between
     "tradeoffs_with",        # pillar -> conflicting pillars
+    "next_stage",            # stage -> the stage that comes after this one
+    "typical_antipatterns",  # stage -> antipatterns seen at this stage
 }
 
 # Required body sections per type
@@ -63,6 +66,7 @@ REQUIRED_SECTIONS = {
     "pillar": ["## Description", "## Trade-offs"],
     "principle": ["## Statement", "## Rationale", "## How to apply"],
     "decision-tree": ["## Problem", "## Criteria", "## Recommendation"],
+    "stage": ["## Description", "## What relaxes", "## What stays baseline"],
 }
 
 # Required type-specific frontmatter fields
@@ -76,6 +80,7 @@ REQUIRED_TYPE_FIELDS = {
     "pillar": [],
     "principle": ["pillar"],
     "decision-tree": ["decides_between", "criteria"],
+    "stage": [],
 }
 
 # Types that require non-empty sources
@@ -430,6 +435,12 @@ def check_type_specific_enums(node: Node) -> list[Diagnostic]:
             diags.append(Diagnostic(
                 node.rel_path, "error", "Category enum",
                 f"Invalid pattern category '{cat}', must be one of: {', '.join(sorted(VALID_PATTERN_CATEGORIES))}"
+            ))
+        floor = node.frontmatter.get("stage_floor")
+        if floor is not None and floor not in VALID_STAGES:
+            diags.append(Diagnostic(
+                node.rel_path, "error", "stage_floor enum",
+                f"Invalid stage_floor '{floor}', must be one of: {', '.join(sorted(VALID_STAGES))}"
             ))
 
     if node_type == "standard":

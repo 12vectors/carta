@@ -28,6 +28,7 @@ carta/                                  # Repository root = Obsidian vault
 ├── foundations/                        # Starter knowledge base
 │   ├── 05-pillars/                     # Well-Architected quality lenses (reliability, security, cost, op-ex, performance)
 │   ├── 10-contexts/                    # System archetypes
+│   ├── 12-stages/                      # Operational ambition (prototype / mvp / production / critical)
 │   ├── 15-principles/                  # Cross-cutting design heuristics above patterns
 │   ├── 20-patterns/                    # Reusable patterns — styles/, tactics/<concern>/, integration/
 │   ├── 25-decision-trees/              # Selection guides between alternative patterns
