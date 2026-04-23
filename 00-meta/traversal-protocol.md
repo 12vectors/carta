@@ -52,9 +52,9 @@ These layers are not optional flavour. If the final report does not cite the pil
 
 ## The index
 
-`foundations/INDEX.yaml` is a generated artefact — a frontmatter snapshot of every node plus pre-computed inverted lookups that would otherwise require scanning directories. The traversal **loads the index once** at the start and uses it for all structural queries. Body reads stay reserved for the prose that carries judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
+`INDEX.yaml` is a generated artefact — a frontmatter snapshot of every node plus pre-computed inverted lookups that would otherwise require scanning directories. The traversal **loads the index once** at the start and uses it for all structural queries. Body reads stay reserved for the prose that carries judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
 
-Read `foundations/INDEX.yaml` before starting the algorithm. Relevant sections:
+Read `INDEX.yaml` before starting the algorithm. Relevant sections:
 
 - `entries` — per-node frontmatter snapshot, keyed by filename-stem (e.g. `pattern-rest-api`, `pattern-rest-api.org`).
 - `by_id` — id → list of entry keys (foundation + overrides + extensions sharing that id).

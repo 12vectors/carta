@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build foundations/INDEX.yaml from the content tree.
+"""Build INDEX.yaml (at the repository root) from the content tree.
 
 The index is a derived artefact — content files stay the source of truth.
 It pre-computes the inverted lookups that a traversal would otherwise get
@@ -27,7 +27,7 @@ from carta_checks import (
     parse_node,
 )
 
-INDEX_REL_PATH = "foundations/INDEX.yaml"
+INDEX_REL_PATH = "INDEX.yaml"
 
 # Fields copied verbatim (non-wikilink values) into the per-entry snapshot.
 SCALAR_FIELDS = [

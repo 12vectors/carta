@@ -14,6 +14,7 @@ carta/                                  # Repository root = Obsidian vault
 ├── CHARTER.md                          # How the foundations are governed
 ├── DECISION_TREE.md                    # Top-level routing for traversal
 ├── LOG.md                              # Append-only record of operations
+├── INDEX.yaml                          # Generated graph index across all levels; freshness checked by tools/validate.py
 │
 ├── 00-meta/                            # How Carta works (system docs)
 │   ├── overview.md                     # This file
@@ -34,8 +35,7 @@ carta/                                  # Repository root = Obsidian vault
 │   ├── 25-decision-trees/              # Selection guides between alternative patterns
 │   ├── 30-solutions/                   # Composed patterns
 │   ├── 40-standards/                   # Meta-standards and templates only
-│   ├── 50-antipatterns/                # What not to do
-│   └── INDEX.yaml                      # Generated graph index; freshness checked by tools/validate.py
+│   └── 50-antipatterns/                # What not to do
 │
 ├── templates/                          # Node scaffolding (tpl-*.md)
 │

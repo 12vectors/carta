@@ -48,7 +48,7 @@ Report briefly what directories exist so the user knows the scope of the travers
 
 ## Load the index
 
-Read `FOUNDATIONS/INDEX.yaml` once at the start. It pre-computes the inverted lookups you'd otherwise get by scanning directories — `context_to_patterns`, `pillar_to_principles`, `pattern_to_dtrees`, `affects_to_adrs`, `context_to_standards`, `context_to_antipatterns`, `solution_composes`, `prerequisites_closure`, and the `overrides` resolution map. Structural queries below go through the index; body reads are reserved for judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
+Read `CARTA_PATH/INDEX.yaml` once at the start (it's at the repository root — the index spans every level, not just foundations). It pre-computes the inverted lookups you'd otherwise get by scanning directories — `context_to_patterns`, `pillar_to_principles`, `pattern_to_dtrees`, `affects_to_adrs`, `context_to_standards`, `context_to_antipatterns`, `solution_composes`, `prerequisites_closure`, and the `overrides` resolution map. Structural queries below go through the index; body reads are reserved for judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
 
 ## Traverse
 
