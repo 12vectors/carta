@@ -50,6 +50,26 @@ These layers are not optional flavour. If the final report does not cite the pil
 
 ---
 
+## The index
+
+`foundations/INDEX.yaml` is a generated artefact — a frontmatter snapshot of every node plus pre-computed inverted lookups that would otherwise require scanning directories. The traversal **loads the index once** at the start and uses it for all structural queries. Body reads stay reserved for the prose that carries judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
+
+Read `foundations/INDEX.yaml` before starting the algorithm. Relevant sections:
+
+- `entries` — per-node frontmatter snapshot, keyed by filename-stem (e.g. `pattern-rest-api`, `pattern-rest-api.org`).
+- `by_id` — id → list of entry keys (foundation + overrides + extensions sharing that id).
+- `overrides` — pattern_id → `{org, teams, projects}` entry-key map for most-specific-wins resolution.
+- `context_to_patterns` / `context_to_antipatterns` / `context_to_standards` — inverted `applies_to`. Replaces directory scans in steps 2, 9, 10.
+- `pillar_to_principles` / `pattern_to_principles` — used in step 4 to cite the principles a candidate realises.
+- `pattern_to_dtrees` — used in step 7 to find which dtrees cover a candidate set.
+- `affects_to_adrs` — used in step 12 to find ADRs that touch any candidate or context.
+- `solution_composes` — used in step 11 to match the candidate set against pre-composed solutions.
+- `prerequisites_closure` — transitive prerequisites per pattern; used in step 5 to avoid recursive walks.
+
+The index is validator-checked for freshness — it can never drift from the content files. If it's missing or stale, `tools/validate.py` fails with an explicit regenerate-with command. Treat the index as authoritative for structural data.
+
+---
+
 ## Algorithm
 
 ### Step 1 — Identify contexts, pillars, and stage
@@ -65,20 +85,20 @@ Confirm the **stage** from the prerequisites (`prototype`, `mvp`, `production`, 
 
 ### Step 2 — Build the candidate set
 
-For each matched context, read its node file in `foundations/10-contexts/`. Collect all entries from its `recommended_patterns` field. The union across all matched contexts is the initial candidate set.
+For each matched context, use `context_to_patterns[<ctx>]` from the index to collect the candidate set. This includes foundation patterns *and* any org/team/project extensions whose `applies_to` includes that context — the inverted index covers both. No directory scan needed.
 
-Also scan extensions at all applicable levels — `org/extensions/`, `teams/<team>/extensions/` (if scoped), `projects/<project>/extensions/` (if scoped) — for additional patterns whose `applies_to` includes the matched contexts. Add these to the candidate set.
-
-If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` relevant to the task — either an architecture style (`styles/`), concern-scoped tactics (`tactics/<concern>/`), or messaging (`integration/`) — plus any relevant extensions.
+If proceeding without a context (fallback), build the candidate set by scanning `foundations/20-patterns/` via the index's `entries` section, filtered by type and category. Narrow further by task keywords before fetching bodies.
 
 ### Step 3 — Resolve overrides
 
-For each candidate pattern, check whether an override exists. Walk from most specific to least specific and use the first match:
+For each candidate pattern, read `overrides[<pattern-id>]` from the index — it gives the entry key of any override at each level in one lookup. Pick the most specific that applies to the current scope:
 
-1. If a project is scoped, check `projects/<project>/overrides/<pattern-id>.<project>.md`.
-2. If a team is scoped, check `teams/<team>/overrides/<pattern-id>.<team>.md`.
-3. Check `org/overrides/<pattern-id>.org.md`.
-4. If no override exists at any level, use the foundation node.
+1. `overrides[<id>].projects[<project>]` if a project is scoped.
+2. `overrides[<id>].teams[<team>]` if a team is scoped.
+3. `overrides[<id>].org`.
+4. If no entry at any level, use the foundation node.
+
+The winning entry key resolves to its file via `entries[<key>].path`. No stat calls needed.
 
 Override resolution applies only to patterns. Contexts and antipatterns in the foundations are read directly (other levels extend these via `extensions/`, not overrides).
 
@@ -89,7 +109,7 @@ For each pattern in the candidate set, read the node and assess fit:
 1. **When to use** — do the task's characteristics match the described triggers?
 2. **When NOT to use** — do any counter-indications apply?
 3. **Decision inputs** — can the questions be answered? If critical inputs are unknown, flag them for the user rather than guessing.
-4. **Principles** — look up the principles in `foundations/15-principles/` whose `pillar` matches the task's foregrounded pillars (from step 1), and whose `related_patterns` include this candidate. Note the principle alongside the pattern: this gives the finding durable backing ("we recommend a circuit breaker *because* design-for-failure"). If a candidate serves a principle that isn't listed on it, the edge may be missing — flag it as a Carta gap.
+4. **Principles** — read `pattern_to_principles[<candidate>]` from the index for the candidates realising principles, and filter against `pillar_to_principles[<foregrounded-pillar>]` to prioritise the principles aligned to the task's pillars. Note the principle alongside the pattern — this gives the finding durable backing ("we recommend a circuit breaker *because* design-for-failure"). If a candidate serves a principle that isn't in its `pattern_to_principles` entry, the edge may be missing — flag it as a Carta gap.
 5. **Code evidence (review-shaped traversals).** Read the relevant files in the target codebase. For each pattern, cite specific files and line ranges that implement it, partially implement it, or fail to implement it. A finding like "no rate limiting" is stronger as "no rate-limiting middleware in `backend/app/main.py:1-40`; no `slowapi` / `starlette-rate-limit` imports across the repo." Pattern status values (`Present`, `Partial`, `Missing`, `Violated`) must be backed by code evidence, not inferred from absence of imports alone.
 6. **Stage floor.** Compare the pattern's `stage_floor` (if set) against the task's declared stage from step 1. Stages rank `prototype` < `mvp` < `production` < `critical`.
    - If `stage_floor` ≤ task stage, the pattern is evaluated normally; any gap is a current finding.
@@ -100,13 +120,13 @@ A pattern that fails "When NOT to use" is removed from the candidate set. A patt
 
 ### Step 5 — Resolve prerequisites
 
-For each remaining candidate, read its `prerequisites` field. For each prerequisite:
+For each remaining candidate, read `prerequisites_closure[<candidate>]` from the index — this gives the transitive prerequisite set in one lookup, cycle-safe. For each prerequisite:
 
 1. If the prerequisite is already in the candidate set, no action needed.
-2. If not, add it and evaluate it (step 4). A prerequisite may itself have prerequisites — resolve recursively.
+2. If not, add it and evaluate it (step 4).
 3. If a prerequisite fails evaluation (doesn't fit the task), flag the conflict: the candidate pattern requires something that doesn't apply. The user must decide whether to proceed.
 
-Guard against circular prerequisites. If pattern A requires B and B requires A, flag the cycle and present both to the user.
+Cycles are pre-detected by the index builder (they return an empty closure for that cycle edge). If the closure looks suspicious (a pattern with no prereqs that you expected to have some), check the source file directly.
 
 ### Step 6 — Check conflicts
 
@@ -118,7 +138,7 @@ For each remaining candidate, read its `conflicts_with` field. If two candidates
 
 ### Step 7 — Resolve alternatives via decision trees
 
-For each remaining candidate, check `foundations/25-decision-trees/` for a dtree whose `decides_between` includes this pattern. If the candidate set contains two or more patterns the dtree picks between (REST vs GraphQL vs gRPC, sync RPC vs pub-sub vs async-request-reply, monolith vs microservices, notification vs state-transfer, cache vs replica vs materialized view, inline vs queue vs workflow engine), apply the dtree:
+For each remaining candidate, read `pattern_to_dtrees[<candidate>]` from the index. If the candidate set contains two or more patterns one of those dtrees picks between (REST vs GraphQL vs gRPC, sync RPC vs pub-sub vs async-request-reply, monolith vs microservices, notification vs state-transfer, cache vs replica vs materialized view, inline vs queue vs workflow engine), apply the dtree:
 
 1. Read the dtree's `criteria` and the task's characteristics from step 1.
 2. Walk the `## Recommendation` table; pick the option that matches the task's situation.
@@ -139,43 +159,37 @@ Contradictions are informational, not eliminative. A pattern with an unresolved 
 
 ### Step 9 — Cross-reference standards
 
-Collect standards from all applicable levels:
+Collect applicable standards from the index:
 
-1. Read `foundations/40-standards/` — meta-standards and cross-cutting concerns.
-2. Read `org/standards/` — org-level standards.
-3. If a team is scoped, read `teams/<team>/standards/` — team-level standards.
-4. If a project is scoped, read `projects/<project>/standards/` — project-level standards.
+- `context_to_standards[<matched-ctx>]` — standards that apply to each matched context.
+- `context_to_standards.__universal` — standards with no `applies_to` (apply to every traversal).
 
-For each standard whose `applies_to` includes the matched contexts (or that has no `applies_to`, meaning it's universal):
+For each applicable standard:
 
-1. Check whether any candidate pattern violates the standard.
+1. Check whether any candidate pattern violates the standard (this needs the standard's body — read it via `entries[<key>].path`).
 2. If so, flag the violation. Check whether a decision at any level explicitly relaxes the standard for this context. If a decision exists, note the relaxation and its reasoning. If not, the violation must be resolved.
 
 ### Step 10 — Cross-reference antipatterns
 
-Read all antipattern nodes in `foundations/50-antipatterns/` whose `applies_to` includes the matched contexts. Also check extensions at all applicable levels for additional antipatterns.
+Use `context_to_antipatterns[<matched-ctx>]` to get the applicable antipattern set (antipatterns don't carry `stage_floor` — they apply at every stage).
 
 For each:
 
-1. Check whether the candidate set risks triggering the antipattern.
-2. If so, flag it with the antipattern's `How to recognise` signals and `How to fix` guidance.
+1. Check whether the candidate set risks triggering the antipattern (this needs the antipattern's body for `How to recognise` signals).
+2. If so, flag it with the antipattern's `How to recognise` and `How to fix` guidance.
 
 This is a negative filter. Antipatterns don't add to the candidate set; they flag risks in it.
 
 ### Step 11 — Check for existing solutions
 
-Read `foundations/30-solutions/` and check whether any existing solution's `composes` list is a subset or match of the current candidate set.
+Scan `solution_composes` from the index — each entry is solution-id → composed-patterns. Compare each value against the current candidate set:
 
-- If an exact or near-exact match exists, prefer the pre-composed solution. It includes integration guidance (how the patterns fit together) that the individual pattern nodes don't.
+- If a solution's `composes` is a subset or near-match of the candidate set, prefer the pre-composed solution. It includes integration guidance (how the patterns fit together) that the individual pattern nodes don't.
 - If a partial match exists, note it — the existing solution may cover part of the task.
 
 ### Step 12 — Check ADRs
 
-Collect decisions from all applicable levels:
-
-1. Read `org/decisions/`.
-2. If a team is scoped, read `teams/<team>/decisions/`.
-3. If a project is scoped, read `projects/<project>/decisions/`.
+Use `affects_to_adrs` from the index. For each candidate pattern id or matched context id, read `affects_to_adrs[<id>]` to get the ADRs touching it. Filter to the scopes that apply (org always; team and project only if scoped).
 
 For each ADR whose `affects` list includes any candidate pattern or matched context:
 

@@ -47,6 +47,7 @@ Setup:
 - Task = <user's question, or 'full architectural review'>
 
 Load these Carta files first (Read):
+- CARTA_PATH/foundations/INDEX.yaml — the pre-computed graph index. Use it for structural queries (context_to_patterns, pillar_to_principles, pattern_to_dtrees, overrides, prerequisites_closure, context_to_standards, context_to_antipatterns, affects_to_adrs, solution_composes). Never directory-scan for these — use the index.
 - CARTA_PATH/00-meta/traversal-protocol.md — normative algorithm
 - CARTA_PATH/DECISION_TREE.md — context signal table
 - CARTA_PATH/foundations/12-stages/stage-<stage>.md — what relaxes, what stays baseline

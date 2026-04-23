@@ -1,0 +1,2617 @@
+version: 1
+generated_from: 7747a1e6e3ebb9a9
+node_count: 127
+entries:
+  adr-0001-fastapi-as-default.org:
+    id: adr-0001-fastapi-as-default
+    type: adr
+    level: org
+    path: org/decisions/adr-0001-fastapi-as-default.org.md
+    maturity: stable
+    status: accepted
+    date: 2025-03-15
+    related:
+    - standard-api-versioning
+    affects:
+    - pattern-rest-api
+  adr-0001-relaxed-circuit-breaker-timeouts.payments-api:
+    id: adr-0001-relaxed-circuit-breaker-timeouts
+    type: adr
+    level: project
+    path: projects/payments-api/decisions/adr-0001-relaxed-circuit-breaker-timeouts.payments-api.md
+    level_name: payments-api
+    maturity: stable
+    status: accepted
+    date: 2025-06-10
+    related:
+    - pattern-retry-with-backoff
+    - adr-0001-fastapi-as-default.org
+    affects:
+    - pattern-circuit-breaker
+  adr-0002-currency-authority-exemption.org:
+    id: adr-0002-currency-authority-exemption
+    type: adr
+    level: org
+    path: org/decisions/adr-0002-currency-authority-exemption.org.md
+    maturity: stable
+    status: accepted
+    date: 2026-04-20
+    affects:
+    - CHARTER
+  antipattern-god-service:
+    id: antipattern-god-service
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-god-service.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    mitigated_by:
+    - pattern-rest-api
+  antipattern-prototype-drift:
+    id: antipattern-prototype-drift
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-prototype-drift.md
+    category: refactoring
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-internal-tool
+    - context-agentic-system
+    - context-data-pipeline
+    - context-ml-system
+    mitigated_by:
+    - pattern-oauth2-authorization
+    - pattern-secrets-management
+    - pattern-structured-logging
+    - pattern-health-check-endpoint
+    - pattern-retry-with-backoff
+    - pattern-strangler-fig
+  antipattern-silent-failure:
+    id: antipattern-silent-failure
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-silent-failure.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    mitigated_by:
+    - pattern-structured-logging
+    - pattern-dead-letter-channel
+    - pattern-health-check-endpoint
+  context-agentic-system:
+    id: context-agentic-system
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-agentic-system.md
+    maturity: experimental
+    related:
+    - context-web-application
+    - context-event-driven-system
+    - context-ml-system
+    recommended_patterns:
+    - pattern-react-loop
+    - pattern-tool-use
+    - pattern-reflexion
+    - pattern-plan-then-execute
+    - pattern-orchestrator-workers
+    - pattern-human-in-the-loop-interrupt
+    - pattern-llm-as-judge-eval
+    - pattern-structured-logging
+    - pattern-distributed-tracing
+    - pattern-correlation-id
+    - pattern-retry-with-backoff
+    - pattern-timeout
+    - pattern-rate-limiting
+    - pattern-llm-budget-enforcement
+    - pattern-prompt-injection-defense
+    - pattern-cache-aside
+    - pattern-feature-flag
+    common_antipatterns:
+    - antipattern-silent-failure
+  context-batch-processing:
+    id: context-batch-processing
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-batch-processing.md
+    maturity: stable
+    related:
+    - context-data-pipeline
+    - context-event-driven-system
+    recommended_patterns:
+    - pattern-pipeline
+    - pattern-retry-with-backoff
+    - pattern-idempotency-key
+    - pattern-dead-letter-channel
+    - pattern-queue-based-load-leveling
+    - pattern-competing-consumers
+    - pattern-sharding
+    - pattern-timeout
+    - pattern-structured-logging
+    - pattern-correlation-id
+    common_antipatterns:
+    - antipattern-silent-failure
+  context-data-pipeline:
+    id: context-data-pipeline
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-data-pipeline.md
+    maturity: stable
+    related:
+    - context-event-driven-system
+    - context-batch-processing
+    - context-ml-system
+    recommended_patterns:
+    - pattern-pipeline
+    - pattern-event-driven-architecture
+    - pattern-dead-letter-channel
+    - pattern-competing-consumers
+    - pattern-message-translator
+    - pattern-transactional-outbox
+    - pattern-retry-with-backoff
+    - pattern-idempotency-key
+    - pattern-sharding
+    - pattern-read-replica
+    - pattern-structured-logging
+    - pattern-correlation-id
+    - pattern-circuit-breaker
+    - pattern-expand-contract-migration
+    common_antipatterns:
+    - antipattern-silent-failure
+  context-event-driven-system:
+    id: context-event-driven-system
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-event-driven-system.md
+    maturity: stable
+    related:
+    - context-web-application
+    - context-data-pipeline
+    - context-batch-processing
+    recommended_patterns:
+    - pattern-event-driven-architecture
+    - pattern-publish-subscribe
+    - pattern-message-router
+    - pattern-competing-consumers
+    - pattern-dead-letter-channel
+    - pattern-event-sourcing
+    - pattern-transactional-outbox
+    - pattern-saga
+    - pattern-async-request-reply
+    - pattern-idempotency-key
+    - pattern-correlation-id
+    - pattern-structured-logging
+    - pattern-circuit-breaker
+    - pattern-expand-contract-migration
+    common_antipatterns:
+    - antipattern-silent-failure
+  context-internal-tool:
+    id: context-internal-tool
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-internal-tool.md
+    maturity: stable
+    related:
+    - context-web-application
+    - context-agentic-system
+    recommended_patterns:
+    - pattern-rest-api
+    - pattern-input-validation
+    - pattern-federated-identity
+    - pattern-rbac
+    - pattern-secrets-management
+    - pattern-structured-logging
+    - pattern-correlation-id
+    - pattern-retry-with-backoff
+    - pattern-timeout
+    - pattern-health-check-endpoint
+    - pattern-distributed-tracing
+    - pattern-feature-flag
+    common_antipatterns:
+    - antipattern-silent-failure
+    - antipattern-prototype-drift
+  context-ml-system:
+    id: context-ml-system
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-ml-system.md
+    maturity: stable
+    related:
+    - context-data-pipeline
+    - context-agentic-system
+    - context-web-application
+    recommended_patterns:
+    - pattern-pipeline
+    - pattern-async-request-reply
+    - pattern-cache-aside
+    - pattern-read-replica
+    - pattern-structured-logging
+    - pattern-distributed-tracing
+    - pattern-rate-limiting
+    - pattern-health-check-endpoint
+    - pattern-deployment-stamps
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    - pattern-feature-flag
+    common_antipatterns:
+    - antipattern-silent-failure
+  context-web-application:
+    id: context-web-application
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-web-application.md
+    maturity: stable
+    related:
+    - context-event-driven-system
+    - context-agentic-system
+    recommended_patterns:
+    - pattern-rest-api
+    - pattern-api-gateway
+    - pattern-input-validation
+    - pattern-oauth2-authorization
+    - pattern-rate-limiting
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    - pattern-timeout
+    - pattern-health-check-endpoint
+    - pattern-cache-aside
+    - pattern-load-balancing
+    - pattern-structured-logging
+    - pattern-distributed-tracing
+    - pattern-correlation-id
+    - pattern-feature-flag
+    - pattern-canary-release
+    - pattern-blue-green-deployment
+    - pattern-prompt-injection-defense
+    common_antipatterns:
+    - antipattern-god-service
+    - antipattern-silent-failure
+  dtree-choose-api-style:
+    id: dtree-choose-api-style
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-api-style.md
+    maturity: stable
+    decides_between:
+    - pattern-rest-api
+    - pattern-graphql-api
+    - pattern-grpc-api
+    related_patterns:
+    - pattern-api-gateway
+    - pattern-backend-for-frontend
+    criteria:
+    - Consumer class (public third-party, first-party web/mobile, internal service-to-service)
+    - Query flexibility (fixed contract vs. caller-picked fields)
+    - Schema enforcement (strict typed vs. loose JSON)
+    - Latency profile
+    - Tooling and ecosystem available to consumers
+  dtree-choose-background-work:
+    id: dtree-choose-background-work
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-background-work.md
+    maturity: stable
+    decides_between:
+    - pattern-async-request-reply
+    - pattern-queue-based-load-leveling
+    - pattern-competing-consumers
+    related_patterns:
+    - pattern-saga
+    - pattern-orchestrator-workers
+    - pattern-idempotency-key
+    criteria:
+    - Durability — must the task survive process crash, deploy, or host loss?
+    - Volume — events per minute vs. events per second vs. events per millisecond?
+    - Delay semantics — immediate, scheduled, periodic, or long-running (minutes to days)?
+    - Retry and delivery guarantees — at-most-once / at-least-once / exactly-once with compensation?
+    - Operational complexity budget — can the team run a broker, a workflow engine, or only a process?
+    - Caller visibility — does the caller need a status or result handle after accepting the request?
+  dtree-choose-data-access:
+    id: dtree-choose-data-access
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-data-access.md
+    maturity: stable
+    decides_between:
+    - pattern-cache-aside
+    - pattern-read-replica
+    - pattern-materialized-view
+    - pattern-cqrs
+    related_patterns:
+    - pattern-sharding
+    - pattern-event-sourcing
+    criteria:
+    - Query shape (point reads vs. range scans vs. aggregations)
+    - Read/write ratio
+    - Staleness tolerance
+    - Write path under control (or read-path-only change)
+    - Consistency mode (strong vs. read-your-writes vs. eventual)
+  dtree-choose-event-style:
+    id: dtree-choose-event-style
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-event-style.md
+    maturity: stable
+    decides_between:
+    - pattern-event-notification
+    - pattern-event-carried-state-transfer
+    - pattern-event-sourcing
+    related_patterns:
+    - pattern-event-driven-architecture
+    - pattern-publish-subscribe
+    criteria:
+    - Consumer autonomy required (callback-free or not)
+    - Payload size and volatility
+    - Source-of-truth location (single authoritative store vs. local views)
+    - Audit and replay requirements
+    - Eventual-consistency tolerance
+  dtree-choose-messaging-style:
+    id: dtree-choose-messaging-style
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-messaging-style.md
+    maturity: stable
+    decides_between:
+    - pattern-rest-api
+    - pattern-grpc-api
+    - pattern-publish-subscribe
+    - pattern-competing-consumers
+    - pattern-async-request-reply
+    related_patterns:
+    - pattern-event-driven-architecture
+    - pattern-queue-based-load-leveling
+    criteria:
+    - Reply timing (now / seconds-to-minutes / no reply needed)
+    - Receiver fan-out (one / any-of-N workers / all subscribers)
+    - Ordering requirements (strict / partition / none)
+    - Back-pressure (can the producer block?)
+    - Availability coupling (must both sides be up simultaneously?)
+  dtree-choose-service-boundary:
+    id: dtree-choose-service-boundary
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-service-boundary.md
+    maturity: stable
+    decides_between:
+    - pattern-layered-architecture
+    - pattern-modular-monolith
+    - pattern-service-based-architecture
+    - pattern-microservices
+    related_patterns:
+    - pattern-hexagonal-architecture
+    - pattern-strangler-fig
+    criteria:
+    - Team count and structure
+    - Release cadence (weekly uniform vs. per-team independent)
+    - Scale profile (uniform vs. uneven hot spots)
+    - Operational maturity (distributed tracing, service mesh, on-call)
+    - Domain boundary clarity
+  pattern-ambassador:
+    id: pattern-ambassador
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-ambassador.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-sidecar
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-anti-corruption-layer:
+    id: pattern-anti-corruption-layer
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/refactoring/pattern-anti-corruption-layer.md
+    category: refactoring
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-strangler-fig
+    - pattern-hexagonal-architecture
+    pillars:
+    - pillar-operational-excellence
+  pattern-api-gateway:
+    id: pattern-api-gateway
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-api-gateway.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-backend-for-frontend
+    - pattern-gateway-aggregation
+    - pattern-gateway-offloading
+    - pattern-gateway-routing
+    pillars:
+    - pillar-operational-excellence
+    - pillar-security
+  pattern-async-request-reply:
+    id: pattern-async-request-reply
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-async-request-reply.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-competing-consumers
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-backend-for-frontend:
+    id: pattern-backend-for-frontend
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-backend-for-frontend.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-api-gateway
+    - pattern-microservices
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
+  pattern-blue-green-deployment:
+    id: pattern-blue-green-deployment
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-blue-green-deployment.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-internal-tool
+    prerequisites:
+    - pattern-health-check-endpoint
+    related:
+    - pattern-canary-release
+    - pattern-feature-flag
+    - pattern-deployment-stamps
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-bulkhead:
+    id: pattern-bulkhead
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-bulkhead.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-circuit-breaker
+    - pattern-timeout
+    pillars:
+    - pillar-reliability
+  pattern-cache-aside:
+    id: pattern-cache-aside
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/scaling/pattern-cache-aside.md
+    category: scaling
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-materialized-view
+    - pattern-read-replica
+    pillars:
+    - pillar-performance
+  pattern-canary-release:
+    id: pattern-canary-release
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-canary-release.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-load-balancing
+    - pattern-red-metrics
+    related:
+    - pattern-blue-green-deployment
+    - pattern-feature-flag
+    - pattern-distributed-tracing
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-circuit-breaker:
+    id: pattern-circuit-breaker
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-circuit-breaker.md
+    category: resilience
+    maturity: stable
+    stage_floor: production
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-retry-with-backoff
+    related:
+    - pattern-structured-logging
+    pillars:
+    - pillar-reliability
+  pattern-circuit-breaker.payments-api:
+    id: pattern-circuit-breaker
+    type: pattern
+    level: project
+    path: projects/payments-api/overrides/pattern-circuit-breaker.payments-api.md
+    level_name: payments-api
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    prerequisites:
+    - pattern-retry-with-backoff
+    related:
+    - pattern-structured-logging
+  pattern-claim-check:
+    id: pattern-claim-check
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-claim-check.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-message-translator
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-performance
+    - pillar-cost
+  pattern-compensating-transaction:
+    id: pattern-compensating-transaction
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-compensating-transaction.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-saga
+    pillars:
+    - pillar-reliability
+  pattern-competing-consumers:
+    id: pattern-competing-consumers
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-competing-consumers.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-queue-based-load-leveling
+    - pattern-publish-subscribe
+    - pattern-priority-queue
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-content-based-router:
+    id: pattern-content-based-router
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-content-based-router.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-message-router
+    related:
+    - pattern-message-translator
+    pillars:
+    - pillar-operational-excellence
+  pattern-correlation-id:
+    id: pattern-correlation-id
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/observability/pattern-correlation-id.md
+    category: observability
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-distributed-tracing
+    - pattern-structured-logging
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-operational-excellence
+  pattern-cqrs:
+    id: pattern-cqrs
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-cqrs.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-event-sourcing
+    - pattern-materialized-view
+    - pattern-read-replica
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
+  pattern-database-per-service:
+    id: pattern-database-per-service
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-database-per-service.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-microservices
+    related:
+    - pattern-saga
+    - pattern-transactional-outbox
+    - pattern-cqrs
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-dead-letter-channel:
+    id: pattern-dead-letter-channel
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-dead-letter-channel.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-retry-with-backoff
+    - pattern-competing-consumers
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-deployment-stamps:
+    id: pattern-deployment-stamps
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-deployment-stamps.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-geode
+    - pattern-microservices
+    pillars:
+    - pillar-reliability
+    - pillar-cost
+  pattern-distributed-tracing:
+    id: pattern-distributed-tracing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/observability/pattern-distributed-tracing.md
+    category: observability
+    maturity: stable
+    stage_floor: production
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-correlation-id
+    related:
+    - pattern-correlation-id
+    - pattern-structured-logging
+    - pattern-red-metrics
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-event-carried-state-transfer:
+    id: pattern-event-carried-state-transfer
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-event-carried-state-transfer.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-event-notification
+    - pattern-event-sourcing
+    contradicted_by:
+    - pattern-event-notification
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-event-driven-architecture:
+    id: pattern-event-driven-architecture
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-event-driven-architecture.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-microservices
+    - pattern-space-based-architecture
+    - pattern-pipeline
+    pillars:
+    - pillar-reliability
+    - pillar-performance
+  pattern-event-notification:
+    id: pattern-event-notification
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-event-notification.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-event-carried-state-transfer
+    - pattern-publish-subscribe
+    contradicted_by:
+    - pattern-event-carried-state-transfer
+    pillars:
+    - pillar-operational-excellence
+  pattern-event-sourcing:
+    id: pattern-event-sourcing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-event-sourcing.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-cqrs
+    - pattern-saga
+    - pattern-transactional-outbox
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-expand-contract-migration:
+    id: pattern-expand-contract-migration
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/refactoring/pattern-expand-contract-migration.md
+    category: refactoring
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    related:
+    - pattern-strangler-fig
+    - pattern-anti-corruption-layer
+    - pattern-feature-flag
+    - pattern-blue-green-deployment
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-feature-flag:
+    id: pattern-feature-flag
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-feature-flag.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-internal-tool
+    - context-agentic-system
+    related:
+    - pattern-canary-release
+    - pattern-blue-green-deployment
+    - pattern-strangler-fig
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-federated-identity:
+    id: pattern-federated-identity
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-federated-identity.md
+    category: security
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-oauth2-authorization
+    pillars:
+    - pillar-security
+    - pillar-operational-excellence
+  pattern-gateway-aggregation:
+    id: pattern-gateway-aggregation
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-gateway-aggregation.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    prerequisites:
+    - pattern-api-gateway
+    pillars:
+    - pillar-performance
+  pattern-gateway-offloading:
+    id: pattern-gateway-offloading
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-gateway-offloading.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    prerequisites:
+    - pattern-api-gateway
+    pillars:
+    - pillar-operational-excellence
+    - pillar-security
+  pattern-gateway-routing:
+    id: pattern-gateway-routing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-gateway-routing.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    prerequisites:
+    - pattern-api-gateway
+    pillars:
+    - pillar-operational-excellence
+  pattern-geode:
+    id: pattern-geode
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-geode.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-deployment-stamps
+    - pattern-load-balancing
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-graphql-api:
+    id: pattern-graphql-api
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-graphql-api.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-rest-api
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
+  pattern-grpc-api:
+    id: pattern-grpc-api
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-grpc-api.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-rest-api
+    pillars:
+    - pillar-performance
+  pattern-health-check-endpoint:
+    id: pattern-health-check-endpoint
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-health-check-endpoint.md
+    category: resilience
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-load-balancing
+    - pattern-circuit-breaker
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-hexagonal-architecture:
+    id: pattern-hexagonal-architecture
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-hexagonal-architecture.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-layered-architecture
+    - pattern-modular-monolith
+    pillars:
+    - pillar-operational-excellence
+  pattern-human-in-the-loop-interrupt:
+    id: pattern-human-in-the-loop-interrupt
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-human-in-the-loop-interrupt.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-react-loop
+    - pattern-tool-use
+    pillars:
+    - pillar-security
+    - pillar-reliability
+  pattern-idempotency-key:
+    id: pattern-idempotency-key
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-idempotency-key.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-retry-with-backoff
+    - pattern-compensating-transaction
+    pillars:
+    - pillar-reliability
+  pattern-input-validation:
+    id: pattern-input-validation
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-input-validation.md
+    category: security
+    maturity: stable
+    applies_to:
+    - context-web-application
+    pillars:
+    - pillar-security
+    - pillar-reliability
+  pattern-layered-architecture:
+    id: pattern-layered-architecture
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-layered-architecture.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-modular-monolith
+    - pattern-hexagonal-architecture
+    pillars:
+    - pillar-operational-excellence
+  pattern-leader-election:
+    id: pattern-leader-election
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-leader-election.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-bulkhead
+    pillars:
+    - pillar-reliability
+  pattern-llm-as-judge-eval:
+    id: pattern-llm-as-judge-eval
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-llm-as-judge-eval.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-reflexion
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-llm-budget-enforcement:
+    id: pattern-llm-budget-enforcement
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-llm-budget-enforcement.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-rate-limiting
+    - pattern-throttling
+    - pattern-tool-use
+    - pattern-orchestrator-workers
+    - pattern-react-loop
+    pillars:
+    - pillar-cost
+    - pillar-reliability
+    - pillar-security
+  pattern-load-balancing:
+    id: pattern-load-balancing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/scaling/pattern-load-balancing.md
+    category: scaling
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-health-check-endpoint
+    - pattern-microservices
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-materialized-view:
+    id: pattern-materialized-view
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-materialized-view.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-cqrs
+    - pattern-read-replica
+    pillars:
+    - pillar-performance
+  pattern-message-router:
+    id: pattern-message-router
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-message-router.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-content-based-router
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-operational-excellence
+  pattern-message-translator:
+    id: pattern-message-translator
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-message-translator.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-anti-corruption-layer
+    - pattern-content-based-router
+    pillars:
+    - pillar-operational-excellence
+  pattern-microkernel:
+    id: pattern-microkernel
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-microkernel.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-layered-architecture
+    - pattern-hexagonal-architecture
+    pillars:
+    - pillar-operational-excellence
+  pattern-microservices:
+    id: pattern-microservices
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-microservices.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-modular-monolith
+    related:
+    - pattern-service-based-architecture
+    - pattern-event-driven-architecture
+    contradicted_by:
+    - pattern-modular-monolith
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-modular-monolith:
+    id: pattern-modular-monolith
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-modular-monolith.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-layered-architecture
+    - pattern-hexagonal-architecture
+    contradicted_by:
+    - pattern-microservices
+    pillars:
+    - pillar-operational-excellence
+  pattern-oauth2-authorization:
+    id: pattern-oauth2-authorization
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-oauth2-authorization.md
+    category: security
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-federated-identity
+    - pattern-rbac
+    pillars:
+    - pillar-security
+  pattern-orchestrator-workers:
+    id: pattern-orchestrator-workers
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-orchestrator-workers.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-plan-then-execute
+    - pattern-human-in-the-loop-interrupt
+    pillars:
+    - pillar-operational-excellence
+    - pillar-performance
+  pattern-pipeline:
+    id: pattern-pipeline
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-pipeline.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-data-pipeline
+    related:
+    - pattern-event-driven-architecture
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
+  pattern-plan-then-execute:
+    id: pattern-plan-then-execute
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-plan-then-execute.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-orchestrator-workers
+    - pattern-react-loop
+    pillars:
+    - pillar-operational-excellence
+    - pillar-cost
+  pattern-priority-queue:
+    id: pattern-priority-queue
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-priority-queue.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-competing-consumers
+    - pattern-throttling
+    pillars:
+    - pillar-operational-excellence
+    - pillar-performance
+  pattern-prompt-injection-defense:
+    id: pattern-prompt-injection-defense
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-prompt-injection-defense.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    prerequisites:
+    - pattern-input-validation
+    related:
+    - pattern-tool-use
+    - pattern-human-in-the-loop-interrupt
+    - pattern-llm-budget-enforcement
+    - pattern-structured-logging
+    pillars:
+    - pillar-security
+    - pillar-reliability
+  pattern-publish-subscribe:
+    id: pattern-publish-subscribe
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-publish-subscribe.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-message-router
+    - pattern-competing-consumers
+    - pattern-event-notification
+    - pattern-event-carried-state-transfer
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-queue-based-load-leveling:
+    id: pattern-queue-based-load-leveling
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/scaling/pattern-queue-based-load-leveling.md
+    category: scaling
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-throttling
+    - pattern-rate-limiting
+    - pattern-competing-consumers
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-reliability
+    - pillar-cost
+  pattern-rate-limiting:
+    id: pattern-rate-limiting
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/scaling/pattern-rate-limiting.md
+    category: scaling
+    maturity: stable
+    stage_floor: production
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-throttling
+    - pattern-queue-based-load-leveling
+    pillars:
+    - pillar-reliability
+  pattern-rate-limiting.platform:
+    id: pattern-rate-limiting
+    type: pattern
+    level: team
+    path: teams/platform/extensions/pattern-rate-limiting.platform.md
+    level_name: platform
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+  pattern-rbac:
+    id: pattern-rbac
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-rbac.md
+    category: security
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-oauth2-authorization
+    pillars:
+    - pillar-security
+  pattern-react-loop:
+    id: pattern-react-loop
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-react-loop.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-tool-use
+    - pattern-reflexion
+    - pattern-plan-then-execute
+    pillars:
+    - pillar-operational-excellence
+  pattern-read-replica:
+    id: pattern-read-replica
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-read-replica.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-cqrs
+    - pattern-materialized-view
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-red-metrics:
+    id: pattern-red-metrics
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/observability/pattern-red-metrics.md
+    category: observability
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-distributed-tracing
+    - pattern-structured-logging
+    - pattern-health-check-endpoint
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-reflexion:
+    id: pattern-reflexion
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-reflexion.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-llm-as-judge-eval
+    - pattern-react-loop
+    pillars:
+    - pillar-reliability
+  pattern-rest-api:
+    id: pattern-rest-api
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/communication/pattern-rest-api.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    pillars:
+    - pillar-operational-excellence
+    - pillar-performance
+  pattern-rest-api.org:
+    id: pattern-rest-api
+    type: pattern
+    level: org
+    path: org/overrides/pattern-rest-api.org.md
+    category: communication
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - standard-api-versioning
+  pattern-retry-with-backoff:
+    id: pattern-retry-with-backoff
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-retry-with-backoff.md
+    category: resilience
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-circuit-breaker
+    pillars:
+    - pillar-reliability
+  pattern-saga:
+    id: pattern-saga
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-saga.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    prerequisites:
+    - pattern-database-per-service
+    related:
+    - pattern-compensating-transaction
+    - pattern-transactional-outbox
+    pillars:
+    - pillar-reliability
+  pattern-scatter-gather:
+    id: pattern-scatter-gather
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/integration/pattern-scatter-gather.md
+    category: integration
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-publish-subscribe
+    - pattern-async-request-reply
+    pillars:
+    - pillar-performance
+  pattern-secrets-management:
+    id: pattern-secrets-management
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-secrets-management.md
+    category: security
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    pillars:
+    - pillar-security
+  pattern-service-based-architecture:
+    id: pattern-service-based-architecture
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-service-based-architecture.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-microservices
+    - pattern-modular-monolith
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-sharding:
+    id: pattern-sharding
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-sharding.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-read-replica
+    pillars:
+    - pillar-performance
+  pattern-sidecar:
+    id: pattern-sidecar
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-sidecar.md
+    category: deployment
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-ambassador
+    - pattern-microservices
+    pillars:
+    - pillar-operational-excellence
+  pattern-space-based-architecture:
+    id: pattern-space-based-architecture
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/styles/pattern-space-based-architecture.md
+    category: style
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-event-driven-architecture
+    - pattern-cqrs
+    pillars:
+    - pillar-performance
+    - pillar-reliability
+  pattern-strangler-fig:
+    id: pattern-strangler-fig
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/refactoring/pattern-strangler-fig.md
+    category: refactoring
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-anti-corruption-layer
+    - pattern-modular-monolith
+    - pattern-microservices
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-structured-logging:
+    id: pattern-structured-logging
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/observability/pattern-structured-logging.md
+    category: observability
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    related:
+    - pattern-circuit-breaker
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-throttling:
+    id: pattern-throttling
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-throttling.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-rate-limiting
+    - pattern-queue-based-load-leveling
+    - pattern-bulkhead
+    pillars:
+    - pillar-reliability
+    - pillar-cost
+  pattern-timeout:
+    id: pattern-timeout
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/resilience/pattern-timeout.md
+    category: resilience
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    - pattern-bulkhead
+    pillars:
+    - pillar-reliability
+  pattern-tool-use:
+    id: pattern-tool-use
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/agentic/pattern-tool-use.md
+    category: agentic
+    maturity: experimental
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    - context-web-application
+    related:
+    - pattern-react-loop
+    - pattern-retry-with-backoff
+    - pattern-idempotency-key
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-transactional-outbox:
+    id: pattern-transactional-outbox
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/data/pattern-transactional-outbox.md
+    category: data
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    related:
+    - pattern-saga
+    - pattern-event-sourcing
+    - pattern-publish-subscribe
+    pillars:
+    - pillar-reliability
+  pattern-valet-key:
+    id: pattern-valet-key
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-valet-key.md
+    category: security
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-oauth2-authorization
+    pillars:
+    - pillar-security
+    - pillar-performance
+  pillar-cost:
+    id: pillar-cost
+    type: pillar
+    level: foundation
+    path: foundations/05-pillars/pillar-cost.md
+    maturity: stable
+    realised_by:
+    - principle-right-size-resources
+    - principle-pay-for-what-you-use
+    tradeoffs_with:
+    - pillar-reliability
+    - pillar-performance
+  pillar-operational-excellence:
+    id: pillar-operational-excellence
+    type: pillar
+    level: foundation
+    path: foundations/05-pillars/pillar-operational-excellence.md
+    maturity: stable
+    realised_by:
+    - principle-automate-everything-repetitive
+    - principle-observe-before-optimising
+    - principle-deploy-small-and-often
+    tradeoffs_with:
+    - pillar-cost
+  pillar-performance:
+    id: pillar-performance
+    type: pillar
+    level: foundation
+    path: foundations/05-pillars/pillar-performance.md
+    maturity: stable
+    realised_by:
+    - principle-scale-out-not-up
+    - principle-cache-close-to-consumer
+    - principle-do-less-work
+    tradeoffs_with:
+    - pillar-cost
+    - pillar-reliability
+  pillar-reliability:
+    id: pillar-reliability
+    type: pillar
+    level: foundation
+    path: foundations/05-pillars/pillar-reliability.md
+    maturity: stable
+    realised_by:
+    - principle-design-for-failure
+    - principle-design-for-self-healing
+    - principle-minimize-coordination
+    tradeoffs_with:
+    - pillar-cost
+    - pillar-performance
+  pillar-security:
+    id: pillar-security
+    type: pillar
+    level: foundation
+    path: foundations/05-pillars/pillar-security.md
+    maturity: stable
+    realised_by:
+    - principle-defence-in-depth
+    - principle-least-privilege
+    - principle-zero-trust
+    tradeoffs_with:
+    - pillar-operational-excellence
+    - pillar-performance
+  principle-automate-everything-repetitive:
+    id: principle-automate-everything-repetitive
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-automate-everything-repetitive.md
+    maturity: stable
+    related_patterns:
+    - pattern-health-check-endpoint
+    - pattern-structured-logging
+    pillar: pillar-operational-excellence
+  principle-cache-close-to-consumer:
+    id: principle-cache-close-to-consumer
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-cache-close-to-consumer.md
+    maturity: stable
+    related_patterns:
+    - pattern-cache-aside
+    - pattern-materialized-view
+    - pattern-read-replica
+    - pattern-geode
+    pillar: pillar-performance
+  principle-defence-in-depth:
+    id: principle-defence-in-depth
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-defence-in-depth.md
+    maturity: stable
+    related_patterns:
+    - pattern-input-validation
+    - pattern-rbac
+    - pattern-oauth2-authorization
+    - pattern-secrets-management
+    pillar: pillar-security
+  principle-deploy-small-and-often:
+    id: principle-deploy-small-and-often
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-deploy-small-and-often.md
+    maturity: stable
+    related_patterns:
+    - pattern-health-check-endpoint
+    - pattern-deployment-stamps
+    - pattern-strangler-fig
+    pillar: pillar-operational-excellence
+  principle-design-for-failure:
+    id: principle-design-for-failure
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-design-for-failure.md
+    maturity: stable
+    related_patterns:
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    - pattern-bulkhead
+    - pattern-timeout
+    pillar: pillar-reliability
+  principle-design-for-self-healing:
+    id: principle-design-for-self-healing
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-design-for-self-healing.md
+    maturity: stable
+    related_patterns:
+    - pattern-health-check-endpoint
+    - pattern-circuit-breaker
+    - pattern-retry-with-backoff
+    - pattern-leader-election
+    pillar: pillar-reliability
+  principle-do-less-work:
+    id: principle-do-less-work
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-do-less-work.md
+    maturity: stable
+    related_patterns:
+    - pattern-cache-aside
+    - pattern-materialized-view
+    - pattern-queue-based-load-leveling
+    - pattern-throttling
+    pillar: pillar-performance
+  principle-least-privilege:
+    id: principle-least-privilege
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-least-privilege.md
+    maturity: stable
+    related_patterns:
+    - pattern-rbac
+    - pattern-valet-key
+    - pattern-secrets-management
+    pillar: pillar-security
+  principle-minimize-coordination:
+    id: principle-minimize-coordination
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-minimize-coordination.md
+    maturity: stable
+    related_patterns:
+    - pattern-database-per-service
+    - pattern-event-sourcing
+    - pattern-saga
+    - pattern-read-replica
+    pillar: pillar-reliability
+  principle-observe-before-optimising:
+    id: principle-observe-before-optimising
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-observe-before-optimising.md
+    maturity: stable
+    related_patterns:
+    - pattern-structured-logging
+    - pattern-distributed-tracing
+    - pattern-red-metrics
+    - pattern-correlation-id
+    pillar: pillar-operational-excellence
+  principle-pay-for-what-you-use:
+    id: principle-pay-for-what-you-use
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-pay-for-what-you-use.md
+    maturity: stable
+    related_patterns:
+    - pattern-queue-based-load-leveling
+    - pattern-cache-aside
+    - pattern-throttling
+    pillar: pillar-cost
+  principle-right-size-resources:
+    id: principle-right-size-resources
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-right-size-resources.md
+    maturity: stable
+    related_patterns:
+    - pattern-load-balancing
+    - pattern-queue-based-load-leveling
+    - pattern-throttling
+    pillar: pillar-cost
+  principle-scale-out-not-up:
+    id: principle-scale-out-not-up
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-scale-out-not-up.md
+    maturity: stable
+    related_patterns:
+    - pattern-load-balancing
+    - pattern-sharding
+    - pattern-competing-consumers
+    - pattern-space-based-architecture
+    pillar: pillar-performance
+  principle-zero-trust:
+    id: principle-zero-trust
+    type: principle
+    level: foundation
+    path: foundations/15-principles/principle-zero-trust.md
+    maturity: stable
+    related_patterns:
+    - pattern-oauth2-authorization
+    - pattern-federated-identity
+    - pattern-input-validation
+    pillar: pillar-security
+  solution-llm-eval-harness:
+    id: solution-llm-eval-harness
+    type: solution
+    level: foundation
+    path: foundations/30-solutions/solution-llm-eval-harness.md
+    maturity: stable
+    applies_to:
+    - context-agentic-system
+    - context-internal-tool
+    related:
+    - pattern-tool-use
+    - pattern-react-loop
+    - dtree-choose-background-work
+    composes:
+    - pattern-pipeline
+    - pattern-orchestrator-workers
+    - pattern-llm-as-judge-eval
+    - pattern-llm-budget-enforcement
+    - pattern-prompt-injection-defense
+    - pattern-idempotency-key
+    - pattern-structured-logging
+    - pattern-correlation-id
+  stage-critical:
+    id: stage-critical
+    type: stage
+    level: foundation
+    path: foundations/12-stages/stage-critical.md
+    maturity: stable
+    related:
+    - stage-production
+  stage-mvp:
+    id: stage-mvp
+    type: stage
+    level: foundation
+    path: foundations/12-stages/stage-mvp.md
+    maturity: stable
+    related:
+    - stage-prototype
+    - stage-production
+    next_stage: stage-production
+  stage-production:
+    id: stage-production
+    type: stage
+    level: foundation
+    path: foundations/12-stages/stage-production.md
+    maturity: stable
+    related:
+    - stage-mvp
+    - stage-critical
+    next_stage: stage-critical
+  stage-prototype:
+    id: stage-prototype
+    type: stage
+    level: foundation
+    path: foundations/12-stages/stage-prototype.md
+    maturity: stable
+    related:
+    - stage-mvp
+    typical_antipatterns:
+    - antipattern-prototype-drift
+    next_stage: stage-mvp
+  standard-api-versioning.org:
+    id: standard-api-versioning
+    type: standard
+    level: org
+    path: org/standards/standard-api-versioning.org.md
+    category: api
+    maturity: stable
+    enforceability: automated
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-rest-api
+  standard-deploy-process.platform:
+    id: standard-deploy-process
+    type: standard
+    level: team
+    path: teams/platform/standards/standard-deploy-process.platform.md
+    level_name: platform
+    category: deployment
+    maturity: stable
+    enforceability: automated
+    applies_to:
+    - context-web-application
+by_id:
+  adr-0001-fastapi-as-default:
+  - adr-0001-fastapi-as-default.org
+  adr-0001-relaxed-circuit-breaker-timeouts:
+  - adr-0001-relaxed-circuit-breaker-timeouts.payments-api
+  adr-0002-currency-authority-exemption:
+  - adr-0002-currency-authority-exemption.org
+  antipattern-god-service:
+  - antipattern-god-service
+  antipattern-prototype-drift:
+  - antipattern-prototype-drift
+  antipattern-silent-failure:
+  - antipattern-silent-failure
+  context-agentic-system:
+  - context-agentic-system
+  context-batch-processing:
+  - context-batch-processing
+  context-data-pipeline:
+  - context-data-pipeline
+  context-event-driven-system:
+  - context-event-driven-system
+  context-internal-tool:
+  - context-internal-tool
+  context-ml-system:
+  - context-ml-system
+  context-web-application:
+  - context-web-application
+  dtree-choose-api-style:
+  - dtree-choose-api-style
+  dtree-choose-background-work:
+  - dtree-choose-background-work
+  dtree-choose-data-access:
+  - dtree-choose-data-access
+  dtree-choose-event-style:
+  - dtree-choose-event-style
+  dtree-choose-messaging-style:
+  - dtree-choose-messaging-style
+  dtree-choose-service-boundary:
+  - dtree-choose-service-boundary
+  pattern-ambassador:
+  - pattern-ambassador
+  pattern-anti-corruption-layer:
+  - pattern-anti-corruption-layer
+  pattern-api-gateway:
+  - pattern-api-gateway
+  pattern-async-request-reply:
+  - pattern-async-request-reply
+  pattern-backend-for-frontend:
+  - pattern-backend-for-frontend
+  pattern-blue-green-deployment:
+  - pattern-blue-green-deployment
+  pattern-bulkhead:
+  - pattern-bulkhead
+  pattern-cache-aside:
+  - pattern-cache-aside
+  pattern-canary-release:
+  - pattern-canary-release
+  pattern-circuit-breaker:
+  - pattern-circuit-breaker
+  - pattern-circuit-breaker.payments-api
+  pattern-claim-check:
+  - pattern-claim-check
+  pattern-compensating-transaction:
+  - pattern-compensating-transaction
+  pattern-competing-consumers:
+  - pattern-competing-consumers
+  pattern-content-based-router:
+  - pattern-content-based-router
+  pattern-correlation-id:
+  - pattern-correlation-id
+  pattern-cqrs:
+  - pattern-cqrs
+  pattern-database-per-service:
+  - pattern-database-per-service
+  pattern-dead-letter-channel:
+  - pattern-dead-letter-channel
+  pattern-deployment-stamps:
+  - pattern-deployment-stamps
+  pattern-distributed-tracing:
+  - pattern-distributed-tracing
+  pattern-event-carried-state-transfer:
+  - pattern-event-carried-state-transfer
+  pattern-event-driven-architecture:
+  - pattern-event-driven-architecture
+  pattern-event-notification:
+  - pattern-event-notification
+  pattern-event-sourcing:
+  - pattern-event-sourcing
+  pattern-expand-contract-migration:
+  - pattern-expand-contract-migration
+  pattern-feature-flag:
+  - pattern-feature-flag
+  pattern-federated-identity:
+  - pattern-federated-identity
+  pattern-gateway-aggregation:
+  - pattern-gateway-aggregation
+  pattern-gateway-offloading:
+  - pattern-gateway-offloading
+  pattern-gateway-routing:
+  - pattern-gateway-routing
+  pattern-geode:
+  - pattern-geode
+  pattern-graphql-api:
+  - pattern-graphql-api
+  pattern-grpc-api:
+  - pattern-grpc-api
+  pattern-health-check-endpoint:
+  - pattern-health-check-endpoint
+  pattern-hexagonal-architecture:
+  - pattern-hexagonal-architecture
+  pattern-human-in-the-loop-interrupt:
+  - pattern-human-in-the-loop-interrupt
+  pattern-idempotency-key:
+  - pattern-idempotency-key
+  pattern-input-validation:
+  - pattern-input-validation
+  pattern-layered-architecture:
+  - pattern-layered-architecture
+  pattern-leader-election:
+  - pattern-leader-election
+  pattern-llm-as-judge-eval:
+  - pattern-llm-as-judge-eval
+  pattern-llm-budget-enforcement:
+  - pattern-llm-budget-enforcement
+  pattern-load-balancing:
+  - pattern-load-balancing
+  pattern-materialized-view:
+  - pattern-materialized-view
+  pattern-message-router:
+  - pattern-message-router
+  pattern-message-translator:
+  - pattern-message-translator
+  pattern-microkernel:
+  - pattern-microkernel
+  pattern-microservices:
+  - pattern-microservices
+  pattern-modular-monolith:
+  - pattern-modular-monolith
+  pattern-oauth2-authorization:
+  - pattern-oauth2-authorization
+  pattern-orchestrator-workers:
+  - pattern-orchestrator-workers
+  pattern-pipeline:
+  - pattern-pipeline
+  pattern-plan-then-execute:
+  - pattern-plan-then-execute
+  pattern-priority-queue:
+  - pattern-priority-queue
+  pattern-prompt-injection-defense:
+  - pattern-prompt-injection-defense
+  pattern-publish-subscribe:
+  - pattern-publish-subscribe
+  pattern-queue-based-load-leveling:
+  - pattern-queue-based-load-leveling
+  pattern-rate-limiting:
+  - pattern-rate-limiting
+  - pattern-rate-limiting.platform
+  pattern-rbac:
+  - pattern-rbac
+  pattern-react-loop:
+  - pattern-react-loop
+  pattern-read-replica:
+  - pattern-read-replica
+  pattern-red-metrics:
+  - pattern-red-metrics
+  pattern-reflexion:
+  - pattern-reflexion
+  pattern-rest-api:
+  - pattern-rest-api
+  - pattern-rest-api.org
+  pattern-retry-with-backoff:
+  - pattern-retry-with-backoff
+  pattern-saga:
+  - pattern-saga
+  pattern-scatter-gather:
+  - pattern-scatter-gather
+  pattern-secrets-management:
+  - pattern-secrets-management
+  pattern-service-based-architecture:
+  - pattern-service-based-architecture
+  pattern-sharding:
+  - pattern-sharding
+  pattern-sidecar:
+  - pattern-sidecar
+  pattern-space-based-architecture:
+  - pattern-space-based-architecture
+  pattern-strangler-fig:
+  - pattern-strangler-fig
+  pattern-structured-logging:
+  - pattern-structured-logging
+  pattern-throttling:
+  - pattern-throttling
+  pattern-timeout:
+  - pattern-timeout
+  pattern-tool-use:
+  - pattern-tool-use
+  pattern-transactional-outbox:
+  - pattern-transactional-outbox
+  pattern-valet-key:
+  - pattern-valet-key
+  pillar-cost:
+  - pillar-cost
+  pillar-operational-excellence:
+  - pillar-operational-excellence
+  pillar-performance:
+  - pillar-performance
+  pillar-reliability:
+  - pillar-reliability
+  pillar-security:
+  - pillar-security
+  principle-automate-everything-repetitive:
+  - principle-automate-everything-repetitive
+  principle-cache-close-to-consumer:
+  - principle-cache-close-to-consumer
+  principle-defence-in-depth:
+  - principle-defence-in-depth
+  principle-deploy-small-and-often:
+  - principle-deploy-small-and-often
+  principle-design-for-failure:
+  - principle-design-for-failure
+  principle-design-for-self-healing:
+  - principle-design-for-self-healing
+  principle-do-less-work:
+  - principle-do-less-work
+  principle-least-privilege:
+  - principle-least-privilege
+  principle-minimize-coordination:
+  - principle-minimize-coordination
+  principle-observe-before-optimising:
+  - principle-observe-before-optimising
+  principle-pay-for-what-you-use:
+  - principle-pay-for-what-you-use
+  principle-right-size-resources:
+  - principle-right-size-resources
+  principle-scale-out-not-up:
+  - principle-scale-out-not-up
+  principle-zero-trust:
+  - principle-zero-trust
+  solution-llm-eval-harness:
+  - solution-llm-eval-harness
+  stage-critical:
+  - stage-critical
+  stage-mvp:
+  - stage-mvp
+  stage-production:
+  - stage-production
+  stage-prototype:
+  - stage-prototype
+  standard-api-versioning:
+  - standard-api-versioning.org
+  standard-deploy-process:
+  - standard-deploy-process.platform
+overrides:
+  pattern-circuit-breaker:
+    projects:
+      payments-api: pattern-circuit-breaker.payments-api
+  pattern-rest-api:
+    org: pattern-rest-api.org
+context_to_patterns:
+  context-agentic-system:
+  - pattern-feature-flag
+  - pattern-human-in-the-loop-interrupt
+  - pattern-llm-as-judge-eval
+  - pattern-llm-budget-enforcement
+  - pattern-orchestrator-workers
+  - pattern-plan-then-execute
+  - pattern-prompt-injection-defense
+  - pattern-react-loop
+  - pattern-reflexion
+  - pattern-tool-use
+  context-batch-processing:
+  - pattern-expand-contract-migration
+  context-data-pipeline:
+  - pattern-expand-contract-migration
+  - pattern-pipeline
+  - pattern-structured-logging
+  context-event-driven-system:
+  - pattern-ambassador
+  - pattern-blue-green-deployment
+  - pattern-bulkhead
+  - pattern-canary-release
+  - pattern-circuit-breaker
+  - pattern-claim-check
+  - pattern-compensating-transaction
+  - pattern-competing-consumers
+  - pattern-content-based-router
+  - pattern-correlation-id
+  - pattern-database-per-service
+  - pattern-dead-letter-channel
+  - pattern-distributed-tracing
+  - pattern-event-carried-state-transfer
+  - pattern-event-driven-architecture
+  - pattern-event-notification
+  - pattern-event-sourcing
+  - pattern-expand-contract-migration
+  - pattern-health-check-endpoint
+  - pattern-leader-election
+  - pattern-message-router
+  - pattern-message-translator
+  - pattern-microservices
+  - pattern-priority-queue
+  - pattern-publish-subscribe
+  - pattern-queue-based-load-leveling
+  - pattern-red-metrics
+  - pattern-retry-with-backoff
+  - pattern-saga
+  - pattern-scatter-gather
+  - pattern-sidecar
+  - pattern-structured-logging
+  - pattern-throttling
+  - pattern-timeout
+  - pattern-transactional-outbox
+  context-internal-tool:
+  - pattern-blue-green-deployment
+  - pattern-feature-flag
+  - pattern-human-in-the-loop-interrupt
+  - pattern-llm-as-judge-eval
+  - pattern-llm-budget-enforcement
+  - pattern-orchestrator-workers
+  - pattern-plan-then-execute
+  - pattern-prompt-injection-defense
+  - pattern-react-loop
+  - pattern-reflexion
+  - pattern-tool-use
+  context-web-application:
+  - pattern-ambassador
+  - pattern-anti-corruption-layer
+  - pattern-api-gateway
+  - pattern-async-request-reply
+  - pattern-backend-for-frontend
+  - pattern-blue-green-deployment
+  - pattern-bulkhead
+  - pattern-cache-aside
+  - pattern-canary-release
+  - pattern-circuit-breaker
+  - pattern-circuit-breaker.payments-api
+  - pattern-claim-check
+  - pattern-compensating-transaction
+  - pattern-competing-consumers
+  - pattern-content-based-router
+  - pattern-correlation-id
+  - pattern-cqrs
+  - pattern-database-per-service
+  - pattern-dead-letter-channel
+  - pattern-deployment-stamps
+  - pattern-distributed-tracing
+  - pattern-event-carried-state-transfer
+  - pattern-event-driven-architecture
+  - pattern-event-notification
+  - pattern-event-sourcing
+  - pattern-expand-contract-migration
+  - pattern-feature-flag
+  - pattern-federated-identity
+  - pattern-gateway-aggregation
+  - pattern-gateway-offloading
+  - pattern-gateway-routing
+  - pattern-geode
+  - pattern-graphql-api
+  - pattern-grpc-api
+  - pattern-health-check-endpoint
+  - pattern-hexagonal-architecture
+  - pattern-human-in-the-loop-interrupt
+  - pattern-idempotency-key
+  - pattern-input-validation
+  - pattern-layered-architecture
+  - pattern-leader-election
+  - pattern-llm-as-judge-eval
+  - pattern-llm-budget-enforcement
+  - pattern-load-balancing
+  - pattern-materialized-view
+  - pattern-message-router
+  - pattern-message-translator
+  - pattern-microkernel
+  - pattern-microservices
+  - pattern-modular-monolith
+  - pattern-oauth2-authorization
+  - pattern-orchestrator-workers
+  - pattern-pipeline
+  - pattern-plan-then-execute
+  - pattern-priority-queue
+  - pattern-prompt-injection-defense
+  - pattern-publish-subscribe
+  - pattern-queue-based-load-leveling
+  - pattern-rate-limiting
+  - pattern-rate-limiting.platform
+  - pattern-rbac
+  - pattern-react-loop
+  - pattern-read-replica
+  - pattern-red-metrics
+  - pattern-reflexion
+  - pattern-rest-api
+  - pattern-rest-api.org
+  - pattern-retry-with-backoff
+  - pattern-saga
+  - pattern-scatter-gather
+  - pattern-secrets-management
+  - pattern-service-based-architecture
+  - pattern-sharding
+  - pattern-sidecar
+  - pattern-space-based-architecture
+  - pattern-strangler-fig
+  - pattern-structured-logging
+  - pattern-throttling
+  - pattern-timeout
+  - pattern-tool-use
+  - pattern-transactional-outbox
+  - pattern-valet-key
+context_to_antipatterns:
+  context-agentic-system:
+  - antipattern-prototype-drift
+  - antipattern-silent-failure
+  context-batch-processing:
+  - antipattern-silent-failure
+  context-data-pipeline:
+  - antipattern-prototype-drift
+  - antipattern-silent-failure
+  context-event-driven-system:
+  - antipattern-silent-failure
+  context-internal-tool:
+  - antipattern-prototype-drift
+  - antipattern-silent-failure
+  context-ml-system:
+  - antipattern-prototype-drift
+  context-web-application:
+  - antipattern-god-service
+  - antipattern-prototype-drift
+  - antipattern-silent-failure
+context_to_standards:
+  __universal: []
+  context-web-application:
+  - standard-api-versioning.org
+  - standard-deploy-process.platform
+pillar_to_principles:
+  pillar-cost:
+  - principle-pay-for-what-you-use
+  - principle-right-size-resources
+  pillar-operational-excellence:
+  - principle-automate-everything-repetitive
+  - principle-deploy-small-and-often
+  - principle-observe-before-optimising
+  pillar-performance:
+  - principle-cache-close-to-consumer
+  - principle-do-less-work
+  - principle-scale-out-not-up
+  pillar-reliability:
+  - principle-design-for-failure
+  - principle-design-for-self-healing
+  - principle-minimize-coordination
+  pillar-security:
+  - principle-defence-in-depth
+  - principle-least-privilege
+  - principle-zero-trust
+pattern_to_principles:
+  pattern-bulkhead:
+  - principle-design-for-failure
+  pattern-cache-aside:
+  - principle-cache-close-to-consumer
+  - principle-do-less-work
+  - principle-pay-for-what-you-use
+  pattern-circuit-breaker:
+  - principle-design-for-failure
+  - principle-design-for-self-healing
+  pattern-competing-consumers:
+  - principle-scale-out-not-up
+  pattern-correlation-id:
+  - principle-observe-before-optimising
+  pattern-database-per-service:
+  - principle-minimize-coordination
+  pattern-deployment-stamps:
+  - principle-deploy-small-and-often
+  pattern-distributed-tracing:
+  - principle-observe-before-optimising
+  pattern-event-sourcing:
+  - principle-minimize-coordination
+  pattern-federated-identity:
+  - principle-zero-trust
+  pattern-geode:
+  - principle-cache-close-to-consumer
+  pattern-health-check-endpoint:
+  - principle-automate-everything-repetitive
+  - principle-deploy-small-and-often
+  - principle-design-for-self-healing
+  pattern-input-validation:
+  - principle-defence-in-depth
+  - principle-zero-trust
+  pattern-leader-election:
+  - principle-design-for-self-healing
+  pattern-load-balancing:
+  - principle-right-size-resources
+  - principle-scale-out-not-up
+  pattern-materialized-view:
+  - principle-cache-close-to-consumer
+  - principle-do-less-work
+  pattern-oauth2-authorization:
+  - principle-defence-in-depth
+  - principle-zero-trust
+  pattern-queue-based-load-leveling:
+  - principle-do-less-work
+  - principle-pay-for-what-you-use
+  - principle-right-size-resources
+  pattern-rbac:
+  - principle-defence-in-depth
+  - principle-least-privilege
+  pattern-read-replica:
+  - principle-cache-close-to-consumer
+  - principle-minimize-coordination
+  pattern-red-metrics:
+  - principle-observe-before-optimising
+  pattern-retry-with-backoff:
+  - principle-design-for-failure
+  - principle-design-for-self-healing
+  pattern-saga:
+  - principle-minimize-coordination
+  pattern-secrets-management:
+  - principle-defence-in-depth
+  - principle-least-privilege
+  pattern-sharding:
+  - principle-scale-out-not-up
+  pattern-space-based-architecture:
+  - principle-scale-out-not-up
+  pattern-strangler-fig:
+  - principle-deploy-small-and-often
+  pattern-structured-logging:
+  - principle-automate-everything-repetitive
+  - principle-observe-before-optimising
+  pattern-throttling:
+  - principle-do-less-work
+  - principle-pay-for-what-you-use
+  - principle-right-size-resources
+  pattern-timeout:
+  - principle-design-for-failure
+  pattern-valet-key:
+  - principle-least-privilege
+pattern_to_dtrees:
+  pattern-async-request-reply:
+  - dtree-choose-background-work
+  - dtree-choose-messaging-style
+  pattern-cache-aside:
+  - dtree-choose-data-access
+  pattern-competing-consumers:
+  - dtree-choose-background-work
+  - dtree-choose-messaging-style
+  pattern-cqrs:
+  - dtree-choose-data-access
+  pattern-event-carried-state-transfer:
+  - dtree-choose-event-style
+  pattern-event-notification:
+  - dtree-choose-event-style
+  pattern-event-sourcing:
+  - dtree-choose-event-style
+  pattern-graphql-api:
+  - dtree-choose-api-style
+  pattern-grpc-api:
+  - dtree-choose-api-style
+  - dtree-choose-messaging-style
+  pattern-layered-architecture:
+  - dtree-choose-service-boundary
+  pattern-materialized-view:
+  - dtree-choose-data-access
+  pattern-microservices:
+  - dtree-choose-service-boundary
+  pattern-modular-monolith:
+  - dtree-choose-service-boundary
+  pattern-publish-subscribe:
+  - dtree-choose-messaging-style
+  pattern-queue-based-load-leveling:
+  - dtree-choose-background-work
+  pattern-read-replica:
+  - dtree-choose-data-access
+  pattern-rest-api:
+  - dtree-choose-api-style
+  - dtree-choose-messaging-style
+  pattern-service-based-architecture:
+  - dtree-choose-service-boundary
+affects_to_adrs:
+  CHARTER:
+  - adr-0002-currency-authority-exemption.org
+  pattern-circuit-breaker:
+  - adr-0001-relaxed-circuit-breaker-timeouts.payments-api
+  pattern-rest-api:
+  - adr-0001-fastapi-as-default.org
+solution_composes:
+  solution-llm-eval-harness:
+  - pattern-correlation-id
+  - pattern-idempotency-key
+  - pattern-llm-as-judge-eval
+  - pattern-llm-budget-enforcement
+  - pattern-orchestrator-workers
+  - pattern-pipeline
+  - pattern-prompt-injection-defense
+  - pattern-structured-logging
+prerequisites_closure:
+  pattern-blue-green-deployment:
+  - pattern-health-check-endpoint
+  pattern-canary-release:
+  - pattern-load-balancing
+  - pattern-red-metrics
+  pattern-circuit-breaker:
+  - pattern-retry-with-backoff
+  pattern-circuit-breaker.payments-api:
+  - pattern-retry-with-backoff
+  pattern-content-based-router:
+  - pattern-message-router
+  pattern-database-per-service:
+  - pattern-microservices
+  - pattern-modular-monolith
+  pattern-distributed-tracing:
+  - pattern-correlation-id
+  pattern-gateway-aggregation:
+  - pattern-api-gateway
+  pattern-gateway-offloading:
+  - pattern-api-gateway
+  pattern-gateway-routing:
+  - pattern-api-gateway
+  pattern-microservices:
+  - pattern-modular-monolith
+  pattern-prompt-injection-defense:
+  - pattern-input-validation
+  pattern-saga:
+  - pattern-database-per-service
+  - pattern-microservices
+  - pattern-modular-monolith

@@ -34,7 +34,8 @@ carta/                                  # Repository root = Obsidian vault
 │   ├── 25-decision-trees/              # Selection guides between alternative patterns
 │   ├── 30-solutions/                   # Composed patterns
 │   ├── 40-standards/                   # Meta-standards and templates only
-│   └── 50-antipatterns/                # What not to do
+│   ├── 50-antipatterns/                # What not to do
+│   └── INDEX.yaml                      # Generated graph index; freshness checked by tools/validate.py
 │
 ├── templates/                          # Node scaffolding (tpl-*.md)
 │

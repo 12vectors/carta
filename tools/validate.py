@@ -21,6 +21,7 @@ from carta_checks import (
     parse_node,
     run_structural_checks,
 )
+from build_index import INDEX_REL_PATH, build_index, dump_yaml
 
 
 def main() -> int:
@@ -55,6 +56,22 @@ def main() -> int:
 
     # Cross-node checks
     all_diags.extend(check_bidirectional_contradictions(nodes))
+
+    # Index freshness
+    index_path = root / INDEX_REL_PATH
+    if index_path.exists():
+        expected = dump_yaml(build_index(root)).strip()
+        actual = index_path.read_text(encoding="utf-8").strip()
+        if expected != actual:
+            all_diags.append(Diagnostic(
+                INDEX_REL_PATH, "error", "Index freshness",
+                "INDEX.yaml is stale — regenerate with: python tools/build_index.py"
+            ))
+    else:
+        all_diags.append(Diagnostic(
+            INDEX_REL_PATH, "error", "Index freshness",
+            "INDEX.yaml is missing — generate with: python tools/build_index.py"
+        ))
 
     # Output
     errors = [d for d in all_diags if d.severity == "error"]
