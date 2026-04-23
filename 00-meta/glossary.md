@@ -31,8 +31,11 @@ An admission criterion requiring that nodes reflect current understanding. Sourc
 **Decidability**
 An admission criterion requiring that every node gives an agent enough information to make a defensible yes-or-no decision about whether to apply it. See `CHARTER.md`.
 
-**Decision tree**
-`DECISION_TREE.md` — the top-level routing document that maps tasks to contexts via a signal table.
+**Decision tree (document)**
+`DECISION_TREE.md` at the repository root — the top-level routing document that maps tasks to contexts via a signal table.
+
+**Decision tree (node type)**
+A node of type `decision-tree` in `foundations/25-decision-trees/` that picks between alternative patterns on named criteria (e.g. REST vs GraphQL vs gRPC). Consulted during traversal when the candidate set contains two or more patterns the dtree's `decides_between` includes. Filename prefix: `dtree-`.
 
 **Demotion**
 The process of moving a node out of the foundations when it no longer meets admission criteria. Demotion paths vary by which criterion failed. See `CHARTER.md`.
@@ -56,7 +59,7 @@ An operation that propagates the effects of a new decision or change across the 
 An operation that checks the health of the graph — detecting contradictions, orphans, stale nodes, missing pages, and other structural or semantic issues. See `operations.md`.
 
 **Node**
-Any file in Carta with valid frontmatter following the schema in `00-meta/node-schema.md`. The six node types are: pattern, antipattern, standard, solution, context, adr.
+Any file in Carta with valid frontmatter following the schema in `00-meta/node-schema.md`. The ten node types are: `pattern`, `antipattern`, `standard`, `solution`, `context`, `adr`, `pillar`, `principle`, `decision-tree`, `stage`.
 
 **Organisation level**
 The organisation-level overrides, extensions, standards, and decisions that apply across all projects and teams in the org. Lives in `org/`.
@@ -66,6 +69,12 @@ A file that replaces a foundation or higher-level node for a specific organisati
 
 **Pattern**
 A node of type `pattern` describing a reusable architectural approach — when to use it, when not to, what it trades off, and how to implement it.
+
+**Pillar**
+A node of type `pillar` describing a Well-Architected-style quality lens — `reliability`, `security`, `cost`, `operational-excellence`, or `performance`. Patterns and antipatterns list the pillars they serve via the `pillars:` wikilink frontmatter. Pillars frame trade-offs during traversal: the pillars a task foregrounds determine which principles apply and how findings are ordered.
+
+**Principle**
+A node of type `principle` in `foundations/15-principles/` — a cross-cutting design heuristic that realises a pillar. Principles sit between pillars (too abstract for direct action) and patterns (too tactical to express a heuristic). Examples: `principle-design-for-failure`, `principle-minimize-coordination`, `principle-observe-before-optimising`. Each principle declares its `pillar` and links to the patterns that embody it.
 
 **Project level**
 Project-specific overrides, extensions, standards, and decisions within an organisation. Lives in `projects/<project>/` with the same internal structure as the org and team levels. The most specific level in the four-level model.
@@ -83,7 +92,16 @@ An admission criterion requiring that every pattern cite at least one verifiable
 An observable property of a task or system used to match it to a context. Signals appear in the `DECISION_TREE.md` signal table and in context nodes' `signals` field. Signals describe what a system *is*, not what technologies it uses.
 
 **Solution**
-A node of type `solution` describing a pre-composed combination of patterns for a common problem. Solutions include integration guidance that individual pattern nodes don't.
+A node of type `solution` describing a pre-composed combination of patterns for a common problem. Solutions include integration guidance that individual pattern nodes don't. Solution implementation sequences are often stage-aware — prototype-stage minimum followed by MVP- and production-graduation additions.
+
+**Stage**
+A node of type `stage` in `foundations/12-stages/` describing operational ambition — `prototype`, `mvp`, `production`, or `critical`. Stages combine with contexts during traversal: a web-app prototype and a mission-critical web-app share a context but have very different acceptable defaults. Each stage node enumerates what typically relaxes, what stays baseline regardless, and what must tighten to graduate.
+
+**Stage floor**
+An optional `stage_floor` field on a pattern (values: `prototype` / `mvp` / `production` / `critical`). Declares the minimum stage at which the pattern becomes required. If absent, the pattern applies at every stage. During traversal, a pattern whose `stage_floor` exceeds the task's stage is demoted — listed under "When you graduate to stage X", not as a current finding.
+
+**Stage-specific notes**
+An optional `## Stage-specific notes` body section on pattern, antipattern, or solution nodes. Used when guidance genuinely varies across stages — e.g. a production-level rule that can be legitimately compromised at prototype if documented. One short bullet per stage where the delta matters. See writing-rules.md rule 11.
 
 **Standard**
 A node of type `standard` describing a practice to follow. In the foundations, standards are limited to meta-standards, templates, and rare cross-cutting concerns. Concrete, opinionated standards live in organisation, team, or project levels.

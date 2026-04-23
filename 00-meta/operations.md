@@ -14,15 +14,19 @@ The primary operation. An agent with a task consults Carta to select patterns, c
 
 **Actor:** agent or human. No review required — traversal is read-only.
 
-**Procedure:** see `traversal-protocol.md` for the full algorithm. Summary:
+**Procedure:** see `traversal-protocol.md` for the full normative algorithm. Summary:
 
-1. Consult `DECISION_TREE.md` to identify the relevant context(s).
-2. From the context, follow `recommended_patterns` links to build a candidate set.
-3. For each candidate, check fit (`When to use`, `When NOT to use`), prerequisites, conflicts, and contradictions.
-4. Cross-reference standards and antipatterns.
-5. Prefer pre-composed solutions from `foundations/30-solutions/` when available.
-6. Check ADRs for constraints.
-7. Report the recommended patterns with rationale.
+1. Confirm the operational **stage** (`prototype` / `mvp` / `production` / `critical`). If not provided and not declared at project level, ask the user — do not infer from repo signals.
+2. Consult `DECISION_TREE.md` to identify the relevant context(s), and identify the 1–3 **pillars** the task is optimising for.
+3. From each matched context, follow `recommended_patterns` to build a candidate set. Pull in extensions from applicable levels.
+4. Resolve overrides most-specific-first (project → team → org → foundation).
+5. For each candidate: check fit (`When to use`, `When NOT to use`, `Decision inputs`), note the **principles** it realises, and — for review-shaped traversals — cite specific file:line evidence from the target codebase.
+6. Apply **stage floor**: patterns whose `stage_floor` exceeds the task stage are demoted to "defer to stage X", not dropped.
+7. Resolve prerequisites recursively. Flag conflicts. When candidates overlap alternative patterns a **decision tree** picks between, apply the dtree. Read contradictions.
+8. Cross-reference standards and antipatterns.
+9. Prefer pre-composed solutions from `foundations/30-solutions/` when their `composes` list matches the candidate set.
+10. Check ADRs at org/team/project levels for constraints.
+11. Report with stage, pillars, principles applied, dtrees consulted, current-stage patterns separated from deferred, code citations for review-shaped traversals.
 
 **Output:** a recommendation — which patterns to apply, which to avoid, what prerequisites to satisfy, and what conflicts exist. If the decision is non-trivial, the traversal may also produce a new ADR (see **Recording a decision** in `CHARTER.md`).
 
@@ -87,7 +91,7 @@ Run `tools/lint.py` or perform the equivalent checks manually. The lint operatio
 | Check | Description | Severity |
 |-------|-------------|----------|
 | Contradictions | Nodes whose claims conflict but aren't linked via `contradicted_by`. | error |
-| Stale nodes | Patterns whose `sources` are all older than five years with no currency justification. | warning |
+| Stale nodes | Patterns whose `sources` are all older than five years with no currency justification. Exempt when the author is canonical (see CHARTER §Currency amendment). | warning |
 | Orphans | Nodes with no inbound links — nothing references them. | warning |
 | Broken prerequisites | Circular or dangling prerequisite chains. | error |
 | Missing pages | Concepts referenced in wikilinks but lacking their own node. | warning |
@@ -96,6 +100,9 @@ Run `tools/lint.py` or perform the equivalent checks manually. The lint operatio
 | Bidirectionality | `contradicted_by` links that exist in one direction but not the other. | error |
 | Tag consistency | `tags` field missing the `type` or `maturity` value. | error |
 | ID mismatch | `id` field doesn't match the filename. | error |
+| Category-directory match | Pattern `category` doesn't match its subdirectory (styles/, tactics/<concern>/, integration/). | error |
+| Stage floor enum | Pattern `stage_floor` is set to a value other than `prototype` / `mvp` / `production` / `critical`. | error |
+| Writing-rule soft caps | Sections that exceed per-type word or bullet caps; explanatory phrases that signal deletable prose. | warning |
 
 Severity levels:
 - **error** — must be fixed before merge. `tools/validate.py` catches these in CI.
