@@ -24,8 +24,10 @@ recommended_patterns:
   - "[[pattern-structured-logging]]"
   - "[[pattern-correlation-id]]"
   - "[[pattern-circuit-breaker]]"
+  - "[[pattern-expand-contract-migration]]"
 recommended_standards: []
-common_antipatterns: []
+common_antipatterns:
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-event-driven-system]]"
   - "[[context-batch-processing]]"

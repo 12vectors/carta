@@ -25,9 +25,12 @@ recommended_patterns:
   - "[[pattern-timeout]]"
   - "[[pattern-rate-limiting]]"
   - "[[pattern-llm-budget-enforcement]]"
+  - "[[pattern-prompt-injection-defense]]"
   - "[[pattern-cache-aside]]"
+  - "[[pattern-feature-flag]]"
 recommended_standards: []
-common_antipatterns: []
+common_antipatterns:
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-web-application]]"
   - "[[context-event-driven-system]]"

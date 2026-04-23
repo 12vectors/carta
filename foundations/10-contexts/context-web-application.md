@@ -23,9 +23,14 @@ recommended_patterns:
   - "[[pattern-structured-logging]]"
   - "[[pattern-distributed-tracing]]"
   - "[[pattern-correlation-id]]"
+  - "[[pattern-feature-flag]]"
+  - "[[pattern-canary-release]]"
+  - "[[pattern-blue-green-deployment]]"
+  - "[[pattern-prompt-injection-defense]]"
 recommended_standards: []
 common_antipatterns:
   - "[[antipattern-god-service]]"
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-event-driven-system]]"
   - "[[context-agentic-system]]"

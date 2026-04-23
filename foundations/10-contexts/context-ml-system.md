@@ -22,8 +22,10 @@ recommended_patterns:
   - "[[pattern-deployment-stamps]]"
   - "[[pattern-circuit-breaker]]"
   - "[[pattern-retry-with-backoff]]"
+  - "[[pattern-feature-flag]]"
 recommended_standards: []
-common_antipatterns: []
+common_antipatterns:
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-data-pipeline]]"
   - "[[context-agentic-system]]"

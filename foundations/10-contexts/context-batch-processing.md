@@ -22,7 +22,8 @@ recommended_patterns:
   - "[[pattern-structured-logging]]"
   - "[[pattern-correlation-id]]"
 recommended_standards: []
-common_antipatterns: []
+common_antipatterns:
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-data-pipeline]]"
   - "[[context-event-driven-system]]"

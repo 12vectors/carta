@@ -22,8 +22,10 @@ recommended_patterns:
   - "[[pattern-timeout]]"
   - "[[pattern-health-check-endpoint]]"
   - "[[pattern-distributed-tracing]]"
+  - "[[pattern-feature-flag]]"
 recommended_standards: []
-common_antipatterns: []
+common_antipatterns:
+  - "[[antipattern-silent-failure]]"
 related:
   - "[[context-web-application]]"
   - "[[context-agentic-system]]"
