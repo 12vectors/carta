@@ -5,7 +5,8 @@ type: stage
 maturity: stable
 tags: [stage, stable, prototype, spike]
 next_stage: "[[stage-mvp]]"
-typical_antipatterns: []
+typical_antipatterns:
+  - "[[antipattern-prototype-drift]]"
 related:
   - "[[stage-mvp]]"
 sources:

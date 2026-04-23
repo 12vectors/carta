@@ -11,6 +11,7 @@ pillars:
 tags: [pattern, experimental, agentic, cost, llm, budget]
 applies_to:
   - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

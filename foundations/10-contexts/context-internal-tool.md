@@ -26,6 +26,7 @@ recommended_patterns:
 recommended_standards: []
 common_antipatterns:
   - "[[antipattern-silent-failure]]"
+  - "[[antipattern-prototype-drift]]"
 related:
   - "[[context-web-application]]"
   - "[[context-agentic-system]]"

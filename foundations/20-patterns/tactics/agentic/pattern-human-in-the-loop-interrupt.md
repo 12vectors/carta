@@ -9,6 +9,8 @@ pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, experimental, agentic, human-in-the-loop, approval]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

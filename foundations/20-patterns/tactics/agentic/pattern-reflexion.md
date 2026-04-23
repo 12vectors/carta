@@ -8,6 +8,8 @@ pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, experimental, agentic, self-critique, retry]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

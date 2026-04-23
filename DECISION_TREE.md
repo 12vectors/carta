@@ -38,6 +38,7 @@ Each row lists the signals that indicate a context is relevant. Signals are obse
 | Context | Signals |
 |---------|---------|
 | [[context-web-application]] | Serves HTTP requests to users or other services. Has a UI, API endpoints, authentication, sessions, or request-response cycles. Users interact with it through a browser or mobile client. |
+| [[context-internal-tool]] | First-party system: users are internal employees, contractors, or integrators — not external customers. Access via SSO, VPN, or workload identity, never anonymous. Known small consumer population; looser availability SLOs; often holds elevated credentials and production access. Includes admin consoles, eval harnesses, test workbenches, dev dashboards, internal workflow tools. |
 | [[context-data-pipeline]] | Moves, transforms, or enriches data between systems. Has stages (extract, transform, load). Cares about throughput, schema evolution, data quality, and lineage. May be batch or streaming. |
 | [[context-ml-system]] | Trains, evaluates, serves, or monitors machine learning models. Has a model lifecycle (training, validation, deployment, monitoring). Cares about reproducibility, feature management, and model drift. |
 | [[context-agentic-system]] | Uses LLMs or other AI models as reasoning components. Has tool use, multi-step planning, memory, or autonomous decision-making. May orchestrate multiple models or agents. Cares about guardrails, observability, and human-in-the-loop controls. |
@@ -55,6 +56,8 @@ When signals overlap, these distinctions help:
 **ML system vs agentic system.** An ML system has a model lifecycle — training, evaluation, deployment, monitoring for drift. An agentic system uses models as reasoning engines at runtime — tool use, planning, memory. A system that fine-tunes a model and deploys it behind an API is an ML system. A system that gives an LLM access to tools and lets it plan multi-step actions is an agentic system. A system that does both is both.
 
 **Event-driven system vs web application.** A web application that uses an event bus internally is both. The web application context covers the request-response surface; the event-driven context covers the asynchronous interior. Apply both when the architecture has both layers.
+
+**Internal tool vs web application.** A customer-facing web app and an internal tool share the HTTP request/response shape but have different defaults: external web apps face anonymous traffic and multi-tenant-by-design, so OAuth2, strict versioning, and abuse-resistant rate-limiting are floors. Internal tools face a known consumer population through SSO or VPN, so those floors relax — but secrets-handling and authorization tighten because internal tools often hold real production credentials. An eval harness, admin console, or test workbench is internal-tool even when the code looks like a web app. Apply `context-internal-tool` when the audience is first-party; apply `context-web-application` when it is external or public.
 
 ---
 

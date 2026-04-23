@@ -9,6 +9,8 @@ pillars:
   - "[[pillar-cost]]"
 tags: [pattern, experimental, agentic, planning, orchestration]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

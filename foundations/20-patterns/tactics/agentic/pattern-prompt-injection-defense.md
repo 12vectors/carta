@@ -10,6 +10,7 @@ pillars:
 tags: [pattern, experimental, agentic, security, llm, prompt-injection]
 applies_to:
   - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites:
   - "[[pattern-input-validation]]"

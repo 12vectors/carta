@@ -8,6 +8,8 @@ pillars:
   - "[[pillar-operational-excellence]]"
 tags: [pattern, experimental, agentic, reasoning, tool-use]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

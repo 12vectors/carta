@@ -9,6 +9,8 @@ pillars:
   - "[[pillar-reliability]]"
 tags: [pattern, experimental, agentic, evaluation, quality]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:

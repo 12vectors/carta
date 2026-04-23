@@ -86,6 +86,13 @@ See OWASP Secrets Management Cheat Sheet for the canonical checklist.
 - [ ] Document break-glass procedure (who, how, audited).
 - [ ] Periodic audit: find unused secrets, overbroad policies, stale accounts.
 
+## Stage-specific notes
+
+- **At [[stage-prototype]]**: env variables + `.gitignore` is the floor. A real secrets manager is MVP work — but never commit secrets, even to private repos.
+- **At [[stage-mvp]]**: adopt a real secrets manager (cloud vault, env-at-runtime, workload identity). Rotation can stay manual.
+- **At [[stage-production]]**: automatic short-lived tokens, audited access, scheduled rotation. Manual rotation is a regression.
+- **At [[stage-critical]]**: per-workload identities, logged break-glass path, compliance audit of secrets handling.
+
 ## See also
 
 - [[pattern-oauth2-authorization]] — client secrets and signing keys belong in the vault.

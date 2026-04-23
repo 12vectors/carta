@@ -180,12 +180,19 @@ class Node:
 # ---------------------------------------------------------------------------
 
 def discover_content_files(root: Path) -> list[Path]:
-    """Find all .md content files in foundations/, org/, teams/, projects/."""
+    """Find all .md content files in foundations/, org/, teams/, projects/.
+
+    Excludes README.md files, which are directory-level prose (e.g. explaining
+    an intentionally sparse directory like foundations/40-standards/) and do
+    not carry frontmatter.
+    """
     files = []
     for dir_name in CONTENT_DIRS:
         content_dir = root / dir_name
         if content_dir.is_dir():
             for md in content_dir.rglob("*.md"):
+                if md.name == "README.md":
+                    continue
                 files.append(md)
     return sorted(files)
 

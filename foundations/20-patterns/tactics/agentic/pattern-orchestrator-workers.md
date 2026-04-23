@@ -9,6 +9,8 @@ pillars:
   - "[[pillar-performance]]"
 tags: [pattern, experimental, agentic, orchestration, multi-agent]
 applies_to:
+  - "[[context-agentic-system]]"
+  - "[[context-internal-tool]]"
   - "[[context-web-application]]"
 prerequisites: []
 related:
