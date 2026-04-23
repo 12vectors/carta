@@ -24,6 +24,7 @@ recommended_patterns:
   - "[[pattern-retry-with-backoff]]"
   - "[[pattern-timeout]]"
   - "[[pattern-rate-limiting]]"
+  - "[[pattern-llm-budget-enforcement]]"
   - "[[pattern-cache-aside]]"
 recommended_standards: []
 common_antipatterns: []

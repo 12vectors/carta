@@ -58,3 +58,4 @@ A system that serves HTTP requests — to humans via a browser, to mobile client
 - [[context-event-driven-system]] — web apps with async internals straddle both contexts.
 - [[dtree-choose-api-style]] — pick between REST, GraphQL, and gRPC for the service's external API.
 - [[dtree-choose-service-boundary]] — decide between monolith, modular monolith, service-based, and microservices shapes.
+- [[dtree-choose-background-work]] — pick between inline tasks, durable queue, workflow engine, or serverless for non-blocking work.

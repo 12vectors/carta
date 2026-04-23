@@ -35,14 +35,29 @@ Not every level is required. If there is no team or project scope, skip those le
 
 ---
 
+## Foundation layers
+
+In addition to overrides, extensions, standards, and decisions, the foundations contain four upstream layers that the traversal consults alongside patterns:
+
+- **Pillars** (`foundations/05-pillars/`) — quality lenses: `reliability`, `security`, `cost`, `operational-excellence`, `performance`. Every task optimises for one to three of these. Identifying them early frames later trade-offs and the final report.
+- **Contexts** (`foundations/10-contexts/`) — system archetypes matched via the signal table in `DECISION_TREE.md`. Contexts produce the initial candidate set via `recommended_patterns`.
+- **Principles** (`foundations/15-principles/`) — cross-cutting design heuristics (e.g. `principle-design-for-failure`, `principle-observe-before-optimising`). Principles provide the heuristic each pattern is meant to embody; citing the principle makes a finding durable beyond the specific pattern.
+- **Decision trees** (`foundations/25-decision-trees/`) — selection guides between alternative patterns (API style, messaging style, service boundary, event style, data-access strategy, background-work strategy). Consult when candidates compete for the same architectural role.
+
+These layers are not optional flavour. If the final report does not cite the pillars the task is optimising for, the principles supporting the recommended patterns, or the dtree consulted when alternatives appeared, the traversal is incomplete.
+
+---
+
 ## Algorithm
 
-### Step 1 — Identify contexts
+### Step 1 — Identify contexts and pillars
 
 Read `DECISION_TREE.md`. Match the task against the signal table to identify one or more relevant contexts from `foundations/10-contexts/`.
 
 - Multiple contexts may apply. Include all that match.
 - If no context matches, follow the fallback procedure in `DECISION_TREE.md` (check if the task is architectural, note missing contexts, or proceed pattern-by-pattern).
+
+Also identify the **pillars** (`foundations/05-pillars/`) the task is optimising for. Most tasks foreground one to three of: `reliability`, `security`, `cost`, `operational-excellence`, `performance`. The pillars frame the rest of the traversal — they determine which principles to check in step 4 and which trade-offs to highlight in the report. A "refactor our background jobs for restart-safety" task foregrounds reliability and operational-excellence; a "cap LLM spend per tenant" task foregrounds cost and security.
 
 ### Step 2 — Build the candidate set
 
@@ -70,6 +85,7 @@ For each pattern in the candidate set, read the node and assess fit:
 1. **When to use** — do the task's characteristics match the described triggers?
 2. **When NOT to use** — do any counter-indications apply?
 3. **Decision inputs** — can the questions be answered? If critical inputs are unknown, flag them for the user rather than guessing.
+4. **Principles** — look up the principles in `foundations/15-principles/` whose `pillar` matches the task's foregrounded pillars (from step 1), and whose `related_patterns` include this candidate. Note the principle alongside the pattern: this gives the finding durable backing ("we recommend a circuit breaker *because* design-for-failure"). If a candidate serves a principle that isn't listed on it, the edge may be missing — flag it as a Carta gap.
 
 A pattern that fails "When NOT to use" is removed from the candidate set. A pattern whose "When to use" doesn't match is also removed, unless it was pulled in as a prerequisite (step 5).
 
@@ -91,9 +107,20 @@ For each remaining candidate, read its `conflicts_with` field. If two candidates
 2. Do not silently drop either one. The user decides which to keep.
 3. If an ADR at any level resolves the conflict for this context, follow the ADR's guidance. More specific ADRs take precedence.
 
-### Step 7 — Check contradictions
+### Step 7 — Resolve alternatives via decision trees
 
-For each remaining candidate, read its `contradicted_by` field. For each contradiction:
+For each remaining candidate, check `foundations/25-decision-trees/` for a dtree whose `decides_between` includes this pattern. If the candidate set contains two or more patterns the dtree picks between (REST vs GraphQL vs gRPC, sync RPC vs pub-sub vs async-request-reply, monolith vs microservices, notification vs state-transfer, cache vs replica vs materialized view, inline vs queue vs workflow engine), apply the dtree:
+
+1. Read the dtree's `criteria` and the task's characteristics from step 1.
+2. Walk the `## Recommendation` table; pick the option that matches the task's situation.
+3. Keep the chosen pattern in the candidate set; mark the others as "considered and rejected via `[[dtree-…]]`" in the report.
+4. If the task spans situations (e.g. public API and internal API in one service), a dtree may pick two patterns — document both and the boundary between them.
+
+Dtrees do not override conflicts — they inform choice between non-conflicting alternatives. A dtree recommendation does not silence a flagged conflict or contradiction from the earlier steps.
+
+### Step 8 — Check contradictions
+
+For each remaining candidate (including those selected via a dtree in step 7), read its `contradicted_by` field. For each contradiction:
 
 1. Read the contradicting node to understand the substance of the disagreement.
 2. Check whether an ADR resolves the contradiction for this context.
@@ -101,7 +128,7 @@ For each remaining candidate, read its `contradicted_by` field. For each contrad
 
 Contradictions are informational, not eliminative. A pattern with an unresolved contradiction is still a valid candidate — the user just needs to know about the disagreement.
 
-### Step 8 — Cross-reference standards
+### Step 9 — Cross-reference standards
 
 Collect standards from all applicable levels:
 
@@ -115,7 +142,7 @@ For each standard whose `applies_to` includes the matched contexts (or that has 
 1. Check whether any candidate pattern violates the standard.
 2. If so, flag the violation. Check whether a decision at any level explicitly relaxes the standard for this context. If a decision exists, note the relaxation and its reasoning. If not, the violation must be resolved.
 
-### Step 9 — Cross-reference antipatterns
+### Step 10 — Cross-reference antipatterns
 
 Read all antipattern nodes in `foundations/50-antipatterns/` whose `applies_to` includes the matched contexts. Also check extensions at all applicable levels for additional antipatterns.
 
@@ -126,14 +153,14 @@ For each:
 
 This is a negative filter. Antipatterns don't add to the candidate set; they flag risks in it.
 
-### Step 10 — Check for existing solutions
+### Step 11 — Check for existing solutions
 
 Read `foundations/30-solutions/` and check whether any existing solution's `composes` list is a subset or match of the current candidate set.
 
 - If an exact or near-exact match exists, prefer the pre-composed solution. It includes integration guidance (how the patterns fit together) that the individual pattern nodes don't.
 - If a partial match exists, note it — the existing solution may cover part of the task.
 
-### Step 11 — Check ADRs
+### Step 12 — Check ADRs
 
 Collect decisions from all applicable levels:
 
@@ -149,18 +176,21 @@ For each ADR whose `affects` list includes any candidate pattern or matched cont
 
 More specific decisions take precedence when they cover the same concern (project > team > org).
 
-### Step 12 — Report
+### Step 13 — Report
 
 Present the result:
 
 - **Context(s):** which contexts matched and why.
+- **Pillars foregrounded:** the 1–3 quality lenses the task is optimising for. Use these to order any ranked findings (e.g. "top gaps by risk") — a reliability-foregrounded task should rank reliability findings first.
+- **Principles applied:** the principles from `foundations/15-principles/` each recommended pattern realises. Cite by ID. A finding without a principle citation is weaker than a finding with one.
+- **Decision trees consulted:** which dtrees were used to pick between alternatives, and which options were kept vs. rejected.
 - **Recommended patterns:** each selected pattern with a one-line rationale. Note which level it comes from (foundation, org override, team override, or project override).
 - **Prerequisites:** patterns that must be in place first, in dependency order.
 - **Standards:** applicable constraints, noting which level they come from. Flag any that have been relaxed by a decision, with the reasoning.
 - **Antipatterns to avoid:** relevant risks.
 - **Conflicts and contradictions:** any unresolved issues, with both sides presented.
 - **Existing solutions:** any matching or partial-match solutions from `foundations/30-solutions/`.
-- **Gaps:** content that would have been useful but doesn't exist in Carta yet.
+- **Gaps:** content that would have been useful but doesn't exist in Carta yet — missing patterns, missing contexts, missing principles, missing dtrees, and missing or stale edges between existing nodes.
 - **Open questions:** decision inputs from step 4 that couldn't be answered.
 
 If the decision is non-trivial, recommend recording it as an ADR at the appropriate level.
