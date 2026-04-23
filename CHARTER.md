@@ -20,7 +20,7 @@ The charter is itself amendable via ADR (see **Amending this charter** at the en
 
 ## Scope
 
-This charter governs the **foundations** — the reusable patterns, standards, antipatterns, contexts, and solutions that ship as the starter knowledge base. It does not govern organisation, team, or project levels, which are owned by their respective groups and may adopt whatever process they see fit.
+This charter governs the **foundations** — the reusable pillars, contexts, stages, principles, patterns, decision-trees, solutions, antipatterns, and meta-standards that ship as the starter knowledge base. It does not govern organisation, team, or project levels, which are owned by their respective groups and may adopt whatever process they see fit.
 
 The foundations are the part of Carta that claims to be true across organisations and stacks. That claim demands a higher bar for admission and a clear process for change.
 
@@ -28,7 +28,7 @@ The foundations are the part of Carta that claims to be true across organisation
 
 Carta operates across four levels, each more specific than the last:
 
-1. **Foundations** (`foundations/`) — the shared, generic knowledge base. Patterns, contexts, antipatterns, solutions, and meta-standards that apply across organisations and stacks. This is what Carta ships out of the box.
+1. **Foundations** (`foundations/`) — the shared, generic knowledge base. Pillars, contexts, stages, principles, patterns, decision-trees, solutions, antipatterns, and meta-standards that apply across organisations and stacks. This is what Carta ships out of the box.
 
 2. **Organisation** (`org/`) — an organisation's overrides, extensions, standards, and decisions.
 

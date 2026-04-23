@@ -19,14 +19,30 @@ It compounds. Cross-references are already there. Contradictions have already be
 
 ## How it works
 
-Carta is plain markdown in a git repository, structured as a four-level model:
+Carta is plain markdown in a git repository. Two axes structure it:
 
-- **Foundations** — a starter knowledge base of generic, sourced patterns. Ships with Carta.
+**The four-level model** — specificity:
+
+- **Foundations** — a starter knowledge base of generic, sourced content. Ships with Carta.
 - **Organisation** — your org's overrides, extensions, concrete standards, and decisions.
 - **Team** — team-specific customisation within the org.
 - **Project** — project-specific customisation, for when a particular system needs its own choices.
 
 Each more specific level can override or extend the level above it. The only constraint is that overrides are accompanied by a decision record explaining why.
+
+**The foundation layers** — what the shared knowledge base contains:
+
+- `05-pillars/` — quality lenses (reliability, security, cost, operational-excellence, performance). What a task is *optimising for*.
+- `10-contexts/` — system archetypes (web app, internal tool, agentic system, data pipeline, …). What the system *is*.
+- `12-stages/` — operational ambition (prototype, mvp, production, critical). What the system is *aiming to be right now*.
+- `15-principles/` — cross-cutting design heuristics (design-for-failure, minimize-coordination, observe-before-optimising, …). How to *approach* a problem.
+- `20-patterns/` — reusable patterns, split into `styles/` (system shapes), `tactics/<concern>/` (communication, data, resilience, security, etc.), and `integration/` (messaging, routing, transformation). What to *build*.
+- `25-decision-trees/` — selection guides between alternative patterns (REST vs GraphQL, saga vs 2PC, monolith vs microservices, …).
+- `30-solutions/` — pre-composed combinations of patterns for recurring problems.
+- `40-standards/` — meta-standards and templates (opinionated standards live at org level, not here).
+- `50-antipatterns/` — recurring failure modes with fixes.
+
+A traversal consults these layers in order: pillars frame the trade-offs, contexts + stage scope the candidate set, principles provide the heuristics, patterns are the buildings blocks, decision-trees pick between alternatives, solutions offer pre-composed combinations.
 
 **Agents write, humans curate.** Nobody expects developers to write 500-word architectural patterns from scratch. The workflow is: you direct an agent to draft a node, review what it produces, edit for accuracy and team fit, commit. The tedious writing is automated. The judgement stays with the team.
 
@@ -78,17 +94,16 @@ The fuller walkthrough, including a worked example of adding your first org-leve
 
 ## Status
 
-Pre-1.0. APIs, schemas, and directory conventions may change. The foundations are incomplete — we ship with a scenario covering one context (web application) and a handful of patterns to demonstrate the model. Expanding the foundations is ongoing work.
+Pre-1.0. APIs, schemas, and directory conventions may change.
 
 | Component | Status |
 |---|---|
-| Node schema and four-level model | Draft |
-| Operations model (traverse, ingest, lint, capture) | Draft |
-| Traversal slash command | Working |
-| Validator (`tools/validate.py`) | Working |
-| Linter (`tools/lint.py`) | Working |
-| Foundations (patterns, contexts, antipatterns) | In progress — ~14 nodes |
-| Obsidian setup guide and templates | Done |
+| Node schema and four-level model | Working |
+| Operations model (traverse, ingest, lint, capture) | Working |
+| Traversal and authoring slash commands (`/carta`, `/carta-add`) | Working |
+| Validator (`tools/validate.py`) and linter (`tools/lint.py`) | Working |
+| Foundations — pillars (5), contexts (7), stages (4), principles (14), patterns (~75), decision-trees (6), solutions (1), antipatterns (2) | Seeded — ~115 nodes |
+| Obsidian setup guide and templates (10 node types) | Done |
 | Spec Kit integration example | Planned |
 
 ## Further reading

@@ -57,13 +57,16 @@ From any project in Claude Code:
 /carta choose a caching strategy for our product catalog API
 ```
 
-The agent will:
+On the first run the agent will **ask you what operational stage the system is at** — `prototype`, `mvp`, `production`, or `critical`. That answer determines severity in the report: "no auth" is an urgent finding for a production API and an acceptable compromise for a localhost prototype. Do not guess on the agent's behalf; reply honestly. See `foundations/12-stages/` for what each stage means.
 
-1. Match your task against `DECISION_TREE.md` to find the relevant context(s).
-2. Read `foundations/10-contexts/` to get recommended patterns.
+The agent will then:
+
+1. Match your task against `DECISION_TREE.md` to find the relevant context(s) and identify the pillars the task is optimising for.
+2. Read `foundations/10-contexts/` to get recommended patterns; confirm the stage's baselines.
 3. Walk the four-level model — checking `projects/`, `teams/`, `org/`, `foundations/` — to resolve overrides.
-4. Cross-reference standards, antipatterns, decisions.
-5. Report what matched, what didn't, and what's missing.
+4. Filter and demote patterns by `stage_floor` relative to your stage.
+5. Consult decision trees when candidate patterns overlap, cross-reference standards and antipatterns, check ADRs.
+6. Report what matches the current stage, what's deferred to later stages, and what's missing.
 
 Carta ships with a worked example covering the `context-web-application` context and a payments-api project. See `foundations/10-contexts/context-web-application.md` and `projects/payments-api/` for the full scenario.
 
