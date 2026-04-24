@@ -57,9 +57,6 @@ Today the subagent reads YAML for structural queries. With proper tools (`carta.
 
 Start with the CLI if/when the subagent starts hitting context pressure.
 
-### Project-level stage declaration format
-The traversal protocol says "a project that has declared its stage in `projects/<project>/stage.<project>.md` or an equivalent convention can be read without asking again" — but the exact format isn't specified. Define it: probably a minimal node with `stage:` frontmatter and a body explaining the declaration.
-
 ### LOG.md automation
 `LOG.md` is meant to record traversals, ingests, lint passes, and captures (per `operations.md`). Today it's manual. Consider a `/carta` post-run hook that appends an entry automatically.
 

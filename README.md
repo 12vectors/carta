@@ -86,6 +86,7 @@ cd my-org-architecture
 |---|---|---|
 | `/carta <question>` | Quick architectural question, no codebase read required | Single-response traversal: matches contexts, pillars, stage; returns recommended patterns with rationale and citations. |
 | `/carta-review <path>` | Auditing an existing codebase against Carta | Spawns a Claude Code subagent that iterates through the 13-step protocol in passes (up to four), reads code files to back every finding with `file:line` evidence, returns a structured scorecard. Read-only. |
+| `/carta-project-setup <path>` | Seeding or refreshing a project's Carta scope | Reads the target project's README, docs, and manifests; proposes a profile (slug, context, stage, pillars, detected stack) with `file:line` citations; scaffolds `projects/<slug>/` with a charter ADR and a tech-stack ADR (`status: proposed`). Re-runnable — drifted `accepted` ADRs are superseded, never overwritten. |
 | `/carta-add <node description>` | Authoring a new node | Loads writing rules and the matching template, drafts a terse node, runs validator and linter. Review, edit, commit. |
 
 ### First traversal

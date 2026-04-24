@@ -1,5 +1,17 @@
 Traverse the Carta architectural knowledge base for the task below.
 
+## When to use this vs `/carta-review`
+
+Use `/carta` when:
+- You need a quick architectural recommendation on a task or question.
+- No codebase read is required — or at most a handful of files the conversation will cite directly.
+- A single-response traversal is enough.
+
+Use `/carta-review` instead when:
+- You are auditing an existing application (dozens to hundreds of files).
+- Every finding must be backed by a `file:line` citation from the target codebase.
+- The review benefits from iteration — a dedicated subagent running multiple passes with its own context budget.
+
 ## Find Carta
 
 Resolve the CARTA_PATH environment variable (run: `echo $CARTA_PATH`). This is the root of the Carta knowledge base. If unset, tell the user to configure it and stop.
@@ -17,7 +29,7 @@ Set working references:
 Before traversing, confirm the system's operational stage. Values: `prototype`, `mvp`, `production`, `critical` (see FOUNDATIONS/12-stages/).
 
 - If the user provided the stage in the task, use it.
-- Otherwise check PROJECT for a stage declaration (`PROJECT/stage.<project>.md` or equivalent).
+- Otherwise check PROJECT for a stage declaration — read `entries[adr-0001-project-charter.<project>].stage` from `INDEX.yaml` (this is where `/carta-project-setup` records it). If the charter is still `status: proposed`, treat the stage as a suggestion rather than authoritative.
 - Otherwise **ask the user**: *"Is this system at the prototype, MVP, production, or mission-critical stage?"* Do not infer from repo signals — a Dockerfile or CI config is not a reliable indicator.
 
 Read the matching node in FOUNDATIONS/12-stages/ to understand what relaxes and what stays baseline at this stage. Every severity in the final report is relative to this stage.
@@ -52,33 +64,31 @@ Read `CARTA_PATH/INDEX.yaml` once at the start (it's at the repository root — 
 
 ## Traverse
 
-See `00-meta/traversal-protocol.md` for the full normative algorithm. Summary:
+See `00-meta/traversal-protocol.md` for the full normative algorithm. Summary below — every step names the index lookup that replaces a directory scan. Body reads stay reserved for judgement material (`When to use`, `Solution sketch`, stage descriptions, dtree recommendations).
 
-1. **Context(s) and pillars.** Match the task against `DECISION_TREE.md`'s signal table to identify one or more contexts. Identify the 1–3 pillars the task is optimising for (from FOUNDATIONS/05-pillars/).
+1. **Contexts, pillars, stage.** Match the task against `DECISION_TREE.md`'s signal table to identify one or more contexts. Identify the 1–3 pillars the task is optimising for (`FOUNDATIONS/05-pillars/`). Re-read `FOUNDATIONS/12-stages/stage-<stage>.md` — every severity in the report is relative to this stage.
 
-2. **Candidate set.** From each matched context, collect `recommended_patterns`. Add relevant extensions at org/team/project levels whose `applies_to` matches.
+2. **Candidate set.** For each matched context, read `context_to_patterns[<ctx>]` from the index. This covers foundation patterns *and* any org/team/project extensions whose `applies_to` matches — no directory scan.
 
-3. **Resolve overrides.** Most-specific wins: PROJECT → TEAM → ORG → foundation. Override files use level suffixes (`.org.md`, `.<team>.md`, `.<project>.md`).
+3. **Resolve overrides.** For each candidate, read `overrides[<id>]` — it names the entry key at each level. Pick most-specific-first: project → team → org → foundation. Resolve the winning entry via `entries[<key>].path`.
 
-4. **Evaluate each candidate.** Check `When to use` / `When NOT to use` / `Decision inputs`. Note which principles (FOUNDATIONS/15-principles/) each pattern realises — cite principles alongside patterns for durable backing. For review-shaped traversals (auditing existing code), pair pattern status with specific file:line evidence; absence-of-imports alone is not sufficient.
+4. **Evaluate each candidate.** Read the node body for `When to use` / `When NOT to use` / `Decision inputs`. Read `pattern_to_principles[<id>]` and filter against `pillar_to_principles[<foregrounded-pillar>]` to cite the principles each pattern realises — a finding without a principle citation is weaker than one with. Apply `stage_floor`: patterns above the task stage are **demoted** to "defer to stage X", not dropped.
 
-5. **Apply stage floor.** Compare each candidate's `stage_floor` against the task stage. Patterns above the floor are **demoted** — listed under "When you graduate to stage X", not as current findings. Patterns at or below the floor are evaluated normally.
+5. **Resolve prerequisites.** Use `prerequisites_closure[<id>]` for the transitive (cycle-safe) prerequisite set. Add missing ones to the candidate set and evaluate them.
 
-6. **Resolve prerequisites.** Recursively include patterns named in `prerequisites`.
+6. **Conflicts.** Read each candidate's `conflicts_with` from its frontmatter (via `entries[<key>]`). Present any pair in the candidate set to the user; do not silently drop either.
 
-7. **Conflicts.** Present any `conflicts_with` between candidates to the user; do not silently drop either.
+7. **Alternatives via decision trees.** For each candidate, read `pattern_to_dtrees[<id>]`. If two or more candidates both appear in a dtree's `decides_between`, apply the dtree (FOUNDATIONS/25-decision-trees/) to pick one and mark the others considered-and-rejected.
 
-8. **Alternatives via decision trees.** If the candidate set contains two or more patterns a dtree's `decides_between` includes, apply the dtree (FOUNDATIONS/25-decision-trees/) to pick one and mark the others as considered-and-rejected.
+8. **Contradictions.** Read each candidate's `contradicted_by`. Present substance, not just the link. Check ADRs for resolution.
 
-9. **Contradictions.** Read `contradicted_by`. Present substance, not just the link.
+9. **Standards.** Use `context_to_standards[<ctx>]` plus `context_to_standards.__universal`. Read the body of each applicable standard to check for violations; note any decision that relaxes them.
 
-10. **Standards.** Read FOUNDATIONS/40-standards/, ORG/standards/, TEAM/standards/, PROJECT/standards/. Flag violations. Check whether any decision relaxes them.
+10. **Antipatterns.** Use `context_to_antipatterns[<ctx>]`. Antipatterns carry no stage floor — they apply at every stage. Flag risks in the candidate set, citing each antipattern's `How to recognise` and `How to fix`.
 
-11. **Antipatterns.** Scan FOUNDATIONS/50-antipatterns/ + extensions. Antipatterns do not carry a stage floor — they apply at every stage. Flag risks in the candidate set.
+11. **Solutions.** Walk `solution_composes` — each entry is solution-id → composed-patterns. Prefer a pre-composed solution when its composes list is a subset or near-match of the candidate set.
 
-12. **Solutions.** Check FOUNDATIONS/30-solutions/ for an existing composition that matches your candidate set. Prefer it over re-assembling patterns.
-
-13. **Decisions.** Read ADRs at org, team, and project levels. Respect `accepted` ones.
+12. **Decisions (ADRs).** For each candidate pattern id or matched context id, read `affects_to_adrs[<id>]`. Respect `accepted` ADRs; follow supersessions; note `proposed` ones as pending. More specific decisions take precedence (project > team > org).
 
 ## Report
 
@@ -94,7 +104,7 @@ Structure the output as:
 
 **Decision trees consulted**: any dtree used to pick between alternatives, and which options were kept vs rejected.
 
-**Recommended patterns (current stage)**: each pattern with a one-line rationale, the level it comes from (foundation / org / team / project), and — for review-shaped traversals — a code citation (file:line or named range) backing the status.
+**Recommended patterns (current stage)**: each pattern with a one-line rationale and the level it comes from (foundation / org / team / project).
 
 **When you graduate to stage X**: patterns demoted because their stage_floor is above the current stage. Visible, not urgent.
 

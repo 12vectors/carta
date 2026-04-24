@@ -58,6 +58,7 @@ mkdir -p ~/.claude/commands
 ln -sf /absolute/path/to/carta/commands/carta.md ~/.claude/commands/carta.md
 ln -sf /absolute/path/to/carta/commands/carta-add.md ~/.claude/commands/carta-add.md
 ln -sf /absolute/path/to/carta/commands/carta-review.md ~/.claude/commands/carta-review.md
+ln -sf /absolute/path/to/carta/commands/carta-project-setup.md ~/.claude/commands/carta-project-setup.md
 ```
 
 Use the same absolute path you cloned the Carta repo to. The symlinks mean updates to the Carta repo automatically update the commands.
@@ -80,9 +81,13 @@ From any project, in Claude Code:
 # Draft a new node (loads the writing rules first, then validates)
 /carta-add pattern for idempotency keys on payment endpoints
 /carta-add antipattern for sharing Postgres tables across services
+
+# Seed (or refresh) a project's Carta scope from its docs and tech stack
+/carta-project-setup ./backend
+/carta-project-setup /path/to/new-service
 ```
 
-`/carta` is for conversational architectural questions — one response, no file crawling of the target codebase. `/carta-review` is for auditing an existing application: it spawns a subagent that iterates (up to four passes) through the candidate set, reads code files to back every finding with `file:line` evidence, and terminates when the set is stable. Use `/carta-review` when you want every recommended pattern backed by code citations. `/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries.
+`/carta` is for conversational architectural questions — one response, no file crawling of the target codebase. `/carta-review` is for auditing an existing application: it spawns a subagent that iterates (up to four passes) through the candidate set, reads code files to back every finding with `file:line` evidence, and terminates when the set is stable. Use `/carta-review` when you want every recommended pattern backed by code citations. `/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries. `/carta-project-setup` is the project-scoped scaffolder: it reads the target project's README, docs, and manifests, proposes a matching profile (slug, context, stage, pillars, detected stack) with `file:line` citations the developer can push back against, and writes a charter ADR and a tech-stack ADR under `projects/<slug>/decisions/` with `status: proposed` for review. Re-run it to refresh after the codebase drifts — `accepted` ADRs are never rewritten, only superseded.
 
 ## 4. Install the pre-commit hook (optional but recommended)
 

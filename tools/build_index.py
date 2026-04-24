@@ -45,7 +45,7 @@ WIKILINK_LIST_FIELDS = [
     "related_antipatterns", "typical_antipatterns",
 ]
 
-WIKILINK_SCALAR_FIELDS = ["pillar", "next_stage", "supersedes", "superseded_by"]
+WIKILINK_SCALAR_FIELDS = ["pillar", "next_stage", "stage", "supersedes", "superseded_by"]
 
 
 def _entry_key(node) -> str:

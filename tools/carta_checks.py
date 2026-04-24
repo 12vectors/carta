@@ -53,6 +53,7 @@ WIKILINK_FIELDS = {
     "tradeoffs_with",        # pillar -> conflicting pillars
     "next_stage",            # stage -> the stage that comes after this one
     "typical_antipatterns",  # stage -> antipatterns seen at this stage
+    "stage",                 # project-charter ADR -> the declared stage node
 }
 
 # Required body sections per type

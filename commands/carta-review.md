@@ -21,7 +21,7 @@ Use `/carta` instead for quick "what pattern applies to X?" conversations — no
 Ask the user what operational stage the target system is at: `prototype`, `mvp`, `production`, or `critical`. See `foundations/12-stages/` for what each means.
 
 - If the user already stated it in the task, use that.
-- If a `PROJECT/stage.<project>.md` declaration exists, read it and say so.
+- If the project has been scaffolded by `/carta-project-setup`, read `entries[adr-0001-project-charter.<project>].stage` from `INDEX.yaml` and say so. If that charter is still `status: proposed`, confirm with the user rather than trust it.
 - Otherwise **ask the user directly** — do not infer from repo signals.
 
 Record the declared stage and how you learned it; both go in the final report.
@@ -67,65 +67,73 @@ your working output so you can check them at the end of each pass.
 
 --- PASS 2: Candidate assembly ---
 
-4. From each matched context, collect recommended_patterns into the
-   candidate set.
-5. Scan ORG/extensions/, TEAM/extensions/ (if scoped), PROJECT/extensions/
-   (if scoped) for patterns whose applies_to includes a matched context.
-   Add to the candidate set.
-6. For each candidate, resolve overrides most-specific-first:
-   PROJECT/overrides/<id>.<project>.md → TEAM/overrides/<id>.<team>.md →
-   ORG/overrides/<id>.org.md → foundations/<…>/<id>.md. Use the first
-   match. Record which level each pattern came from.
-7. Apply stage_floor: for each candidate with stage_floor > current stage,
+4. For each matched context, read `context_to_patterns[<ctx>]` from the
+   index. This already includes foundation patterns AND any
+   org/team/project extensions whose `applies_to` matches — do not
+   directory-scan `extensions/` separately, the index covers it. Add
+   every entry key to the candidate set.
+5. For each candidate, read `overrides[<id>]` from the index — it names
+   the winning entry key at each level (project, team, org). Pick
+   most-specific-first: project → team → org → foundation. Resolve the
+   winning entry via `entries[<key>].path`. Record which level the
+   pattern came from (it goes in the scorecard).
+6. Apply stage_floor: for each candidate with stage_floor > current stage,
    mark it 'deferred to stage X' in the candidate set. Do not drop — it
    still appears in the report, just in the deferred section.
 
 --- PASS 3: Code evidence (the expensive pass) ---
 
-8. For each current-stage candidate, read the relevant files in the
+7. For each current-stage candidate, read the relevant files in the
    codebase. Use Grep/Glob to locate implementations; use Read to inspect.
-   Budget 3–8 file reads per pattern; prefer depth over breadth.
-9. Assign each pattern a status — Present, Partial, Missing, or Violated —
+   Budget 3–8 file reads per pattern; prefer depth over breadth. Also
+   read `pattern_to_principles[<id>]` from the index so the scorecard can
+   cite the principles each pattern realises.
+8. Assign each pattern a status — Present, Partial, Missing, or Violated —
    and attach a file:line citation (or named file range). An assertion
    like 'no structured logging' must be backed by 'no logging module
    imported in backend/app/main.py:1-40 or across backend/app/**/*.py'.
-10. Note code findings that suggest additional patterns not yet in the
-    candidate set (e.g. BackgroundTasks usage suggests
-    pattern-async-request-reply and dtree-choose-background-work).
+9. Note code findings that suggest additional patterns not yet in the
+   candidate set (e.g. BackgroundTasks usage suggests
+   pattern-async-request-reply and dtree-choose-background-work).
 
 --- PASS 4: Iterate until stable (cap 4 iterations total) ---
 
-11. For each candidate surviving passes 2–3:
-    a. Read its `prerequisites`. Add any missing to the candidate set.
-    b. Read its `conflicts_with`. Flag pairs in the set.
-    c. Read its `contradicted_by`. Note contradictions; check whether an
-       ADR resolves each.
-12. For any pair of candidates that both appear in a dtree's
-    decides_between, apply the dtree (read dtree node, walk its Criteria
-    against task characteristics, use its Recommendation table). Keep the
-    selected option; mark others 'considered and rejected via
-    [[dtree-X]]'.
-13. Evaluate every newly-added candidate via pass 3 (code evidence).
-14. Stop iterating when a pass adds no new candidates. Cap at 4 total
+10. For each candidate surviving passes 2–3:
+    a. Read `prerequisites_closure[<id>]` from the index — transitive
+       and cycle-safe. Add any missing to the candidate set.
+    b. Read `conflicts_with` from `entries[<key>]`. Flag pairs in the set.
+    c. Read `contradicted_by` from `entries[<key>]`. Note contradictions;
+       check whether an ADR resolves each.
+11. For each candidate, read `pattern_to_dtrees[<id>]` from the index.
+    For any pair of candidates that both appear in a dtree's
+    `decides_between`, apply the dtree (read the dtree node, walk its
+    Criteria against task characteristics, use its Recommendation
+    table). Keep the selected option; mark others 'considered and
+    rejected via [[dtree-X]]'.
+12. Evaluate every newly-added candidate via pass 3 (code evidence).
+13. Stop iterating when a pass adds no new candidates. Cap at 4 total
     iterations regardless of stability.
 
 --- PASS 5: Cross-reference ---
 
-15. Standards: read foundations/40-standards/, ORG/standards/,
-    TEAM/standards/, PROJECT/standards/. For each whose applies_to
-    covers the matched contexts (or is universal), check whether any
-    candidate violates it in code. Check whether an ADR relaxes it.
-16. Antipatterns: read foundations/50-antipatterns/ and extensions.
-    Antipatterns have no stage_floor — they apply at every stage.
-    For each antipattern relevant to the matched contexts, check the
-    codebase for its `How to recognise` signals. Cite file:line evidence
-    per flagged antipattern.
-17. Solutions: read foundations/30-solutions/. Does any solution's
-    composes list match a subset of the current candidate set? Prefer
-    pre-composed solutions when they cover the shape.
-18. ADRs: read org/decisions/, teams/<team>/decisions/ (if scoped),
-    projects/<project>/decisions/ (if scoped). For each ADR whose
-    `affects` includes a candidate or context, apply its constraints.
+14. Standards: use `context_to_standards[<ctx>]` for each matched
+    context, plus `context_to_standards.__universal` for standards
+    that apply everywhere. Read each standard's body to check whether
+    any candidate violates it in code. Check whether an ADR relaxes it.
+15. Antipatterns: use `context_to_antipatterns[<ctx>]` for each matched
+    context. Antipatterns have no stage_floor — they apply at every
+    stage. For each, read the body and check the codebase for its
+    `How to recognise` signals. Cite file:line evidence per flagged
+    antipattern.
+16. Solutions: walk `solution_composes` — each entry is solution-id →
+    composed-patterns. Does any solution's composes list match a subset
+    of the current candidate set? Prefer pre-composed solutions when
+    they cover the shape.
+17. ADRs: for each candidate pattern id and matched context id, read
+    `affects_to_adrs[<id>]`. Filter to the scopes that apply (org
+    always; team/project only if scoped). For each ADR, apply its
+    constraints (`accepted` binds; `superseded` redirects; `proposed`
+    is pending).
 
 --- PASS 6: Report ---
 
