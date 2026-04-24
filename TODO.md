@@ -31,14 +31,13 @@ A 7-minute subagent run with no visible progress is uncomfortable. Look into the
 
 Surfaced by earlier reviews and the vanilla-reviewer comparison. Ordered by how often they came up in practice.
 
-### Frontend tactics
-Zero foundation coverage today. Vanilla code reviewers find multiple issues per review that Carta can't speak to: component-size heuristics, state-management patterns, error boundaries, rendering strategies (SSR/SSG/CSR), form handling, accessibility floors, bundle size. Likely shape: a `tactics/frontend/` folder with ~10 patterns, sourced from MDN, Kent C. Dodds' Epic React, React Patterns, Vue composition-API docs, TanStack, etc.
-
-### Testing tactics and standards
-Also zero foundation coverage. Patterns worth authoring: test pyramid, contract testing, snapshot testing (and when not to), property-based testing, deterministic test environments, test-data management, flakiness-hunting. A likely `tactics/testing/` folder plus a meta-standard on test documentation. Sources: xUnit Test Patterns (Meszaros), Growing Object-Oriented Software Guided by Tests (Freeman & Pryce), Hillel Wayne on property-based testing.
-
 ### Bulk-classify `stage_floor` on remaining patterns
-Only 8 of ~75 patterns have `stage_floor` set. The rest default to "applies at every stage" — conservative but not accurate. Work through the inventory and add floors where they matter. Priority list is anything that came up in a review as "Missing — deferred to MVP" or "deferred to production" without a stage_floor already.
+Only ~10 of ~85 patterns have `stage_floor` set. The rest default to "applies at every stage" — conservative but not accurate. Work through the inventory and add floors where they matter. Priority list is anything that came up in a review as "Missing — deferred to MVP" or "deferred to production" without a stage_floor already.
+
+### Residual frontend / testing gaps
+The initial seed of `tactics/frontend/` and `tactics/testing/` covered the core; a few named gaps remain from the original wishlist:
+- Frontend: form handling (server actions, client validation, optimistic submit), bundle-size budgets (per-route JS weight caps, code-splitting boundaries).
+- Testing: a meta-standard on test documentation. Note the Charter says opinionated standards live at org level, so this may belong there rather than in foundations.
 
 ### Extend context roster
 Deferred from the "initially seed 6 contexts" decision. Candidates: `context-multi-tenant-saas` (per-tenant isolation, noisy-neighbour, per-tenant data sharding), `context-iot-platform` (device fleet + ingest + command). Only add if 6 contexts feel thin in real use.
