@@ -1,6 +1,6 @@
 version: 1
-generated_from: 2cc8427b957ea58f
-node_count: 128
+generated_from: 8bcec4e7e5486be7
+node_count: 152
 entries:
   adr-0001-fastapi-as-default.org:
     id: adr-0001-fastapi-as-default
@@ -38,6 +38,26 @@ entries:
     date: 2026-04-20
     affects:
     - CHARTER
+  antipattern-flaky-test:
+    id: antipattern-flaky-test
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-flaky-test.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    related:
+    - pattern-test-pyramid
+    mitigated_by:
+    - pattern-deterministic-test-environment
+    - pattern-test-double
   antipattern-god-service:
     id: antipattern-god-service
     type: antipattern
@@ -49,6 +69,18 @@ entries:
     - context-web-application
     mitigated_by:
     - pattern-rest-api
+  antipattern-prop-drilling:
+    id: antipattern-prop-drilling
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-prop-drilling.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    mitigated_by:
+    - pattern-component-composition
+    - pattern-state-colocation
   antipattern-prototype-drift:
     id: antipattern-prototype-drift
     type: antipattern
@@ -101,6 +133,63 @@ entries:
     - pattern-structured-logging
     - pattern-dead-letter-channel
     - pattern-health-check-endpoint
+  antipattern-slow-pipeline:
+    id: antipattern-slow-pipeline
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-slow-pipeline.md
+    category: delivery
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    related:
+    - pattern-test-pyramid
+    - antipattern-flaky-test
+    mitigated_by:
+    - pattern-fast-feedback-pipeline
+  antipattern-snapshot-overreliance:
+    id: antipattern-snapshot-overreliance
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-snapshot-overreliance.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    mitigated_by:
+    - pattern-test-pyramid
+  antipattern-snowflake-ci:
+    id: antipattern-snowflake-ci
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-snowflake-ci.md
+    category: delivery
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-internal-tool
+    related:
+    - pattern-fast-feedback-pipeline
+    mitigated_by:
+    - pattern-deployment-pipeline
+    - pattern-build-once-deploy-many
+  antipattern-unstable-list-key:
+    id: antipattern-unstable-list-key
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-unstable-list-key.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-component-composition
   context-agentic-system:
     id: context-agentic-system
     type: context
@@ -411,6 +500,22 @@ entries:
     - Scale profile (uniform vs. uneven hot spots)
     - Operational maturity (distributed tracing, service mesh, on-call)
     - Domain boundary clarity
+  pattern-accessibility-baseline:
+    id: pattern-accessibility-baseline
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-accessibility-baseline.md
+    category: frontend
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-internal-tool
+    related:
+    - pattern-component-composition
+    - pattern-list-virtualisation
+    pillars:
+    - pillar-operational-excellence
   pattern-ambassador:
     id: pattern-ambassador
     type: pattern
@@ -506,6 +611,27 @@ entries:
     - pattern-canary-release
     - pattern-feature-flag
     - pattern-deployment-stamps
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
+  pattern-build-once-deploy-many:
+    id: pattern-build-once-deploy-many
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-build-once-deploy-many.md
+    category: delivery
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    related:
+    - pattern-deployment-pipeline
+    - pattern-preview-environment
     pillars:
     - pillar-reliability
     - pillar-operational-excellence
@@ -636,6 +762,20 @@ entries:
     pillars:
     - pillar-performance
     - pillar-reliability
+  pattern-component-composition:
+    id: pattern-component-composition
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-component-composition.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-state-colocation
+    - pattern-error-boundary
+    pillars:
+    - pillar-operational-excellence
   pattern-content-based-router:
     id: pattern-content-based-router
     type: pattern
@@ -651,6 +791,26 @@ entries:
     related:
     - pattern-message-translator
     pillars:
+    - pillar-operational-excellence
+  pattern-contract-testing:
+    id: pattern-contract-testing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-contract-testing.md
+    category: testing
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    related:
+    - pattern-test-pyramid
+    - pattern-test-double
+    - pattern-rest-api
+    - pattern-async-request-reply
+    pillars:
+    - pillar-reliability
     - pillar-operational-excellence
   pattern-correlation-id:
     id: pattern-correlation-id
@@ -719,6 +879,32 @@ entries:
     pillars:
     - pillar-reliability
     - pillar-operational-excellence
+  pattern-deployment-pipeline:
+    id: pattern-deployment-pipeline
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-deployment-pipeline.md
+    category: delivery
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    prerequisites:
+    - pattern-build-once-deploy-many
+    related:
+    - pattern-fast-feedback-pipeline
+    - pattern-preview-environment
+    - pattern-canary-release
+    - pattern-blue-green-deployment
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
   pattern-deployment-stamps:
     id: pattern-deployment-stamps
     type: pattern
@@ -734,6 +920,28 @@ entries:
     pillars:
     - pillar-reliability
     - pillar-cost
+  pattern-deterministic-test-environment:
+    id: pattern-deterministic-test-environment
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-deterministic-test-environment.md
+    category: testing
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    related:
+    - pattern-test-pyramid
+    - pattern-test-double
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
   pattern-distributed-tracing:
     id: pattern-distributed-tracing
     type: pattern
@@ -753,6 +961,20 @@ entries:
     - pattern-red-metrics
     pillars:
     - pillar-operational-excellence
+    - pillar-reliability
+  pattern-error-boundary:
+    id: pattern-error-boundary
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-error-boundary.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-component-composition
+    - pattern-circuit-breaker
+    pillars:
     - pillar-reliability
   pattern-event-carried-state-transfer:
     id: pattern-event-carried-state-transfer
@@ -842,6 +1064,28 @@ entries:
     - pattern-blue-green-deployment
     pillars:
     - pillar-reliability
+    - pillar-operational-excellence
+  pattern-fast-feedback-pipeline:
+    id: pattern-fast-feedback-pipeline
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-fast-feedback-pipeline.md
+    category: delivery
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    related:
+    - pattern-deployment-pipeline
+    - pattern-trunk-based-development
+    - pattern-deterministic-test-environment
+    pillars:
     - pillar-operational-excellence
   pattern-feature-flag:
     id: pattern-feature-flag
@@ -1059,6 +1303,20 @@ entries:
     - pattern-bulkhead
     pillars:
     - pillar-reliability
+  pattern-list-virtualisation:
+    id: pattern-list-virtualisation
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-list-virtualisation.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-internal-tool
+    related:
+    - pattern-rendering-strategy
+    pillars:
+    - pillar-performance
   pattern-llm-as-judge-eval:
     id: pattern-llm-as-judge-eval
     type: pattern
@@ -1125,6 +1383,26 @@ entries:
     - pattern-read-replica
     pillars:
     - pillar-performance
+  pattern-merge-queue:
+    id: pattern-merge-queue
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-merge-queue.md
+    category: delivery
+    maturity: stable
+    stage_floor: production
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-internal-tool
+    prerequisites:
+    - pattern-fast-feedback-pipeline
+    related:
+    - pattern-trunk-based-development
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
   pattern-message-router:
     id: pattern-message-router
     type: pattern
@@ -1269,6 +1547,25 @@ entries:
     pillars:
     - pillar-operational-excellence
     - pillar-cost
+  pattern-preview-environment:
+    id: pattern-preview-environment
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-preview-environment.md
+    category: delivery
+    maturity: stable
+    stage_floor: mvp
+    applies_to:
+    - context-web-application
+    - context-internal-tool
+    - context-agentic-system
+    prerequisites:
+    - pattern-build-once-deploy-many
+    related:
+    - pattern-deployment-pipeline
+    - pattern-trunk-based-development
+    pillars:
+    - pillar-operational-excellence
   pattern-priority-queue:
     id: pattern-priority-queue
     type: pattern
@@ -1305,6 +1602,25 @@ entries:
     - pattern-structured-logging
     pillars:
     - pillar-security
+    - pillar-reliability
+  pattern-property-based-testing:
+    id: pattern-property-based-testing
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-property-based-testing.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-ml-system
+    - context-agentic-system
+    related:
+    - pattern-test-pyramid
+    - pattern-contract-testing
+    pillars:
     - pillar-reliability
   pattern-publish-subscribe:
     id: pattern-publish-subscribe
@@ -1448,6 +1764,20 @@ entries:
     - pattern-react-loop
     pillars:
     - pillar-reliability
+  pattern-rendering-strategy:
+    id: pattern-rendering-strategy
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-rendering-strategy.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-list-virtualisation
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
   pattern-rest-api:
     id: pattern-rest-api
     type: pattern
@@ -1588,6 +1918,20 @@ entries:
     pillars:
     - pillar-performance
     - pillar-reliability
+  pattern-state-colocation:
+    id: pattern-state-colocation
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/frontend/pattern-state-colocation.md
+    category: frontend
+    maturity: stable
+    applies_to:
+    - context-web-application
+    related:
+    - pattern-component-composition
+    pillars:
+    - pillar-performance
+    - pillar-operational-excellence
   pattern-strangler-fig:
     id: pattern-strangler-fig
     type: pattern
@@ -1621,6 +1965,68 @@ entries:
     pillars:
     - pillar-operational-excellence
     - pillar-reliability
+  pattern-test-data-builder:
+    id: pattern-test-data-builder
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-test-data-builder.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    related:
+    - pattern-test-pyramid
+    - pattern-test-double
+    pillars:
+    - pillar-operational-excellence
+  pattern-test-double:
+    id: pattern-test-double
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-test-double.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    related:
+    - pattern-test-pyramid
+    - pattern-deterministic-test-environment
+    - pattern-contract-testing
+    pillars:
+    - pillar-operational-excellence
+    - pillar-reliability
+  pattern-test-pyramid:
+    id: pattern-test-pyramid
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/testing/pattern-test-pyramid.md
+    category: testing
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    related:
+    - pattern-contract-testing
+    - pattern-deterministic-test-environment
+    - pattern-test-double
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
   pattern-throttling:
     id: pattern-throttling
     type: pattern
@@ -1687,6 +2093,30 @@ entries:
     - pattern-event-sourcing
     - pattern-publish-subscribe
     pillars:
+    - pillar-reliability
+  pattern-trunk-based-development:
+    id: pattern-trunk-based-development
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/delivery/pattern-trunk-based-development.md
+    category: delivery
+    maturity: stable
+    applies_to:
+    - context-web-application
+    - context-event-driven-system
+    - context-data-pipeline
+    - context-batch-processing
+    - context-internal-tool
+    - context-agentic-system
+    - context-ml-system
+    prerequisites:
+    - pattern-fast-feedback-pipeline
+    related:
+    - pattern-feature-flag
+    - pattern-merge-queue
+    - pattern-deployment-pipeline
+    pillars:
+    - pillar-operational-excellence
     - pillar-reliability
   pattern-valet-key:
     id: pattern-valet-key
@@ -2017,14 +2447,26 @@ by_id:
   - adr-0001-relaxed-circuit-breaker-timeouts.payments-api
   adr-0002-currency-authority-exemption:
   - adr-0002-currency-authority-exemption.org
+  antipattern-flaky-test:
+  - antipattern-flaky-test
   antipattern-god-service:
   - antipattern-god-service
+  antipattern-prop-drilling:
+  - antipattern-prop-drilling
   antipattern-prototype-drift:
   - antipattern-prototype-drift
   antipattern-self-judging-llm:
   - antipattern-self-judging-llm
   antipattern-silent-failure:
   - antipattern-silent-failure
+  antipattern-slow-pipeline:
+  - antipattern-slow-pipeline
+  antipattern-snapshot-overreliance:
+  - antipattern-snapshot-overreliance
+  antipattern-snowflake-ci:
+  - antipattern-snowflake-ci
+  antipattern-unstable-list-key:
+  - antipattern-unstable-list-key
   context-agentic-system:
   - context-agentic-system
   context-batch-processing:
@@ -2051,6 +2493,8 @@ by_id:
   - dtree-choose-messaging-style
   dtree-choose-service-boundary:
   - dtree-choose-service-boundary
+  pattern-accessibility-baseline:
+  - pattern-accessibility-baseline
   pattern-ambassador:
   - pattern-ambassador
   pattern-anti-corruption-layer:
@@ -2063,6 +2507,8 @@ by_id:
   - pattern-backend-for-frontend
   pattern-blue-green-deployment:
   - pattern-blue-green-deployment
+  pattern-build-once-deploy-many:
+  - pattern-build-once-deploy-many
   pattern-bulkhead:
   - pattern-bulkhead
   pattern-cache-aside:
@@ -2078,8 +2524,12 @@ by_id:
   - pattern-compensating-transaction
   pattern-competing-consumers:
   - pattern-competing-consumers
+  pattern-component-composition:
+  - pattern-component-composition
   pattern-content-based-router:
   - pattern-content-based-router
+  pattern-contract-testing:
+  - pattern-contract-testing
   pattern-correlation-id:
   - pattern-correlation-id
   pattern-cqrs:
@@ -2088,10 +2538,16 @@ by_id:
   - pattern-database-per-service
   pattern-dead-letter-channel:
   - pattern-dead-letter-channel
+  pattern-deployment-pipeline:
+  - pattern-deployment-pipeline
   pattern-deployment-stamps:
   - pattern-deployment-stamps
+  pattern-deterministic-test-environment:
+  - pattern-deterministic-test-environment
   pattern-distributed-tracing:
   - pattern-distributed-tracing
+  pattern-error-boundary:
+  - pattern-error-boundary
   pattern-event-carried-state-transfer:
   - pattern-event-carried-state-transfer
   pattern-event-driven-architecture:
@@ -2102,6 +2558,8 @@ by_id:
   - pattern-event-sourcing
   pattern-expand-contract-migration:
   - pattern-expand-contract-migration
+  pattern-fast-feedback-pipeline:
+  - pattern-fast-feedback-pipeline
   pattern-feature-flag:
   - pattern-feature-flag
   pattern-federated-identity:
@@ -2132,6 +2590,8 @@ by_id:
   - pattern-layered-architecture
   pattern-leader-election:
   - pattern-leader-election
+  pattern-list-virtualisation:
+  - pattern-list-virtualisation
   pattern-llm-as-judge-eval:
   - pattern-llm-as-judge-eval
   pattern-llm-budget-enforcement:
@@ -2140,6 +2600,8 @@ by_id:
   - pattern-load-balancing
   pattern-materialized-view:
   - pattern-materialized-view
+  pattern-merge-queue:
+  - pattern-merge-queue
   pattern-message-router:
   - pattern-message-router
   pattern-message-translator:
@@ -2158,10 +2620,14 @@ by_id:
   - pattern-pipeline
   pattern-plan-then-execute:
   - pattern-plan-then-execute
+  pattern-preview-environment:
+  - pattern-preview-environment
   pattern-priority-queue:
   - pattern-priority-queue
   pattern-prompt-injection-defense:
   - pattern-prompt-injection-defense
+  pattern-property-based-testing:
+  - pattern-property-based-testing
   pattern-publish-subscribe:
   - pattern-publish-subscribe
   pattern-queue-based-load-leveling:
@@ -2179,6 +2645,8 @@ by_id:
   - pattern-red-metrics
   pattern-reflexion:
   - pattern-reflexion
+  pattern-rendering-strategy:
+  - pattern-rendering-strategy
   pattern-rest-api:
   - pattern-rest-api
   - pattern-rest-api.org
@@ -2198,10 +2666,18 @@ by_id:
   - pattern-sidecar
   pattern-space-based-architecture:
   - pattern-space-based-architecture
+  pattern-state-colocation:
+  - pattern-state-colocation
   pattern-strangler-fig:
   - pattern-strangler-fig
   pattern-structured-logging:
   - pattern-structured-logging
+  pattern-test-data-builder:
+  - pattern-test-data-builder
+  pattern-test-double:
+  - pattern-test-double
+  pattern-test-pyramid:
+  - pattern-test-pyramid
   pattern-throttling:
   - pattern-throttling
   pattern-timeout:
@@ -2210,6 +2686,8 @@ by_id:
   - pattern-tool-use
   pattern-transactional-outbox:
   - pattern-transactional-outbox
+  pattern-trunk-based-development:
+  - pattern-trunk-based-development
   pattern-valet-key:
   - pattern-valet-key
   pillar-cost:
@@ -2272,25 +2750,55 @@ overrides:
     org: pattern-rest-api.org
 context_to_patterns:
   context-agentic-system:
+  - pattern-build-once-deploy-many
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
+  - pattern-fast-feedback-pipeline
   - pattern-feature-flag
   - pattern-human-in-the-loop-interrupt
   - pattern-llm-as-judge-eval
   - pattern-llm-budget-enforcement
   - pattern-orchestrator-workers
   - pattern-plan-then-execute
+  - pattern-preview-environment
   - pattern-prompt-injection-defense
+  - pattern-property-based-testing
   - pattern-react-loop
   - pattern-reflexion
+  - pattern-test-double
+  - pattern-test-pyramid
   - pattern-tool-use
+  - pattern-trunk-based-development
   context-batch-processing:
+  - pattern-build-once-deploy-many
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
   - pattern-expand-contract-migration
+  - pattern-fast-feedback-pipeline
+  - pattern-property-based-testing
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
+  - pattern-trunk-based-development
   context-data-pipeline:
+  - pattern-build-once-deploy-many
+  - pattern-contract-testing
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
   - pattern-expand-contract-migration
+  - pattern-fast-feedback-pipeline
+  - pattern-merge-queue
   - pattern-pipeline
+  - pattern-property-based-testing
   - pattern-structured-logging
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
+  - pattern-trunk-based-development
   context-event-driven-system:
   - pattern-ambassador
   - pattern-blue-green-deployment
+  - pattern-build-once-deploy-many
   - pattern-bulkhead
   - pattern-canary-release
   - pattern-circuit-breaker
@@ -2298,21 +2806,27 @@ context_to_patterns:
   - pattern-compensating-transaction
   - pattern-competing-consumers
   - pattern-content-based-router
+  - pattern-contract-testing
   - pattern-correlation-id
   - pattern-database-per-service
   - pattern-dead-letter-channel
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
   - pattern-distributed-tracing
   - pattern-event-carried-state-transfer
   - pattern-event-driven-architecture
   - pattern-event-notification
   - pattern-event-sourcing
   - pattern-expand-contract-migration
+  - pattern-fast-feedback-pipeline
   - pattern-health-check-endpoint
   - pattern-leader-election
+  - pattern-merge-queue
   - pattern-message-router
   - pattern-message-translator
   - pattern-microservices
   - pattern-priority-queue
+  - pattern-property-based-testing
   - pattern-publish-subscribe
   - pattern-queue-based-load-leveling
   - pattern-red-metrics
@@ -2321,28 +2835,54 @@ context_to_patterns:
   - pattern-scatter-gather
   - pattern-sidecar
   - pattern-structured-logging
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
   - pattern-throttling
   - pattern-timeout
   - pattern-transactional-outbox
+  - pattern-trunk-based-development
   context-internal-tool:
+  - pattern-accessibility-baseline
   - pattern-blue-green-deployment
+  - pattern-build-once-deploy-many
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
+  - pattern-fast-feedback-pipeline
   - pattern-feature-flag
   - pattern-human-in-the-loop-interrupt
+  - pattern-list-virtualisation
   - pattern-llm-as-judge-eval
   - pattern-llm-budget-enforcement
+  - pattern-merge-queue
   - pattern-orchestrator-workers
   - pattern-plan-then-execute
+  - pattern-preview-environment
   - pattern-prompt-injection-defense
   - pattern-react-loop
   - pattern-reflexion
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
   - pattern-tool-use
+  - pattern-trunk-based-development
+  context-ml-system:
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
+  - pattern-fast-feedback-pipeline
+  - pattern-property-based-testing
+  - pattern-test-double
+  - pattern-test-pyramid
+  - pattern-trunk-based-development
   context-web-application:
+  - pattern-accessibility-baseline
   - pattern-ambassador
   - pattern-anti-corruption-layer
   - pattern-api-gateway
   - pattern-async-request-reply
   - pattern-backend-for-frontend
   - pattern-blue-green-deployment
+  - pattern-build-once-deploy-many
   - pattern-bulkhead
   - pattern-cache-aside
   - pattern-canary-release
@@ -2351,18 +2891,24 @@ context_to_patterns:
   - pattern-claim-check
   - pattern-compensating-transaction
   - pattern-competing-consumers
+  - pattern-component-composition
   - pattern-content-based-router
+  - pattern-contract-testing
   - pattern-correlation-id
   - pattern-cqrs
   - pattern-database-per-service
   - pattern-dead-letter-channel
+  - pattern-deployment-pipeline
   - pattern-deployment-stamps
+  - pattern-deterministic-test-environment
   - pattern-distributed-tracing
+  - pattern-error-boundary
   - pattern-event-carried-state-transfer
   - pattern-event-driven-architecture
   - pattern-event-notification
   - pattern-event-sourcing
   - pattern-expand-contract-migration
+  - pattern-fast-feedback-pipeline
   - pattern-feature-flag
   - pattern-federated-identity
   - pattern-gateway-aggregation
@@ -2378,10 +2924,12 @@ context_to_patterns:
   - pattern-input-validation
   - pattern-layered-architecture
   - pattern-leader-election
+  - pattern-list-virtualisation
   - pattern-llm-as-judge-eval
   - pattern-llm-budget-enforcement
   - pattern-load-balancing
   - pattern-materialized-view
+  - pattern-merge-queue
   - pattern-message-router
   - pattern-message-translator
   - pattern-microkernel
@@ -2391,8 +2939,10 @@ context_to_patterns:
   - pattern-orchestrator-workers
   - pattern-pipeline
   - pattern-plan-then-execute
+  - pattern-preview-environment
   - pattern-priority-queue
   - pattern-prompt-injection-defense
+  - pattern-property-based-testing
   - pattern-publish-subscribe
   - pattern-queue-based-load-leveling
   - pattern-rate-limiting
@@ -2402,6 +2952,7 @@ context_to_patterns:
   - pattern-read-replica
   - pattern-red-metrics
   - pattern-reflexion
+  - pattern-rendering-strategy
   - pattern-rest-api
   - pattern-rest-api.org
   - pattern-retry-with-backoff
@@ -2412,36 +2963,60 @@ context_to_patterns:
   - pattern-sharding
   - pattern-sidecar
   - pattern-space-based-architecture
+  - pattern-state-colocation
   - pattern-strangler-fig
   - pattern-structured-logging
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
   - pattern-throttling
   - pattern-timeout
   - pattern-tool-use
   - pattern-transactional-outbox
+  - pattern-trunk-based-development
   - pattern-valet-key
 context_to_antipatterns:
   context-agentic-system:
+  - antipattern-flaky-test
   - antipattern-prototype-drift
   - antipattern-self-judging-llm
   - antipattern-silent-failure
   context-batch-processing:
+  - antipattern-flaky-test
   - antipattern-silent-failure
+  - antipattern-slow-pipeline
   context-data-pipeline:
+  - antipattern-flaky-test
   - antipattern-prototype-drift
   - antipattern-silent-failure
+  - antipattern-slow-pipeline
+  - antipattern-snowflake-ci
   context-event-driven-system:
+  - antipattern-flaky-test
   - antipattern-silent-failure
+  - antipattern-slow-pipeline
+  - antipattern-snowflake-ci
   context-internal-tool:
+  - antipattern-flaky-test
   - antipattern-prototype-drift
   - antipattern-self-judging-llm
   - antipattern-silent-failure
+  - antipattern-slow-pipeline
+  - antipattern-snowflake-ci
   context-ml-system:
+  - antipattern-flaky-test
   - antipattern-prototype-drift
   - antipattern-self-judging-llm
   context-web-application:
+  - antipattern-flaky-test
   - antipattern-god-service
+  - antipattern-prop-drilling
   - antipattern-prototype-drift
   - antipattern-silent-failure
+  - antipattern-slow-pipeline
+  - antipattern-snapshot-overreliance
+  - antipattern-snowflake-ci
+  - antipattern-unstable-list-key
 context_to_standards:
   __universal: []
   context-web-application:
@@ -2621,6 +3196,8 @@ prerequisites_closure:
   pattern-database-per-service:
   - pattern-microservices
   - pattern-modular-monolith
+  pattern-deployment-pipeline:
+  - pattern-build-once-deploy-many
   pattern-distributed-tracing:
   - pattern-correlation-id
   pattern-gateway-aggregation:
@@ -2629,11 +3206,17 @@ prerequisites_closure:
   - pattern-api-gateway
   pattern-gateway-routing:
   - pattern-api-gateway
+  pattern-merge-queue:
+  - pattern-fast-feedback-pipeline
   pattern-microservices:
   - pattern-modular-monolith
+  pattern-preview-environment:
+  - pattern-build-once-deploy-many
   pattern-prompt-injection-defense:
   - pattern-input-validation
   pattern-saga:
   - pattern-database-per-service
   - pattern-microservices
   - pattern-modular-monolith
+  pattern-trunk-based-development:
+  - pattern-fast-feedback-pipeline

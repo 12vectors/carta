@@ -26,7 +26,7 @@ VALID_PATTERN_CATEGORIES = {
     # tactics — concern-scoped patterns
     "communication", "data", "resilience", "scaling",
     "security", "agentic", "observability",
-    "refactoring", "deployment",
+    "refactoring", "deployment", "testing", "delivery", "frontend",
     # integration — messaging, routing, transformation
     "integration",
 }

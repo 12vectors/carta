@@ -5,7 +5,7 @@
 id: pattern-
 title: 
 type: pattern
-category:                        # style | communication | data | resilience | scaling | security | observability | agentic | refactoring | deployment | integration
+category:                        # style | communication | data | resilience | scaling | security | observability | agentic | refactoring | deployment | testing | delivery | frontend | integration
 maturity: experimental
 stage_floor:                     # optional — prototype | mvp | production | critical. Omit to apply at every stage.
 pillars: []                      # [[pillar-...]] wikilinks
