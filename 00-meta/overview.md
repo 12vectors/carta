@@ -14,6 +14,7 @@ carta/                                  # Repository root = Obsidian vault
 ├── CHARTER.md                          # How the foundations are governed
 ├── DECISION_TREE.md                    # Top-level routing for traversal
 ├── LOG.md                              # Append-only record of operations
+├── TODO.md                             # Things we want to add to Carta
 ├── INDEX.yaml                          # Generated graph index across all levels; freshness checked by tools/validate.py
 │
 ├── 00-meta/                            # How Carta works (system docs)
