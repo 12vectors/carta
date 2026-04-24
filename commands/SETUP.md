@@ -84,7 +84,32 @@ From any project, in Claude Code:
 
 `/carta` is for conversational architectural questions — one response, no file crawling of the target codebase. `/carta-review` is for auditing an existing application: it spawns a subagent that iterates (up to four passes) through the candidate set, reads code files to back every finding with `file:line` evidence, and terminates when the set is stable. Use `/carta-review` when you want every recommended pattern backed by code citations. `/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries.
 
-## 4. Optional: mention Carta in your project CLAUDE.md
+## 4. Install the pre-commit hook (optional but recommended)
+
+`INDEX.yaml` at the repo root must stay in sync with the content tree — the validator fails on drift. A pre-commit hook regenerates it automatically whenever you commit a change to content (under `foundations/`, `org/`, `teams/`, or `projects/`).
+
+Two ways to install:
+
+**Dependency-free (recommended):**
+
+```bash
+tools/hooks/install.sh
+```
+
+Symlinks `tools/hooks/pre-commit` into `.git/hooks/pre-commit`. No Python packages beyond what the validator already uses.
+
+**Via the pre-commit framework:**
+
+If you're already using [pre-commit.com](https://pre-commit.com) for other hooks, a `.pre-commit-config.yaml` ships at the repo root with the same behaviour:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Either approach regenerates and stages `INDEX.yaml` in the same commit as the content change. Skip this step entirely if you're comfortable running `python tools/build_index.py` by hand — the validator will tell you when you've forgotten.
+
+## 5. Optional: mention Carta in your project CLAUDE.md
 
 Add a line to your project's CLAUDE.md so the agent knows Carta is available even without the slash command:
 

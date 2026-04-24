@@ -62,9 +62,13 @@ carta/                                  # Repository root = Obsidian vault
 │   ├── carta.md                        # Slash command for coding agents
 │   └── SETUP.md                        # Slash command installation
 │
-└── tools/
-    ├── validate.py                     # Frontmatter and link validator (CI)
-    └── lint.py                         # Semantic graph health checker
+├── tools/
+│   ├── validate.py                     # Frontmatter and link validator (CI)
+│   ├── lint.py                         # Semantic graph health checker
+│   ├── build_index.py                  # Regenerates INDEX.yaml
+│   └── hooks/                          # Git hooks (install via tools/hooks/install.sh)
+│
+└── .pre-commit-config.yaml             # Optional — config for the pre-commit framework
 ```
 
 Filenames are globally unique across the vault. Foundation files use the node type prefix (`pattern-`, `context-`, etc.). Files outside the foundations add a level suffix for uniqueness: `.org.md`, `.<team-name>.md`, `.<project-name>.md`. This ensures Obsidian wikilinks resolve unambiguously.

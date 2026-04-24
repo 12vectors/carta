@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Carta pre-commit hook — regenerate and stage INDEX.yaml when content changes.
+#
+# Triggered when any markdown file under foundations/, org/, teams/, or
+# projects/ is staged. Runs tools/build_index.py, then stages the updated
+# INDEX.yaml so it lands in the same commit.
+#
+# To install: tools/hooks/install.sh
+
+set -eu
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+# Only rebuild if a content file is staged.
+changed=$(git diff --cached --name-only --diff-filter=ACMRD \
+  | grep -E '^(foundations|org|teams|projects)/.*\.md$' || true)
+
+if [ -z "$changed" ]; then
+  exit 0
+fi
+
+# Regenerate the index. Show stderr on failure; stay quiet on success.
+if ! python3 tools/build_index.py >/dev/null 2>&1; then
+  echo "✗ tools/build_index.py failed. Re-run manually and fix errors:" >&2
+  python3 tools/build_index.py >&2 || true
+  exit 1
+fi
+
+# Stage INDEX.yaml if regeneration changed it or if it was newly created.
+if git ls-files --error-unmatch INDEX.yaml >/dev/null 2>&1; then
+  if ! git diff --quiet INDEX.yaml; then
+    git add INDEX.yaml
+    echo "✓ INDEX.yaml regenerated and staged"
+  fi
+else
+  git add INDEX.yaml
+  echo "✓ INDEX.yaml created and staged"
+fi
+
+exit 0

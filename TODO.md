@@ -50,9 +50,6 @@ Deferred from the "initially seed 6 contexts" decision. Candidates: `context-mul
 
 ## Tooling
 
-### Pre-commit hook for index freshness
-`python tools/build_index.py` runs at commit time so contributors don't have to remember. Validator already fails on stale index; the hook just removes the "commit → push → CI fails → amend" loop. Trivial to add to `.pre-commit-config.yaml` or as a raw `.git/hooks/pre-commit` script.
-
 ### Python / MCP tool layer for deterministic protocol steps
 Today the subagent reads YAML for structural queries. With proper tools (`carta.match_context(task)`, `carta.resolve_prerequisites(id)`, `carta.apply_dtree(id, criteria)`, `carta.get_node(id)`), the deterministic steps become a single tool call each, freeing the subagent's context budget for judgement steps. Two shapes:
 - **Python CLI** callable from Bash — simplest, works today.
