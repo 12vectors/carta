@@ -76,11 +76,11 @@ cd my-org-architecture
 
 # 3. Point Claude Code at Carta and install the slash commands
 #    - Set CARTA_PATH in ~/.claude/settings.json → env
-#    - Symlink the three commands into ~/.claude/commands/
+#    - Symlink the four commands into ~/.claude/commands/
 #    Full instructions: commands/SETUP.md
 ```
 
-### The three Claude Code slash commands
+### The four Claude Code slash commands
 
 | Command | When to use | What it does |
 |---|---|---|
@@ -126,9 +126,9 @@ Pre-1.0. APIs, schemas, and directory conventions may change.
 |---|---|
 | Node schema and four-level model | Working |
 | Operations model (traverse, ingest, lint, capture) | Working |
-| Slash commands — `/carta` (traverse), `/carta-add` (author), `/carta-review` (deep codebase audit via subagent) | Working |
+| Slash commands — `/carta` (traverse), `/carta-review` (deep codebase audit via subagent), `/carta-project-setup` (scaffold a project's Carta scope), `/carta-add` (author one node) | Working |
 | Validator (`tools/validate.py`) and linter (`tools/lint.py`) | Working |
-| Foundations — pillars (5), contexts (7), stages (4), principles (14), patterns (~75), decision-trees (6), solutions (1), antipatterns (2) | Seeded — ~115 nodes |
+| Foundations — pillars (5), contexts (7), stages (4), principles (14), patterns (97), decision-trees (6), solutions (1), antipatterns (10) | Seeded — 152 nodes |
 | Obsidian setup guide and templates (10 node types) | Done |
 | Spec Kit integration example | Planned |
 
