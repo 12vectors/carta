@@ -122,6 +122,8 @@ A node belongs in the foundations only if it generalises across organisations an
 
 The relevant test is whether the **principle** generalises, not whether every instantiation is universal. "Use a secrets manager rather than environment variables" generalises across stacks even though every implementation will be AWS Secrets Manager, HashiCorp Vault, or similar. The pattern is stack-general; the implementation is stack-specific. The pattern belongs in the foundations; implementation guidance belongs in organisation levels.
 
+In practice, a tech-stack commitment at org level takes the shape of an **ADR** (the *why* — `org/decisions/adr-NNNN-<choice>.org.md`) paired with **overrides** on the foundation patterns it touches (the *how* — `org/overrides/<pattern-id>.org.md`). The seeded `adr-0001-fastapi-as-default.org` + `pattern-rest-api.org` is the worked example. Project-level deviations follow the same shape one level down. Foundations themselves never name a library or vendor.
+
 Patterns may be domain-specific without being stack-specific. Event sourcing applies to a subset of systems but generalises across stacks within that subset; it belongs in the foundations, scoped to the relevant `applies_to` contexts.
 
 **Test:** could a reasonable team building any system in this category (web application, data pipeline, agentic system) apply this pattern, regardless of their stack choices? If applicability requires committing to a specific vendor, framework, or language, it belongs in an organisation, team, or project level.

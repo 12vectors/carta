@@ -30,6 +30,8 @@ Carta is plain markdown in a git repository. Two axes structure it:
 
 Each more specific level can override or extend the level above it. The only constraint is that overrides are accompanied by a decision record explaining why.
 
+**Tech stacks live at organisation level**, never in foundations. A stack commitment is captured as an ADR (the *why*) paired with overrides on the foundation patterns it touches (the *how*) — the seeded `adr-0001-fastapi-as-default.org` + `pattern-rest-api.org` shows the shape. Foundations stay framework- and library-agnostic so the shared layer ages slowly while concrete library choices accumulate as you descend the levels.
+
 **The foundation layers** — what the shared knowledge base contains:
 
 - `05-pillars/` — quality lenses (reliability, security, cost, operational-excellence, performance). What a task is *optimising for*.
