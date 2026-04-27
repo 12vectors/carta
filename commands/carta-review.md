@@ -10,6 +10,8 @@ Use `/carta-review` when:
 
 Use `/carta` instead for quick "what pattern applies to X?" conversations — no codebase read required.
 
+**Output**: by default the report is **concise** — top issues, status-grouped findings, a one-line "Already in place" summary, empty sections collapsed. Ask for `verbose`, `full`, or "show every pattern" after the run to see the full scorecard with `Present` rows, principles applied, decision trees consulted, and full standards list. The subagent emits both forms in a single run, so verbose detail is available without re-running.
+
 ## Find Carta and resolve scope
 
 1. Resolve CARTA_PATH (`echo $CARTA_PATH`). If unset, tell the user to configure it and stop.
