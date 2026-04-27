@@ -1,0 +1,16 @@
+# INDEX.yaml is fully generated from the content tree (see
+# tools/build_index.py). When upstream and a fork both regenerate it,
+# git would otherwise produce a conflict on every pull.
+#
+# Resolution: merge=ours keeps the local copy during a merge, and the
+# post-merge / post-rewrite hooks regenerate it from the merged source
+# files immediately afterwards. The "winning" copy is replaced before
+# the working tree settles, so neither side actually wins — the source
+# files do, which is the correct invariant for a derived artefact.
+#
+# Required for this rule to take effect:
+#   1. Run tools/hooks/install.sh on every clone (registers the hooks
+#      and the `merge.ours.driver` git config in this repo).
+#   2. Keep `python tools/build_index.py --check` in CI as the
+#      freshness gate that catches a clone whose hooks didn't fire.
+INDEX.yaml merge=ours

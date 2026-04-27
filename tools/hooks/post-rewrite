@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Carta post-rewrite hook — regenerate INDEX.yaml after rebase.
+#
+# Skips the `amend` case so a user's `git commit --amend` doesn't trigger
+# a parallel rebuild that fights with the pre-commit hook.
+#
+# To install: tools/hooks/install.sh
+
+set -eu
+
+op="${1:-}"
+[ "$op" = "amend" ] && exit 0  # pre-commit handles the amend case
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+if ! python3 tools/build_index.py >/dev/null 2>&1; then
+  echo "⚠ tools/build_index.py failed after $op:" >&2
+  python3 tools/build_index.py >&2 || true
+  echo "Re-run manually after resolving." >&2
+  exit 0
+fi
+
+if ! git diff --quiet INDEX.yaml; then
+  git add INDEX.yaml
+  echo "✓ INDEX.yaml regenerated and staged after $op."
+  echo "  Finalise with: git commit --amend --no-edit  (or add a follow-up commit)"
+fi
+
+exit 0

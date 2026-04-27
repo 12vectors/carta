@@ -89,30 +89,40 @@ From any project, in Claude Code:
 
 `/carta` is for conversational architectural questions — one response, no file crawling of the target codebase. `/carta-review` is for auditing an existing application: it spawns a subagent that iterates (up to four passes) through the candidate set, reads code files to back every finding with `file:line` evidence, and terminates when the set is stable. Use `/carta-review` when you want every recommended pattern backed by code citations. The default report is concise (top issues + status-grouped findings, empty sections collapsed); ask `verbose` or "show every pattern" after the run to see the full scorecard. `/carta-add` loads `00-meta/writing-rules.md` into the drafting context so the agent writes terse, directive nodes rather than textbook entries. `/carta-project-setup` is the project-scoped scaffolder: it reads the target project's README, docs, and manifests, proposes a matching profile (slug, context, stage, pillars, detected stack) with `file:line` citations the developer can push back against, and writes a charter ADR and a tech-stack ADR under `projects/<slug>/decisions/` with `status: proposed` for review. Re-run it to refresh after the codebase drifts — `accepted` ADRs are never rewritten, only superseded.
 
-## 4. Install the pre-commit hook (optional but recommended)
+## 4. Install the git hooks (required for forks pulling upstream)
 
-`INDEX.yaml` at the repo root must stay in sync with the content tree — the validator fails on drift. A pre-commit hook regenerates it automatically whenever you commit a change to content (under `foundations/`, `org/`, `teams/`, or `projects/`).
+`INDEX.yaml` at the repo root is fully generated from the content tree. It must stay in sync — the validator fails on drift. Three hooks plus a merge configuration keep it correct without manual work:
 
-Two ways to install:
+| Hook / config | What it does |
+|---|---|
+| `pre-commit` | Regenerates and stages `INDEX.yaml` when content files are committed. |
+| `post-merge` | After a merge from upstream (e.g. `git pull`), regenerates `INDEX.yaml` from the merged source tree and stages it. |
+| `post-rewrite` | After a rebase, same regeneration. |
+| `merge.ours.driver` git config | Pairs with `.gitattributes`'s `INDEX.yaml merge=ours` line so upstream pulls don't surface a conflict on the index file — the post-merge hook then rebuilds it correctly. |
 
-**Dependency-free (recommended):**
+**Why a fork specifically needs this:** an org's fork accumulates org/team/project content that changes its `INDEX.yaml`; upstream's foundation evolves and changes upstream's `INDEX.yaml`. Without these hooks, every `git pull` from upstream would surface an `INDEX.yaml` merge conflict. With them, the conflict is suppressed (`merge=ours`), the index is rebuilt from the now-merged source files (post-merge hook), and the result reflects both upstream's new foundation entries and the fork's local content.
+
+Install all of the above with one script:
 
 ```bash
 tools/hooks/install.sh
 ```
 
-Symlinks `tools/hooks/pre-commit` into `.git/hooks/pre-commit`. No Python packages beyond what the validator already uses.
+Symlinks the three hooks into `.git/hooks/` and registers `merge.ours.driver true` in this repo's git config. No Python packages beyond what the validator already uses. Idempotent — safe to re-run.
 
 **Via the pre-commit framework:**
 
-If you're already using [pre-commit.com](https://pre-commit.com) for other hooks, a `.pre-commit-config.yaml` ships at the repo root with the same behaviour:
+If you're already using [pre-commit.com](https://pre-commit.com) for other hooks, a `.pre-commit-config.yaml` ships at the repo root with the same pre-commit behaviour. The post-merge / post-rewrite hooks and the `merge.ours.driver` config still need `tools/hooks/install.sh` (or equivalent manual setup) — pre-commit.com only manages the pre-commit phase.
 
 ```bash
 pip install pre-commit
 pre-commit install
+tools/hooks/install.sh   # still needed for post-merge, post-rewrite, merge driver
 ```
 
-Either approach regenerates and stages `INDEX.yaml` in the same commit as the content change. Skip this step entirely if you're comfortable running `python tools/build_index.py` by hand — the validator will tell you when you've forgotten.
+**CI freshness gate (required):** keep `python tools/build_index.py --check` in your CI pipeline. It's the safety net that catches a clone whose hooks didn't fire (GUI git clients can sometimes skip hooks; new contributors may forget to run the installer). The combination of installed hooks + CI check is what makes the merge=ours strategy safe — without the CI check, a hook-less clone could silently ship a stale index.
+
+After a `git pull` that merged upstream changes, you may see `INDEX.yaml` staged in your working tree. Finalise with `git commit --amend --no-edit` (folds the regenerated index into the merge commit) or as a follow-up commit.
 
 ## 5. Optional: mention Carta in your project CLAUDE.md
 

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Carta post-merge hook — regenerate INDEX.yaml from merged source files.
+#
+# Pairs with the .gitattributes rule `INDEX.yaml merge=ours`. The merge
+# attribute keeps the local copy as a placeholder so no conflict surfaces;
+# this hook then rebuilds the index from the actual merged content tree
+# so it's correct.
+#
+# Outcome: INDEX.yaml is regenerated and staged. Finalise by amending
+# the merge commit (`git commit --amend --no-edit`) or by adding a
+# follow-up commit ("Refresh index after merge").
+#
+# To install: tools/hooks/install.sh
+
+set -eu
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+# Skip if no content files changed in this merge.
+changed=$(git diff HEAD@{1} HEAD --name-only --diff-filter=ACMRD 2>/dev/null \
+  | grep -E '^(foundations|org|teams|projects)/.*\.md$' || true)
+[ -z "$changed" ] && exit 0
+
+if ! python3 tools/build_index.py >/dev/null 2>&1; then
+  echo "⚠ tools/build_index.py failed after merge:" >&2
+  python3 tools/build_index.py >&2 || true
+  echo "Re-run manually after resolving." >&2
+  exit 0  # don't block the merge; just warn
+fi
+
+if ! git diff --quiet INDEX.yaml; then
+  git add INDEX.yaml
+  echo "✓ INDEX.yaml regenerated and staged after merge."
+  echo "  Finalise with: git commit --amend --no-edit  (or add a follow-up commit)"
+fi
+
+exit 0
