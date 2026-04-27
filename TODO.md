@@ -8,17 +8,6 @@ Order within each section is rough priority, most useful first. Feel free to rea
 
 ## Agent and review UX
 
-### Verbose vs concise review reports
-The `/carta-review` subagent produces a comprehensive structured report — pattern scorecard with file:line citations, deferred-to-stage groups, pillars and principles, decision trees consulted, "Gaps in Carta itself". It's thorough, and it can be overwhelming on first read. A real team wants two modes:
-
-- **Concise** (default for casual review): two-sentence lead + top-5 current-stage findings with one-line rationales + the "Gaps in Carta itself" section. No full scorecard. Maybe 30–50 lines.
-- **Verbose** (default for audit or when the concise run surfaces something worth drilling into): today's full report.
-
-Open questions:
-- Do we add a `--mode=concise|verbose` style argument to `/carta-review`, or is it a follow-up question the parent asks after the subagent returns?
-- Does the subagent always produce the verbose report internally and the parent trims for display, or does the subagent change behaviour? The former is probably right — the subagent's cost doesn't change, and the user can always ask for the full report.
-- Should the report structure itself be redesigned so "concise" is a natural subset (e.g. every section has a headline the concise mode quotes, and the rest is collapsible detail)?
-
 ### Follow-up offers after a review
 The existing "Pick a, b, or c" footer works but could be smarter — e.g. pre-populate the top-5 action list, or offer to draft the Carta-gap fixes as a standalone command. Consider whether `/carta-review-followup <n>` makes sense, or whether it's just better conversation UX.
 

@@ -137,42 +137,93 @@ your working output so you can check them at the end of each pass.
 
 --- PASS 6: Report ---
 
-Structure the output exactly:
+Produce a concise, terminal-friendly report. Order matters — a
+skim-reader should get the answer in the first ~6 lines.
 
-**Carta scope** — directories present; team/project scope.
-**Context(s)** — which matched and why.
-**Stage** — declared stage + how determined.
-**Pillars foregrounded** — 1–3 lenses.
-**Principles applied** — principles (by ID) each recommended pattern
-  realises. Pull from foundations/15-principles/ by matching pillar and
-  related_patterns.
-**Decision trees consulted** — which dtrees, and which options were
-  selected vs rejected.
+Layout (use these section headers verbatim, in this order):
 
-**Pattern scorecard (current stage)** — a markdown table:
+**Top issues (act on these first):**
+The 3 highest-priority findings, ordered by foregrounded pillar.
+Format per line: `[!] pattern-name — file:line — one-line rationale`.
+If fewer than 3 issues exist, list what you have. If zero, say so
+explicitly ("No current-stage gaps surfaced.").
+
+**Scope:** one line — "foundation + org [+ team <name>] [+ project <name>]".
+**Stage:** one line — declared stage + how determined (asked / declared).
+**Pillars:** one line — 1–3 foregrounded.
+**Contexts:** one line — matched contexts.
+
+**Missing / Violated:** status-grouped bullets. Each finding:
+  `[!] pattern-name (<level>) — file:line — short rationale`.
+
+**Partial:** same format with `[~]`.
+
+**Already in place (N):** ONE line, names only — no per-pattern detail.
+  Example: `Already in place (8): pattern-rest-api, pattern-timeout, …`.
+
+**Deferred to <stage>:** terse — "When you graduate to <stage>:
+  pattern-bulkhead, pattern-leader-election." Group by graduation stage.
+
+**Avoid:** antipatterns flagged with `[!]` plus file:line and one-line
+  rationale. Same single-bullet format as Missing.
+
+**Standards:** populated only if there are violations or relaxations.
+**Conflicts and contradictions:** populated only when present.
+**Existing solutions:** populated only when a solution matches.
+
+**Gaps in Carta itself:** terse bullets — missing pattern, context,
+  dtree, or edge that would have helped this traversal.
+
+**Iteration:** ONE line — "Stable after N passes; M candidates
+  evaluated." If the 4-pass cap tripped, name the candidates the last
+  pass added on a second line.
+
+--- Rules for the concise body ---
+
+- **Collapse empty sections.** If a section has no entries, omit the
+  header entirely. Empty sections train readers to skip everything.
+- **Single-column bullets, never tables.** Tables wrap badly at 80
+  columns. Every finding is one bullet line.
+- **Status markers** in front of each finding: `[!]` Missing / Violated,
+  `[~]` Partial, `[?]` Open question. Pure ASCII — no colour, no unicode.
+- **Cap rationale at ~15 words per finding.** Detail belongs in the
+  verbose appendix.
+- **Order findings by foregrounded pillar** so the highest-pillar
+  issues come first within each section.
+- **Repeat the top 3 inside Missing / Violated.** Top issues serves the
+  skim-reader; the section serves the full reader. Repetition is fine.
+- **No per-Present detail** in the concise body — only the names line.
+
+--- Verbose appendix (always emit; parent shows on request) ---
+
+AFTER the END marker, emit this block. The parent will show it only if
+the user asks for "full", "verbose", "every pattern", or per-pattern
+detail. Always produce it — running the subagent twice is more
+expensive than emitting both modes once.
+
+  VERBOSE APPENDIX (parent: relay only if user asks for full / verbose
+  / per-pattern detail):
+
+  **Pattern scorecard (full):** markdown table with one row per
+  candidate including `Present` rows.
   | Pattern | Level | Status | Code evidence | Rationale |
 
-**Deferred to stage X** — patterns above the current stage floor,
-  grouped by the stage they unlock. Terse, not itemised.
+  **Per-Present evidence:** for each `Already in place` pattern, a
+  file:line citation and one-line rationale.
 
-**Prerequisites** — patterns that must be in place first.
-**Standards** — applicable, violations, relaxing ADRs.
-**Avoid** — antipatterns flagged with code evidence.
-**Conflicts and contradictions** — unresolved pairs.
-**Existing solutions** — matches or partial matches from
-  foundations/30-solutions/.
+  **Principles applied:** which principle each recommended pattern
+  realises, by id.
 
-**Top gaps, ranked by risk** — ordered by the foregrounded pillars.
-  Include the pillar each finding serves.
+  **Decision trees consulted:** which dtrees ran, which options were
+  selected vs rejected, the criteria used.
 
-**Gaps in Carta itself** — missing patterns, contexts, principles,
-  dtrees, or edges that would have helped this traversal. This is
-  how Carta grows; take it seriously.
+  **Standards (full):** every applicable standard, including those
+  that are not violated.
 
-**Iteration log** — how many passes ran, why you stopped (stable or
-  cap), and any parts of the protocol you had to skip and why.
+  **Prerequisites:** patterns that must be in place first, in
+  dependency order.
 
---- Rules ---
+--- Rules (apply to both blocks) ---
 
 - Do not invent patterns, standards, decisions, or code citations.
 - Absence-of-imports is evidence only when paired with a scope ("across
@@ -180,50 +231,48 @@ Structure the output exactly:
 - Every pattern status must have a file:line citation.
 - Every antipattern flag must have a file:line citation.
 - Report Carta gaps as a first-class section — missing content is more
-  valuable to the user than confidently filling the gap with guesses.
-- If the 4-iteration cap trips, say so and name which candidates the
-  last pass added. The scope may be too big for a single review.
+  valuable than confidently filling the gap with guesses.
 
 --- Output format (IMPORTANT) ---
 
-Your final message back to the parent agent IS the report. The parent
-will relay your entire output to the user. Do not truncate, summarise,
-or replace any section with a placeholder. Do not say 'see tool result
-above' or 'full report omitted'.
-
-Wrap your report between these exact marker lines so the parent can
-identify the block to relay:
+Wrap the concise body between these exact markers:
 
 ---BEGIN CARTA REVIEW REPORT---
 
-(full structured report here — every section from Pass 6, every
- pattern-scorecard row, every file:line citation, every Carta gap)
+(concise body here — every section above, every file:line citation,
+ every Carta gap, but NOT the verbose appendix)
 
 ---END CARTA REVIEW REPORT---
 
-Anything outside the markers (e.g. a brief meta-note to the parent
-about the iteration-cap result) is fine but will not be relayed to
-the user verbatim. Put everything the user needs to see between the
-markers.
+Then emit the VERBOSE APPENDIX block AFTER the END marker. The parent
+relays the marked block by default and shows the appendix only when
+the user asks for it. Do not put the appendix inside the markers.
 ```
 
 ## Present the subagent's report
 
-**The report is the product of this command. Your job is to relay it verbatim — not to summarise it.** The subagent will emit its report between marker lines (`---BEGIN CARTA REVIEW REPORT---` and `---END CARTA REVIEW REPORT---`). The content between those markers must reach the user in full.
+**The report is the product of this command. Your job is to relay it verbatim — not to summarise it.** The subagent emits a concise body between marker lines (`---BEGIN CARTA REVIEW REPORT---` and `---END CARTA REVIEW REPORT---`) followed by a `VERBOSE APPENDIX` block after the END marker. Default behaviour: relay the marked block in full; hold the appendix back unless the user asks for it.
 
 Format your response to the user exactly in this order:
 
-1. **A two-sentence lead** (≤60 words total). The overall stance (fit / gaps) and the three most-important current-stage findings. Put the lead before the report so a skim-reader gets the headline first.
+1. **A one-sentence stance** before the report — the overall fit / gaps verdict in ≤25 words. The report itself leads with `Top issues`, so do NOT repeat those findings here; just frame the verdict ("Production-stage payments-api: solid pipeline; rate-limiting and idempotency are the two production blockers.").
 
-2. **The full report, rendered verbatim.** Paste everything the subagent produced between its markers, unchanged. Do not paraphrase. Do not abbreviate tables. Do not replace bullet lists with "…and more". If the report is long, it's long — that's precisely why `/carta-review` spawns a subagent with its own context budget. A truncated relay defeats the workflow.
+2. **The concise report, rendered verbatim.** Paste everything the subagent produced between the markers, unchanged. Do not paraphrase. Do not abbreviate. Do not collapse bullet lists. The concise format already cuts what's safely cuttable; further trimming undoes the design.
 
 3. **One-sentence iteration note** if the subagent reported a 4-pass cap without convergence. Suggest scoping the next run smaller (single service, single context, single concern).
 
 4. **Restate the "Gaps in Carta itself" section** at the bottom if the report contains one, as a separate call-out distinct from application-level findings. This is Carta's compounding knowledge output; it's important enough to surface twice rather than lose to scroll.
 
-5. **Offer a follow-up**: (a) trim to a top-5 concrete action list for the target codebase, (b) dive deeper on one specific finding with more file reads, or (c) draft the Carta gap fixes as edits against `$CARTA_PATH`.
+5. **Offer follow-ups** (pick what fits; offer 3 of these, not all):
+   - (a) trim to a top-5 concrete action list for the target codebase.
+   - (b) dive deeper on one specific finding with more file reads.
+   - (c) draft the Carta gap fixes as edits against `$CARTA_PATH`.
+   - (d) **show the verbose appendix** — full pattern scorecard with `Present` rows, principles applied, dtrees consulted, full standards list. Use this when the user asks for "full", "verbose", "every pattern", or per-Present detail; relay the `VERBOSE APPENDIX` block the subagent emitted after the END marker.
+   - (e) explain why a specific pattern was scored Present — pull the per-Present line from the appendix.
 
 Never summarise the report in place of relaying it. A summary without the full report forces the user to ask you to play it back — which wastes a turn and defeats the subagent's multi-pass work. The subagent runs *so that* the user can read the structured output.
+
+The verbose appendix is data the subagent already paid to produce; show it on request without re-running. If the user wants the appendix appended every time (some teams do), they can say so — relay it inline after the marked block on subsequent runs.
 
 Do not edit or commit anything in the target codebase. This command is read-only against the target.
 
