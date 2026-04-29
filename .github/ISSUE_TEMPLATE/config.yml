@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussion / open-ended question
+    url: https://github.com/12vectors/carta/discussions
+    about: For "how should we model X" debates, design questions, or anything that isn't an actionable bug or proposal.
+  - name: Security vulnerability
+    url: https://github.com/12vectors/carta/security/advisories/new
+    about: Please report security issues privately, not as public issues. See SECURITY.md.
