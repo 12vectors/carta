@@ -70,20 +70,20 @@ For the full technical picture — schema, traversal algorithm, operations — s
 
 ## What's seeded today
 
-A starter foundation that's already useful, ready for your overrides. **144 sourced nodes** across the graph — books, papers with DOIs, canonical articles. Patterns include Cache-Aside, Circuit Breaker, Idempotency Key, Retry with Backoff, Transactional Outbox, CQRS, Saga, and 90 more.
+A starter foundation that's already useful, ready for your overrides. **158 sourced nodes** across the graph — books, papers with DOIs, canonical articles. Patterns include Cache-Aside, Circuit Breaker, Idempotency Key, Retry with Backoff, Transactional Outbox, CQRS, Saga, and 98 more.
 
 | Kind | Count |
 |---|---|
-| Patterns | 97 |
+| Patterns | 105 |
 | Principles | 14 |
-| Antipatterns | 10 |
-| Contexts | 7 |
-| Decision trees | 6 |
+| Antipatterns | 12 |
+| Contexts | 8 |
+| Decision trees | 8 |
 | Pillars | 5 |
 | Stages | 4 |
-| Solutions | 1 |
+| Solutions | 2 |
 
-Coverage spans communication, data, resilience, scaling, security, observability, deployment, agentic systems, testing, delivery / CI, and frontend.
+Coverage spans communication, data, resilience, scaling, security, observability, deployment, agentic systems, infrastructure-as-code, testing, delivery / CI, and frontend.
 
 ## Quickstart
 
@@ -158,7 +158,7 @@ Pre-1.0. APIs, schemas, and directory conventions may change.
 | Operations model (traverse, ingest, lint, capture) | Working |
 | Slash commands — `/carta`, `/carta-review`, `/carta-project-setup`, `/carta-add` | Working |
 | Validator (`tools/validate.py`) and linter (`tools/lint.py`) | Working |
-| Foundations — pillars (5), contexts (7), stages (4), principles (14), patterns (97), decision-trees (6), solutions (1), antipatterns (10) | Seeded — 144 nodes |
+| Foundations — pillars (5), contexts (8), stages (4), principles (14), patterns (105), decision-trees (8), solutions (2), antipatterns (12) | Seeded — 158 nodes |
 | Obsidian setup guide and templates (10 node types) | Done |
 | Spec Kit integration example | Planned |
 

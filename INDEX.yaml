@@ -1,6 +1,6 @@
 version: 1
-generated_from: 8bcec4e7e5486be7
-node_count: 152
+generated_from: a3462e4f85fd2cde
+node_count: 166
 entries:
   adr-0001-fastapi-as-default.org:
     id: adr-0001-fastapi-as-default
@@ -115,6 +115,19 @@ entries:
     - context-internal-tool
     mitigated_by:
     - pattern-llm-as-judge-eval
+  antipattern-shared-apply-identity:
+    id: antipattern-shared-apply-identity
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-shared-apply-identity.md
+    category: security
+    maturity: experimental
+    applies_to:
+    - context-infrastructure-as-code
+    mitigated_by:
+    - pattern-rbac
+    - pattern-federated-identity
+    - pattern-blast-radius-scoping
   antipattern-silent-failure:
     id: antipattern-silent-failure
     type: antipattern
@@ -179,6 +192,18 @@ entries:
     mitigated_by:
     - pattern-deployment-pipeline
     - pattern-build-once-deploy-many
+  antipattern-state-in-vcs:
+    id: antipattern-state-in-vcs
+    type: antipattern
+    level: foundation
+    path: foundations/50-antipatterns/antipattern-state-in-vcs.md
+    category: security
+    maturity: experimental
+    applies_to:
+    - context-infrastructure-as-code
+    mitigated_by:
+    - pattern-state-isolation
+    - pattern-secrets-management
   antipattern-unstable-list-key:
     id: antipattern-unstable-list-key
     type: antipattern
@@ -296,6 +321,37 @@ entries:
     - pattern-circuit-breaker
     - pattern-expand-contract-migration
     common_antipatterns:
+    - antipattern-silent-failure
+  context-infrastructure-as-code:
+    id: context-infrastructure-as-code
+    type: context
+    level: foundation
+    path: foundations/10-contexts/context-infrastructure-as-code.md
+    maturity: experimental
+    related:
+    - context-internal-tool
+    - context-batch-processing
+    recommended_patterns:
+    - pattern-state-isolation
+    - pattern-drift-detection
+    - pattern-policy-as-code
+    - pattern-plan-review-gate
+    - pattern-module-versioning
+    - pattern-two-person-apply
+    - pattern-blast-radius-scoping
+    - pattern-immutable-infrastructure
+    - pattern-secrets-management
+    - pattern-federated-identity
+    - pattern-rbac
+    - pattern-structured-logging
+    - pattern-correlation-id
+    - pattern-deployment-stamps
+    - pattern-modular-monolith
+    - pattern-feature-flag
+    common_antipatterns:
+    - antipattern-state-in-vcs
+    - antipattern-shared-apply-identity
+    - antipattern-prototype-drift
     - antipattern-silent-failure
   context-internal-tool:
     id: context-internal-tool
@@ -459,6 +515,25 @@ entries:
     - Source-of-truth location (single authoritative store vs. local views)
     - Audit and replay requirements
     - Eventual-consistency tolerance
+  dtree-choose-iac-engine:
+    id: dtree-choose-iac-engine
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-iac-engine.md
+    maturity: experimental
+    decides_between:
+    - pattern-state-isolation
+    related_patterns:
+    - pattern-state-isolation
+    - pattern-module-versioning
+    - pattern-immutable-infrastructure
+    criteria:
+    - 'Cloud target: single-cloud, multi-cloud, hybrid, or on-prem?'
+    - 'Team''s primary language and skills: HCL, TypeScript/Python/Go, YAML, declarative-only?'
+    - 'Licensing posture: BUSL-acceptable, OSS-only, or vendor-supported preferred?'
+    - Maturity of ecosystem and module availability for the chosen target
+    - Integration with existing CI/CD, policy-as-code, and audit tooling
+    - Migration cost from any existing IaC to the chosen engine
   dtree-choose-messaging-style:
     id: dtree-choose-messaging-style
     type: decision-tree
@@ -500,6 +575,25 @@ entries:
     - Scale profile (uniform vs. uneven hot spots)
     - Operational maturity (distributed tracing, service mesh, on-call)
     - Domain boundary clarity
+  dtree-choose-state-backend:
+    id: dtree-choose-state-backend
+    type: decision-tree
+    level: foundation
+    path: foundations/25-decision-trees/dtree-choose-state-backend.md
+    maturity: experimental
+    decides_between:
+    - pattern-state-isolation
+    related_patterns:
+    - pattern-state-isolation
+    - pattern-federated-identity
+    - pattern-rbac
+    criteria:
+    - 'Primary cloud: AWS, GCP, Azure, multi-cloud, or air-gapped?'
+    - Locking primitive availability and operational comfort
+    - Integration with existing apply identity (federated trust, IAM/SCP/org-policy reach)
+    - Operational and licensing cost vs. self-managed maintenance
+    - 'Compliance posture: data residency, encryption-at-rest control, audit retention'
+    - Number of stacks and growth trajectory
   pattern-accessibility-baseline:
     id: pattern-accessibility-baseline
     type: pattern
@@ -594,6 +688,23 @@ entries:
     pillars:
     - pillar-performance
     - pillar-operational-excellence
+  pattern-blast-radius-scoping:
+    id: pattern-blast-radius-scoping
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-blast-radius-scoping.md
+    category: security
+    maturity: experimental
+    stage_floor: production
+    applies_to:
+    - context-infrastructure-as-code
+    related:
+    - pattern-state-isolation
+    - pattern-rbac
+    - pattern-deployment-stamps
+    pillars:
+    - pillar-reliability
+    - pillar-security
   pattern-blue-green-deployment:
     id: pattern-blue-green-deployment
     type: pattern
@@ -962,6 +1073,25 @@ entries:
     pillars:
     - pillar-operational-excellence
     - pillar-reliability
+  pattern-drift-detection:
+    id: pattern-drift-detection
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/observability/pattern-drift-detection.md
+    category: observability
+    maturity: experimental
+    stage_floor: production
+    applies_to:
+    - context-infrastructure-as-code
+    prerequisites:
+    - pattern-state-isolation
+    related:
+    - pattern-rbac
+    - pattern-federated-identity
+    - pattern-structured-logging
+    pillars:
+    - pillar-reliability
+    - pillar-security
   pattern-error-boundary:
     id: pattern-error-boundary
     type: pattern
@@ -1263,6 +1393,25 @@ entries:
     - pattern-compensating-transaction
     pillars:
     - pillar-reliability
+  pattern-immutable-infrastructure:
+    id: pattern-immutable-infrastructure
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-immutable-infrastructure.md
+    category: deployment
+    maturity: experimental
+    stage_floor: mvp
+    applies_to:
+    - context-infrastructure-as-code
+    related:
+    - pattern-deployment-stamps
+    - pattern-state-isolation
+    - pattern-drift-detection
+    - pattern-module-versioning
+    pillars:
+    - pillar-reliability
+    - pillar-security
+    - pillar-operational-excellence
   pattern-input-validation:
     id: pattern-input-validation
     type: pattern
@@ -1483,6 +1632,22 @@ entries:
     - pattern-microservices
     pillars:
     - pillar-operational-excellence
+  pattern-module-versioning:
+    id: pattern-module-versioning
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-module-versioning.md
+    category: deployment
+    maturity: experimental
+    stage_floor: mvp
+    applies_to:
+    - context-infrastructure-as-code
+    related:
+    - pattern-immutable-infrastructure
+    - pattern-plan-review-gate
+    pillars:
+    - pillar-reliability
+    - pillar-operational-excellence
   pattern-oauth2-authorization:
     id: pattern-oauth2-authorization
     type: pattern
@@ -1530,6 +1695,24 @@ entries:
     pillars:
     - pillar-performance
     - pillar-operational-excellence
+  pattern-plan-review-gate:
+    id: pattern-plan-review-gate
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/deployment/pattern-plan-review-gate.md
+    category: deployment
+    maturity: experimental
+    stage_floor: mvp
+    applies_to:
+    - context-infrastructure-as-code
+    related:
+    - pattern-policy-as-code
+    - pattern-two-person-apply
+    - pattern-federated-identity
+    pillars:
+    - pillar-security
+    - pillar-reliability
+    - pillar-operational-excellence
   pattern-plan-then-execute:
     id: pattern-plan-then-execute
     type: pattern
@@ -1547,6 +1730,24 @@ entries:
     pillars:
     - pillar-operational-excellence
     - pillar-cost
+  pattern-policy-as-code:
+    id: pattern-policy-as-code
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-policy-as-code.md
+    category: security
+    maturity: experimental
+    stage_floor: production
+    applies_to:
+    - context-infrastructure-as-code
+    prerequisites:
+    - pattern-plan-review-gate
+    related:
+    - pattern-rbac
+    - pattern-state-isolation
+    pillars:
+    - pillar-security
+    - pillar-reliability
   pattern-preview-environment:
     id: pattern-preview-environment
     type: pattern
@@ -1932,6 +2133,23 @@ entries:
     pillars:
     - pillar-performance
     - pillar-operational-excellence
+  pattern-state-isolation:
+    id: pattern-state-isolation
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-state-isolation.md
+    category: security
+    maturity: experimental
+    stage_floor: mvp
+    applies_to:
+    - context-infrastructure-as-code
+    related:
+    - pattern-secrets-management
+    - pattern-rbac
+    - pattern-federated-identity
+    pillars:
+    - pillar-security
+    - pillar-reliability
   pattern-strangler-fig:
     id: pattern-strangler-fig
     type: pattern
@@ -2117,6 +2335,25 @@ entries:
     - pattern-deployment-pipeline
     pillars:
     - pillar-operational-excellence
+    - pillar-reliability
+  pattern-two-person-apply:
+    id: pattern-two-person-apply
+    type: pattern
+    level: foundation
+    path: foundations/20-patterns/tactics/security/pattern-two-person-apply.md
+    category: security
+    maturity: experimental
+    stage_floor: production
+    applies_to:
+    - context-infrastructure-as-code
+    prerequisites:
+    - pattern-rbac
+    - pattern-plan-review-gate
+    related:
+    - pattern-federated-identity
+    - pattern-policy-as-code
+    pillars:
+    - pillar-security
     - pillar-reliability
   pattern-valet-key:
     id: pattern-valet-key
@@ -2356,6 +2593,32 @@ entries:
     - pattern-federated-identity
     - pattern-input-validation
     pillar: pillar-security
+  solution-cloud-landing-zone:
+    id: solution-cloud-landing-zone
+    type: solution
+    level: foundation
+    path: foundations/30-solutions/solution-cloud-landing-zone.md
+    maturity: experimental
+    applies_to:
+    - context-infrastructure-as-code
+    composes:
+    - pattern-blast-radius-scoping
+    - pattern-state-isolation
+    - pattern-federated-identity
+    - pattern-rbac
+    - pattern-secrets-management
+    - pattern-plan-review-gate
+    - pattern-policy-as-code
+    - pattern-two-person-apply
+    - pattern-module-versioning
+    - pattern-immutable-infrastructure
+    - pattern-drift-detection
+    - pattern-structured-logging
+    - pattern-correlation-id
+    pillars:
+    - pillar-security
+    - pillar-reliability
+    - pillar-operational-excellence
   solution-llm-eval-harness:
     id: solution-llm-eval-harness
     type: solution
@@ -2457,6 +2720,8 @@ by_id:
   - antipattern-prototype-drift
   antipattern-self-judging-llm:
   - antipattern-self-judging-llm
+  antipattern-shared-apply-identity:
+  - antipattern-shared-apply-identity
   antipattern-silent-failure:
   - antipattern-silent-failure
   antipattern-slow-pipeline:
@@ -2465,6 +2730,8 @@ by_id:
   - antipattern-snapshot-overreliance
   antipattern-snowflake-ci:
   - antipattern-snowflake-ci
+  antipattern-state-in-vcs:
+  - antipattern-state-in-vcs
   antipattern-unstable-list-key:
   - antipattern-unstable-list-key
   context-agentic-system:
@@ -2475,6 +2742,8 @@ by_id:
   - context-data-pipeline
   context-event-driven-system:
   - context-event-driven-system
+  context-infrastructure-as-code:
+  - context-infrastructure-as-code
   context-internal-tool:
   - context-internal-tool
   context-ml-system:
@@ -2489,10 +2758,14 @@ by_id:
   - dtree-choose-data-access
   dtree-choose-event-style:
   - dtree-choose-event-style
+  dtree-choose-iac-engine:
+  - dtree-choose-iac-engine
   dtree-choose-messaging-style:
   - dtree-choose-messaging-style
   dtree-choose-service-boundary:
   - dtree-choose-service-boundary
+  dtree-choose-state-backend:
+  - dtree-choose-state-backend
   pattern-accessibility-baseline:
   - pattern-accessibility-baseline
   pattern-ambassador:
@@ -2505,6 +2778,8 @@ by_id:
   - pattern-async-request-reply
   pattern-backend-for-frontend:
   - pattern-backend-for-frontend
+  pattern-blast-radius-scoping:
+  - pattern-blast-radius-scoping
   pattern-blue-green-deployment:
   - pattern-blue-green-deployment
   pattern-build-once-deploy-many:
@@ -2546,6 +2821,8 @@ by_id:
   - pattern-deterministic-test-environment
   pattern-distributed-tracing:
   - pattern-distributed-tracing
+  pattern-drift-detection:
+  - pattern-drift-detection
   pattern-error-boundary:
   - pattern-error-boundary
   pattern-event-carried-state-transfer:
@@ -2584,6 +2861,8 @@ by_id:
   - pattern-human-in-the-loop-interrupt
   pattern-idempotency-key:
   - pattern-idempotency-key
+  pattern-immutable-infrastructure:
+  - pattern-immutable-infrastructure
   pattern-input-validation:
   - pattern-input-validation
   pattern-layered-architecture:
@@ -2612,14 +2891,20 @@ by_id:
   - pattern-microservices
   pattern-modular-monolith:
   - pattern-modular-monolith
+  pattern-module-versioning:
+  - pattern-module-versioning
   pattern-oauth2-authorization:
   - pattern-oauth2-authorization
   pattern-orchestrator-workers:
   - pattern-orchestrator-workers
   pattern-pipeline:
   - pattern-pipeline
+  pattern-plan-review-gate:
+  - pattern-plan-review-gate
   pattern-plan-then-execute:
   - pattern-plan-then-execute
+  pattern-policy-as-code:
+  - pattern-policy-as-code
   pattern-preview-environment:
   - pattern-preview-environment
   pattern-priority-queue:
@@ -2668,6 +2953,8 @@ by_id:
   - pattern-space-based-architecture
   pattern-state-colocation:
   - pattern-state-colocation
+  pattern-state-isolation:
+  - pattern-state-isolation
   pattern-strangler-fig:
   - pattern-strangler-fig
   pattern-structured-logging:
@@ -2688,6 +2975,8 @@ by_id:
   - pattern-transactional-outbox
   pattern-trunk-based-development:
   - pattern-trunk-based-development
+  pattern-two-person-apply:
+  - pattern-two-person-apply
   pattern-valet-key:
   - pattern-valet-key
   pillar-cost:
@@ -2728,6 +3017,8 @@ by_id:
   - principle-scale-out-not-up
   principle-zero-trust:
   - principle-zero-trust
+  solution-cloud-landing-zone:
+  - solution-cloud-landing-zone
   solution-llm-eval-harness:
   - solution-llm-eval-harness
   stage-critical:
@@ -2751,8 +3042,11 @@ overrides:
 context_to_patterns:
   context-agentic-system:
   - pattern-build-once-deploy-many
+  - pattern-cache-aside
+  - pattern-correlation-id
   - pattern-deployment-pipeline
   - pattern-deterministic-test-environment
+  - pattern-distributed-tracing
   - pattern-fast-feedback-pipeline
   - pattern-feature-flag
   - pattern-human-in-the-loop-interrupt
@@ -2763,45 +3057,74 @@ context_to_patterns:
   - pattern-preview-environment
   - pattern-prompt-injection-defense
   - pattern-property-based-testing
+  - pattern-rate-limiting
+  - pattern-rate-limiting.platform
   - pattern-react-loop
   - pattern-reflexion
+  - pattern-retry-with-backoff
+  - pattern-structured-logging
   - pattern-test-double
   - pattern-test-pyramid
+  - pattern-timeout
   - pattern-tool-use
   - pattern-trunk-based-development
   context-batch-processing:
   - pattern-build-once-deploy-many
+  - pattern-competing-consumers
+  - pattern-correlation-id
+  - pattern-dead-letter-channel
   - pattern-deployment-pipeline
   - pattern-deterministic-test-environment
   - pattern-expand-contract-migration
   - pattern-fast-feedback-pipeline
-  - pattern-property-based-testing
-  - pattern-test-data-builder
-  - pattern-test-double
-  - pattern-test-pyramid
-  - pattern-trunk-based-development
-  context-data-pipeline:
-  - pattern-build-once-deploy-many
-  - pattern-contract-testing
-  - pattern-deployment-pipeline
-  - pattern-deterministic-test-environment
-  - pattern-expand-contract-migration
-  - pattern-fast-feedback-pipeline
-  - pattern-merge-queue
+  - pattern-idempotency-key
   - pattern-pipeline
   - pattern-property-based-testing
+  - pattern-queue-based-load-leveling
+  - pattern-retry-with-backoff
+  - pattern-sharding
   - pattern-structured-logging
   - pattern-test-data-builder
   - pattern-test-double
   - pattern-test-pyramid
+  - pattern-timeout
+  - pattern-trunk-based-development
+  context-data-pipeline:
+  - pattern-build-once-deploy-many
+  - pattern-circuit-breaker
+  - pattern-circuit-breaker.payments-api
+  - pattern-competing-consumers
+  - pattern-contract-testing
+  - pattern-correlation-id
+  - pattern-dead-letter-channel
+  - pattern-deployment-pipeline
+  - pattern-deterministic-test-environment
+  - pattern-event-driven-architecture
+  - pattern-expand-contract-migration
+  - pattern-fast-feedback-pipeline
+  - pattern-idempotency-key
+  - pattern-merge-queue
+  - pattern-message-translator
+  - pattern-pipeline
+  - pattern-property-based-testing
+  - pattern-read-replica
+  - pattern-retry-with-backoff
+  - pattern-sharding
+  - pattern-structured-logging
+  - pattern-test-data-builder
+  - pattern-test-double
+  - pattern-test-pyramid
+  - pattern-transactional-outbox
   - pattern-trunk-based-development
   context-event-driven-system:
   - pattern-ambassador
+  - pattern-async-request-reply
   - pattern-blue-green-deployment
   - pattern-build-once-deploy-many
   - pattern-bulkhead
   - pattern-canary-release
   - pattern-circuit-breaker
+  - pattern-circuit-breaker.payments-api
   - pattern-claim-check
   - pattern-compensating-transaction
   - pattern-competing-consumers
@@ -2820,6 +3143,7 @@ context_to_patterns:
   - pattern-expand-contract-migration
   - pattern-fast-feedback-pipeline
   - pattern-health-check-endpoint
+  - pattern-idempotency-key
   - pattern-leader-election
   - pattern-merge-queue
   - pattern-message-router
@@ -2842,15 +3166,37 @@ context_to_patterns:
   - pattern-timeout
   - pattern-transactional-outbox
   - pattern-trunk-based-development
+  context-infrastructure-as-code:
+  - pattern-blast-radius-scoping
+  - pattern-correlation-id
+  - pattern-deployment-stamps
+  - pattern-drift-detection
+  - pattern-feature-flag
+  - pattern-federated-identity
+  - pattern-immutable-infrastructure
+  - pattern-modular-monolith
+  - pattern-module-versioning
+  - pattern-plan-review-gate
+  - pattern-policy-as-code
+  - pattern-rbac
+  - pattern-secrets-management
+  - pattern-state-isolation
+  - pattern-structured-logging
+  - pattern-two-person-apply
   context-internal-tool:
   - pattern-accessibility-baseline
   - pattern-blue-green-deployment
   - pattern-build-once-deploy-many
+  - pattern-correlation-id
   - pattern-deployment-pipeline
   - pattern-deterministic-test-environment
+  - pattern-distributed-tracing
   - pattern-fast-feedback-pipeline
   - pattern-feature-flag
+  - pattern-federated-identity
+  - pattern-health-check-endpoint
   - pattern-human-in-the-loop-interrupt
+  - pattern-input-validation
   - pattern-list-virtualisation
   - pattern-llm-as-judge-eval
   - pattern-llm-budget-enforcement
@@ -2859,18 +3205,39 @@ context_to_patterns:
   - pattern-plan-then-execute
   - pattern-preview-environment
   - pattern-prompt-injection-defense
+  - pattern-rbac
   - pattern-react-loop
   - pattern-reflexion
+  - pattern-rest-api
+  - pattern-rest-api.org
+  - pattern-retry-with-backoff
+  - pattern-secrets-management
+  - pattern-structured-logging
   - pattern-test-data-builder
   - pattern-test-double
   - pattern-test-pyramid
+  - pattern-timeout
   - pattern-tool-use
   - pattern-trunk-based-development
   context-ml-system:
+  - pattern-async-request-reply
+  - pattern-cache-aside
+  - pattern-circuit-breaker
+  - pattern-circuit-breaker.payments-api
   - pattern-deployment-pipeline
+  - pattern-deployment-stamps
   - pattern-deterministic-test-environment
+  - pattern-distributed-tracing
   - pattern-fast-feedback-pipeline
+  - pattern-feature-flag
+  - pattern-health-check-endpoint
+  - pattern-pipeline
   - pattern-property-based-testing
+  - pattern-rate-limiting
+  - pattern-rate-limiting.platform
+  - pattern-read-replica
+  - pattern-retry-with-backoff
+  - pattern-structured-logging
   - pattern-test-double
   - pattern-test-pyramid
   - pattern-trunk-based-development
@@ -2996,6 +3363,11 @@ context_to_antipatterns:
   - antipattern-silent-failure
   - antipattern-slow-pipeline
   - antipattern-snowflake-ci
+  context-infrastructure-as-code:
+  - antipattern-prototype-drift
+  - antipattern-shared-apply-identity
+  - antipattern-silent-failure
+  - antipattern-state-in-vcs
   context-internal-tool:
   - antipattern-flaky-test
   - antipattern-prototype-drift
@@ -3007,6 +3379,7 @@ context_to_antipatterns:
   - antipattern-flaky-test
   - antipattern-prototype-drift
   - antipattern-self-judging-llm
+  - antipattern-silent-failure
   context-web-application:
   - antipattern-flaky-test
   - antipattern-god-service
@@ -3164,6 +3537,9 @@ pattern_to_dtrees:
   - dtree-choose-messaging-style
   pattern-service-based-architecture:
   - dtree-choose-service-boundary
+  pattern-state-isolation:
+  - dtree-choose-iac-engine
+  - dtree-choose-state-backend
 affects_to_adrs:
   CHARTER:
   - adr-0002-currency-authority-exemption.org
@@ -3172,6 +3548,20 @@ affects_to_adrs:
   pattern-rest-api:
   - adr-0001-fastapi-as-default.org
 solution_composes:
+  solution-cloud-landing-zone:
+  - pattern-blast-radius-scoping
+  - pattern-correlation-id
+  - pattern-drift-detection
+  - pattern-federated-identity
+  - pattern-immutable-infrastructure
+  - pattern-module-versioning
+  - pattern-plan-review-gate
+  - pattern-policy-as-code
+  - pattern-rbac
+  - pattern-secrets-management
+  - pattern-state-isolation
+  - pattern-structured-logging
+  - pattern-two-person-apply
   solution-llm-eval-harness:
   - pattern-correlation-id
   - pattern-idempotency-key
@@ -3200,6 +3590,8 @@ prerequisites_closure:
   - pattern-build-once-deploy-many
   pattern-distributed-tracing:
   - pattern-correlation-id
+  pattern-drift-detection:
+  - pattern-state-isolation
   pattern-gateway-aggregation:
   - pattern-api-gateway
   pattern-gateway-offloading:
@@ -3210,6 +3602,8 @@ prerequisites_closure:
   - pattern-fast-feedback-pipeline
   pattern-microservices:
   - pattern-modular-monolith
+  pattern-policy-as-code:
+  - pattern-plan-review-gate
   pattern-preview-environment:
   - pattern-build-once-deploy-many
   pattern-prompt-injection-defense:
@@ -3220,3 +3614,6 @@ prerequisites_closure:
   - pattern-modular-monolith
   pattern-trunk-based-development:
   - pattern-fast-feedback-pipeline
+  pattern-two-person-apply:
+  - pattern-plan-review-gate
+  - pattern-rbac
