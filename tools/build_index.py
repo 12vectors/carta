@@ -228,6 +228,47 @@ def build_index(root: Path) -> dict:
         if ntype == "solution":
             solution_composes[entry] = sorted(snap.get("composes", []))
 
+        # Symmetric forward-edge collection from context nodes.
+        #
+        # Above, context_to_patterns / context_to_antipatterns /
+        # context_to_standards are populated by walking each pattern /
+        # antipattern / standard and reading its `applies_to` — a pattern
+        # declares which contexts it applies to, and that reverse edge
+        # builds the lookup.
+        #
+        # That alone is insufficient when a new context is introduced at
+        # org / team / project level and references *foundation* patterns
+        # via its `recommended_patterns`. Foundation nodes cannot declare
+        # `applies_to: [[<extension-context>]]` without violating the
+        # four-level dependency rule (foundations must not depend on
+        # extensions). The reverse edge therefore never appears, and the
+        # extension context lands in the index with an empty candidate
+        # set even though it has explicit recommendations.
+        #
+        # The fix: also walk each context node and treat its forward
+        # edges (recommended_patterns, common_antipatterns,
+        # recommended_standards) as additional contributions to the same
+        # three reverse lookups. The edge gets recorded the same way
+        # regardless of which side declared it. _sort_values() runs
+        # set() afterward so duplicates from both sides are deduped.
+        if ntype == "context":
+            ctx_id = snap["id"]
+            for pat_id in snap.get("recommended_patterns", []):
+                for pat_entry in by_id.get(pat_id, []):
+                    pat_snap = nodes_by_entry.get(pat_entry)
+                    if pat_snap and pat_snap.get("type") == "pattern":
+                        ctx_patterns.setdefault(ctx_id, []).append(pat_entry)
+            for ap_id in snap.get("common_antipatterns", []):
+                for ap_entry in by_id.get(ap_id, []):
+                    ap_snap = nodes_by_entry.get(ap_entry)
+                    if ap_snap and ap_snap.get("type") == "antipattern":
+                        ctx_antipatterns.setdefault(ctx_id, []).append(ap_entry)
+            for std_id in snap.get("recommended_standards", []):
+                for std_entry in by_id.get(std_id, []):
+                    std_snap = nodes_by_entry.get(std_entry)
+                    if std_snap and std_snap.get("type") == "standard":
+                        ctx_standards.setdefault(ctx_id, []).append(std_entry)
+
     prereq_closure = _compute_prereq_closure(nodes_by_entry)
 
     # Freshness hash over all content file bytes.
